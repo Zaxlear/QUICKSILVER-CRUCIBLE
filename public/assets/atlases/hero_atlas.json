@@ -1,0 +1,1496 @@
+{
+  "textures": [
+    {
+      "image": "hero_atlas.png",
+      "normalMap": "hero_atlas_n.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 512,
+        "h": 256
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "hero_atk_slash_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 10,
+            "y": 22,
+            "w": 40,
+            "h": 42
+          },
+          "frame": {
+            "x": 42,
+            "y": 104,
+            "w": 40,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 10,
+            "y": 22,
+            "w": 51,
+            "h": 42
+          },
+          "frame": {
+            "x": 84,
+            "y": 104,
+            "w": 51,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 22,
+            "w": 52,
+            "h": 42
+          },
+          "frame": {
+            "x": 137,
+            "y": 104,
+            "w": 52,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 22,
+            "w": 46,
+            "h": 42
+          },
+          "frame": {
+            "x": 191,
+            "y": 104,
+            "w": 46,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_4",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 22,
+            "w": 41,
+            "h": 42
+          },
+          "frame": {
+            "x": 239,
+            "y": 104,
+            "w": 41,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_5",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 10,
+            "y": 16,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 199,
+            "y": 2,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_6",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 16,
+            "w": 49,
+            "h": 48
+          },
+          "frame": {
+            "x": 249,
+            "y": 2,
+            "w": 49,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_7",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 15,
+            "w": 41,
+            "h": 49
+          },
+          "frame": {
+            "x": 156,
+            "y": 2,
+            "w": 41,
+            "h": 49
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_8",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 10,
+            "w": 41,
+            "h": 54
+          },
+          "frame": {
+            "x": 2,
+            "y": 2,
+            "w": 41,
+            "h": 54
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_9",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 14,
+            "w": 54,
+            "h": 50
+          },
+          "frame": {
+            "x": 45,
+            "y": 2,
+            "w": 54,
+            "h": 50
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_10",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 10,
+            "y": 14,
+            "w": 53,
+            "h": 50
+          },
+          "frame": {
+            "x": 101,
+            "y": 2,
+            "w": 53,
+            "h": 50
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_atk_slash_11",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 22,
+            "w": 50,
+            "h": 42
+          },
+          "frame": {
+            "x": 282,
+            "y": 104,
+            "w": 50,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 17,
+            "y": 23,
+            "w": 29,
+            "h": 41
+          },
+          "frame": {
+            "x": 39,
+            "y": 149,
+            "w": 29,
+            "h": 41
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 17,
+            "y": 25,
+            "w": 29,
+            "h": 39
+          },
+          "frame": {
+            "x": 126,
+            "y": 149,
+            "w": 29,
+            "h": 39
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 16,
+            "y": 27,
+            "w": 30,
+            "h": 37
+          },
+          "frame": {
+            "x": 299,
+            "y": 149,
+            "w": 30,
+            "h": 37
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 16,
+            "y": 30,
+            "w": 30,
+            "h": 34
+          },
+          "frame": {
+            "x": 478,
+            "y": 149,
+            "w": 30,
+            "h": 34
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_4",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 15,
+            "y": 32,
+            "w": 31,
+            "h": 32
+          },
+          "frame": {
+            "x": 2,
+            "y": 193,
+            "w": 31,
+            "h": 32
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_5",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 21,
+            "y": 57,
+            "w": 25,
+            "h": 7
+          },
+          "frame": {
+            "x": 131,
+            "y": 193,
+            "w": 25,
+            "h": 7
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_6",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 21,
+            "y": 57,
+            "w": 25,
+            "h": 7
+          },
+          "frame": {
+            "x": 158,
+            "y": 193,
+            "w": 25,
+            "h": 7
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_collapse_7",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 19,
+            "y": 57,
+            "w": 27,
+            "h": 7
+          },
+          "frame": {
+            "x": 185,
+            "y": 193,
+            "w": 27,
+            "h": 7
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_djump_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 19,
+            "y": 19,
+            "w": 22,
+            "h": 36
+          },
+          "frame": {
+            "x": 331,
+            "y": 149,
+            "w": 22,
+            "h": 36
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_djump_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 21,
+            "y": 18,
+            "w": 21,
+            "h": 39
+          },
+          "frame": {
+            "x": 157,
+            "y": 149,
+            "w": 21,
+            "h": 39
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_djump_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 20,
+            "y": 18,
+            "w": 27,
+            "h": 41
+          },
+          "frame": {
+            "x": 70,
+            "y": 149,
+            "w": 27,
+            "h": 41
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_djump_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 17,
+            "y": 19,
+            "w": 31,
+            "h": 42
+          },
+          "frame": {
+            "x": 334,
+            "y": 104,
+            "w": 31,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_dodge_roll_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 11,
+            "y": 28,
+            "w": 39,
+            "h": 36
+          },
+          "frame": {
+            "x": 355,
+            "y": 149,
+            "w": 39,
+            "h": 36
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_dodge_roll_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 16,
+            "y": 40,
+            "w": 30,
+            "h": 19
+          },
+          "frame": {
+            "x": 35,
+            "y": 193,
+            "w": 30,
+            "h": 19
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_dodge_roll_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 16,
+            "y": 40,
+            "w": 30,
+            "h": 19
+          },
+          "frame": {
+            "x": 67,
+            "y": 193,
+            "w": 30,
+            "h": 19
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_dodge_roll_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 16,
+            "y": 40,
+            "w": 30,
+            "h": 19
+          },
+          "frame": {
+            "x": 99,
+            "y": 193,
+            "w": 30,
+            "h": 19
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_dodge_roll_4",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 11,
+            "y": 28,
+            "w": 39,
+            "h": 36
+          },
+          "frame": {
+            "x": 396,
+            "y": 149,
+            "w": 39,
+            "h": 36
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_dodge_roll_5",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 11,
+            "y": 28,
+            "w": 39,
+            "h": 36
+          },
+          "frame": {
+            "x": 437,
+            "y": 149,
+            "w": 39,
+            "h": 36
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_hurt_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 18,
+            "y": 16,
+            "w": 24,
+            "h": 48
+          },
+          "frame": {
+            "x": 300,
+            "y": 2,
+            "w": 24,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_hurt_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 19,
+            "y": 19,
+            "w": 25,
+            "h": 45
+          },
+          "frame": {
+            "x": 355,
+            "y": 2,
+            "w": 25,
+            "h": 45
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_hurt_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 19,
+            "y": 22,
+            "w": 27,
+            "h": 42
+          },
+          "frame": {
+            "x": 367,
+            "y": 104,
+            "w": 27,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_idle_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 21,
+            "w": 30,
+            "h": 43
+          },
+          "frame": {
+            "x": 86,
+            "y": 58,
+            "w": 30,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_idle_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 22,
+            "w": 30,
+            "h": 42
+          },
+          "frame": {
+            "x": 396,
+            "y": 104,
+            "w": 30,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_idle_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 22,
+            "w": 30,
+            "h": 42
+          },
+          "frame": {
+            "x": 428,
+            "y": 104,
+            "w": 30,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_idle_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 21,
+            "w": 30,
+            "h": 43
+          },
+          "frame": {
+            "x": 118,
+            "y": 58,
+            "w": 30,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_idle_4",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 20,
+            "w": 30,
+            "h": 44
+          },
+          "frame": {
+            "x": 382,
+            "y": 2,
+            "w": 30,
+            "h": 44
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_idle_5",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 20,
+            "w": 30,
+            "h": 44
+          },
+          "frame": {
+            "x": 414,
+            "y": 2,
+            "w": 30,
+            "h": 44
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_jump_fall_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 16,
+            "y": 16,
+            "w": 27,
+            "h": 39
+          },
+          "frame": {
+            "x": 180,
+            "y": 149,
+            "w": 27,
+            "h": 39
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_jump_fall_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 16,
+            "y": 16,
+            "w": 27,
+            "h": 39
+          },
+          "frame": {
+            "x": 209,
+            "y": 149,
+            "w": 27,
+            "h": 39
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_jump_fall_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 20,
+            "y": 18,
+            "w": 31,
+            "h": 44
+          },
+          "frame": {
+            "x": 446,
+            "y": 2,
+            "w": 31,
+            "h": 44
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_jump_fall_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 24,
+            "y": 16,
+            "w": 27,
+            "h": 46
+          },
+          "frame": {
+            "x": 326,
+            "y": 2,
+            "w": 27,
+            "h": 46
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_parry_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 13,
+            "y": 21,
+            "w": 35,
+            "h": 43
+          },
+          "frame": {
+            "x": 150,
+            "y": 58,
+            "w": 35,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_parry_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 13,
+            "y": 21,
+            "w": 50,
+            "h": 43
+          },
+          "frame": {
+            "x": 187,
+            "y": 58,
+            "w": 50,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_parry_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 12,
+            "y": 21,
+            "w": 52,
+            "h": 43
+          },
+          "frame": {
+            "x": 239,
+            "y": 58,
+            "w": 52,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_parry_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 12,
+            "y": 21,
+            "w": 36,
+            "h": 43
+          },
+          "frame": {
+            "x": 293,
+            "y": 58,
+            "w": 36,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_parry_4",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 12,
+            "y": 21,
+            "w": 36,
+            "h": 43
+          },
+          "frame": {
+            "x": 331,
+            "y": 58,
+            "w": 36,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 22,
+            "w": 35,
+            "h": 42
+          },
+          "frame": {
+            "x": 460,
+            "y": 104,
+            "w": 35,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 21,
+            "w": 37,
+            "h": 43
+          },
+          "frame": {
+            "x": 369,
+            "y": 58,
+            "w": 37,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 20,
+            "w": 41,
+            "h": 44
+          },
+          "frame": {
+            "x": 2,
+            "y": 58,
+            "w": 41,
+            "h": 44
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 21,
+            "w": 37,
+            "h": 43
+          },
+          "frame": {
+            "x": 408,
+            "y": 58,
+            "w": 37,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_4",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 22,
+            "w": 35,
+            "h": 42
+          },
+          "frame": {
+            "x": 2,
+            "y": 149,
+            "w": 35,
+            "h": 42
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_5",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 21,
+            "w": 38,
+            "h": 43
+          },
+          "frame": {
+            "x": 447,
+            "y": 58,
+            "w": 38,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_6",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 20,
+            "w": 39,
+            "h": 44
+          },
+          "frame": {
+            "x": 45,
+            "y": 58,
+            "w": 39,
+            "h": 44
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_run_7",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 21,
+            "w": 38,
+            "h": 43
+          },
+          "frame": {
+            "x": 2,
+            "y": 104,
+            "w": 38,
+            "h": 43
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_wall_slide_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 21,
+            "y": 20,
+            "w": 29,
+            "h": 39
+          },
+          "frame": {
+            "x": 238,
+            "y": 149,
+            "w": 29,
+            "h": 39
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_wall_slide_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 22,
+            "y": 20,
+            "w": 28,
+            "h": 39
+          },
+          "frame": {
+            "x": 269,
+            "y": 149,
+            "w": 28,
+            "h": 39
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "hero_wall_slide_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 25,
+            "y": 19,
+            "w": 25,
+            "h": 40
+          },
+          "frame": {
+            "x": 99,
+            "y": 149,
+            "w": 25,
+            "h": 40
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "quicksilver-crucible-asset-factory",
+    "version": "1.0.0",
+    "frameCount": 59
+  }
+}

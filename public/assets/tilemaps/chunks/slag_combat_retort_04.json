@@ -1,0 +1,47 @@
+{
+  "chunkId": "slag_combat_retort_04",
+  "biomePool": ["biome_01_slag_retort"],
+  "role": "COMBAT",
+  "widthTiles": 44,
+  "heightTiles": 32,
+  "solidRects": [
+    { "tileX": 0, "tileY": 0, "widthTiles": 44, "heightTiles": 3 },
+    { "tileX": 0, "tileY": 3, "widthTiles": 3, "heightTiles": 21 },
+    { "tileX": 0, "tileY": 28, "widthTiles": 44, "heightTiles": 4 },
+    { "tileX": 41, "tileY": 3, "widthTiles": 3, "heightTiles": 21 },
+    { "tileX": 15, "tileY": 19, "widthTiles": 14, "heightTiles": 2 }
+  ],
+  "oneWayPlatforms": [
+    { "tileX": 6, "tileY": 23, "widthTiles": 8 },
+    { "tileX": 30, "tileY": 23, "widthTiles": 8 },
+    { "tileX": 18, "tileY": 14, "widthTiles": 8 }
+  ],
+  "climbableWalls": [
+    { "tileX": 3, "topTileY": 7, "heightTiles": 16, "normalSide": "RIGHT" },
+    { "tileX": 41, "topTileY": 7, "heightTiles": 16, "normalSide": "LEFT" }
+  ],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    { "socketId": "w_main", "direction": "WEST", "tileX": 0, "tileY": 27, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "e_main", "direction": "EAST", "tileX": 43, "tileY": 27, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "s_branch", "direction": "SOUTH", "tileX": 20, "tileY": 31, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "n_secret", "direction": "NORTH", "tileX": 20, "tileY": 0, "apertureTiles": 4, "requiredRune": "rune_vitriol_tendril" }
+  ],
+  "enemySpawns": [
+    { "slotId": "sp_r01", "tileX": 11, "tileY": 27, "allowedArchetypes": ["MELEE_FODDER", "FLANKER"], "minCrucibleHeat": 0, "patrolSpanTiles": [5, 17] },
+    { "slotId": "sp_r02", "tileX": 33, "tileY": 27, "allowedArchetypes": ["SHIELD_TANK"], "minCrucibleHeat": 0, "patrolSpanTiles": [27, 39] },
+    { "slotId": "sp_r03", "tileX": 22, "tileY": 18, "allowedArchetypes": ["RANGED_HARASS"], "minCrucibleHeat": 0, "patrolSpanTiles": [16, 28] }
+  ],
+  "trapSlots": [
+    { "slotId": "tr_pendulum", "trapType": "PENDULUM_BLADE", "tileX": 21, "tileY": 20, "widthTiles": 2, "phaseOffsetMs": 0, "cyclePeriodMs": 2800 },
+    { "slotId": "tr_flame_side", "trapType": "FLAME_NOZZLE", "tileX": 35, "tileY": 27, "widthTiles": 2, "phaseOffsetMs": 600, "cyclePeriodMs": 3000 }
+  ],
+  "teleporterTilePos": { "tileX": 8, "tileY": 27 },
+  "rewardPedestalTilePos": null,
+  "loreAnchor": null,
+  "lightAnchors": [
+    { "tileX": 9, "tileY": 25, "preset": "VOLTAIC_CYAN", "radiusPx": 175, "flickerAmplitude": 0.08 },
+    { "tileX": 22, "tileY": 23, "preset": "TORCH_AMBER", "radiusPx": 185, "flickerAmplitude": 0.12 },
+    { "tileX": 35, "tileY": 25, "preset": "FURNACE_CRIMSON", "radiusPx": 175, "flickerAmplitude": 0.13 }
+  ]
+}

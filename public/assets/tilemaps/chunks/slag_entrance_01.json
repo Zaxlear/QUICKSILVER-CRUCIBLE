@@ -1,0 +1,38 @@
+{
+  "chunkId": "slag_entrance_01",
+  "biomePool": ["biome_01_slag_retort"],
+  "role": "ENTRANCE",
+  "widthTiles": 42,
+  "heightTiles": 30,
+  "solidRects": [
+    { "tileX": 0, "tileY": 0, "widthTiles": 42, "heightTiles": 3 },
+    { "tileX": 0, "tileY": 3, "widthTiles": 3, "heightTiles": 23 },
+    { "tileX": 0, "tileY": 26, "widthTiles": 16, "heightTiles": 4 },
+    { "tileX": 16, "tileY": 28, "widthTiles": 4, "heightTiles": 2 },
+    { "tileX": 20, "tileY": 26, "widthTiles": 22, "heightTiles": 4 },
+    { "tileX": 39, "tileY": 3, "widthTiles": 3, "heightTiles": 19 }
+  ],
+  "oneWayPlatforms": [
+    { "tileX": 10, "tileY": 22, "widthTiles": 7 },
+    { "tileX": 22, "tileY": 19, "widthTiles": 8 }
+  ],
+  "climbableWalls": [
+    { "tileX": 3, "topTileY": 8, "heightTiles": 16, "normalSide": "RIGHT" }
+  ],
+  "breakableSlagFloors": [
+    { "tileX": 16, "tileY": 26, "widthTiles": 4 }
+  ],
+  "doorSockets": [
+    { "socketId": "e_main", "direction": "EAST", "tileX": 41, "tileY": 25, "apertureTiles": 4, "requiredRune": null }
+  ],
+  "enemySpawns": [],
+  "trapSlots": [],
+  "teleporterTilePos": { "tileX": 9, "tileY": 25 },
+  "rewardPedestalTilePos": { "tileX": 6, "tileY": 25 },
+  "loreAnchor": null,
+  "lightAnchors": [
+    { "tileX": 6, "tileY": 22, "preset": "MERCURY_SILVER", "radiusPx": 185, "flickerAmplitude": 0.06 },
+    { "tileX": 18, "tileY": 23, "preset": "TORCH_AMBER", "radiusPx": 175, "flickerAmplitude": 0.11 },
+    { "tileX": 33, "tileY": 23, "preset": "TORCH_AMBER", "radiusPx": 175, "flickerAmplitude": 0.11 }
+  ]
+}

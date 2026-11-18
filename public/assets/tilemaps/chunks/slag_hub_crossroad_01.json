@@ -1,0 +1,39 @@
+{
+  "chunkId": "slag_hub_crossroad_01",
+  "biomePool": ["biome_01_slag_retort"],
+  "role": "TELEPORTER_HUB",
+  "widthTiles": 44,
+  "heightTiles": 32,
+  "solidRects": [
+    { "tileX": 0, "tileY": 0, "widthTiles": 44, "heightTiles": 3 },
+    { "tileX": 0, "tileY": 3, "widthTiles": 3, "heightTiles": 21 },
+    { "tileX": 0, "tileY": 28, "widthTiles": 44, "heightTiles": 4 },
+    { "tileX": 41, "tileY": 3, "widthTiles": 3, "heightTiles": 21 }
+  ],
+  "oneWayPlatforms": [
+    { "tileX": 14, "tileY": 24, "widthTiles": 16 },
+    { "tileX": 16, "tileY": 20, "widthTiles": 12 },
+    { "tileX": 17, "tileY": 16, "widthTiles": 10 },
+    { "tileX": 18, "tileY": 12, "widthTiles": 8 },
+    { "tileX": 18, "tileY": 8, "widthTiles": 8 },
+    { "tileX": 19, "tileY": 4, "widthTiles": 6 }
+  ],
+  "climbableWalls": [],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    { "socketId": "w_main", "direction": "WEST", "tileX": 0, "tileY": 27, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "e_main", "direction": "EAST", "tileX": 43, "tileY": 27, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "n_branch", "direction": "NORTH", "tileX": 20, "tileY": 0, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "s_branch", "direction": "SOUTH", "tileX": 20, "tileY": 31, "apertureTiles": 4, "requiredRune": null }
+  ],
+  "enemySpawns": [],
+  "trapSlots": [],
+  "teleporterTilePos": { "tileX": 12, "tileY": 27 },
+  "rewardPedestalTilePos": null,
+  "loreAnchor": null,
+  "lightAnchors": [
+    { "tileX": 12, "tileY": 24, "preset": "VOLTAIC_CYAN", "radiusPx": 210, "flickerAmplitude": 0.06 },
+    { "tileX": 22, "tileY": 18, "preset": "MERCURY_SILVER", "radiusPx": 180, "flickerAmplitude": 0.05 },
+    { "tileX": 33, "tileY": 24, "preset": "TORCH_AMBER", "radiusPx": 170, "flickerAmplitude": 0.1 }
+  ]
+}

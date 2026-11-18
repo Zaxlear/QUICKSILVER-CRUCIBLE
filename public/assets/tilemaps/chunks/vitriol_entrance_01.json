@@ -1,0 +1,100 @@
+{
+  "chunkId": "vitriol_entrance_01",
+  "biomePool": [
+    "biome_02_vitriol_sewers"
+  ],
+  "role": "ENTRANCE",
+  "widthTiles": 42,
+  "heightTiles": 30,
+  "solidRects": [
+    {
+      "tileX": 0,
+      "tileY": 0,
+      "widthTiles": 42,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 0,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 23
+    },
+    {
+      "tileX": 39,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 19
+    },
+    {
+      "tileX": 0,
+      "tileY": 26,
+      "widthTiles": 42,
+      "heightTiles": 4
+    }
+  ],
+  "oneWayPlatforms": [
+    {
+      "tileX": 12,
+      "tileY": 22,
+      "widthTiles": 8
+    },
+    {
+      "tileX": 24,
+      "tileY": 19,
+      "widthTiles": 8
+    }
+  ],
+  "climbableWalls": [
+    {
+      "tileX": 3,
+      "topTileY": 8,
+      "heightTiles": 16,
+      "normalSide": "RIGHT"
+    }
+  ],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    {
+      "socketId": "e_main",
+      "direction": "EAST",
+      "tileX": 41,
+      "tileY": 25,
+      "apertureTiles": 4,
+      "requiredRune": null
+    }
+  ],
+  "enemySpawns": [],
+  "trapSlots": [],
+  "teleporterTilePos": {
+    "tileX": 9,
+    "tileY": 25
+  },
+  "rewardPedestalTilePos": {
+    "tileX": 6,
+    "tileY": 25
+  },
+  "loreAnchor": null,
+  "lightAnchors": [
+    {
+      "tileX": 8,
+      "tileY": 22,
+      "preset": "MERCURY_SILVER",
+      "radiusPx": 190,
+      "flickerAmplitude": 0.06
+    },
+    {
+      "tileX": 22,
+      "tileY": 22,
+      "preset": "VITRIOL_VAT_GREEN",
+      "radiusPx": 185,
+      "flickerAmplitude": 0.1
+    },
+    {
+      "tileX": 35,
+      "tileY": 22,
+      "preset": "TORCH_AMBER",
+      "radiusPx": 175,
+      "flickerAmplitude": 0.09
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "chunkId": "slag_combat_foundry_06",
+  "biomePool": ["biome_01_slag_retort"],
+  "role": "COMBAT",
+  "widthTiles": 48,
+  "heightTiles": 30,
+  "solidRects": [
+    { "tileX": 0, "tileY": 0, "widthTiles": 48, "heightTiles": 3 },
+    { "tileX": 0, "tileY": 3, "widthTiles": 3, "heightTiles": 19 },
+    { "tileX": 0, "tileY": 26, "widthTiles": 34, "heightTiles": 4 },
+    { "tileX": 34, "tileY": 20, "widthTiles": 14, "heightTiles": 10 },
+    { "tileX": 45, "tileY": 3, "widthTiles": 3, "heightTiles": 13 }
+  ],
+  "oneWayPlatforms": [
+    { "tileX": 12, "tileY": 22, "widthTiles": 8 },
+    { "tileX": 24, "tileY": 22, "widthTiles": 8 },
+    { "tileX": 18, "tileY": 17, "widthTiles": 10 },
+    { "tileX": 19, "tileY": 12, "widthTiles": 8 }
+  ],
+  "climbableWalls": [
+    { "tileX": 34, "topTileY": 20, "heightTiles": 6, "normalSide": "LEFT" }
+  ],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    { "socketId": "w_main", "direction": "WEST", "tileX": 0, "tileY": 25, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "e_main", "direction": "EAST", "tileX": 47, "tileY": 19, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "s_branch", "direction": "SOUTH", "tileX": 16, "tileY": 29, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "n_secret", "direction": "NORTH", "tileX": 21, "tileY": 0, "apertureTiles": 4, "requiredRune": "rune_vitriol_tendril" }
+  ],
+  "enemySpawns": [
+    { "slotId": "sp_fd01", "tileX": 14, "tileY": 25, "allowedArchetypes": ["MELEE_FODDER"], "minCrucibleHeat": 0, "patrolSpanTiles": [6, 22] },
+    { "slotId": "sp_fd02", "tileX": 28, "tileY": 25, "allowedArchetypes": ["SHIELD_TANK"], "minCrucibleHeat": 0, "patrolSpanTiles": [22, 32] },
+    { "slotId": "sp_fd03", "tileX": 39, "tileY": 19, "allowedArchetypes": ["RANGED_HARASS"], "minCrucibleHeat": 0, "patrolSpanTiles": [35, 43] }
+  ],
+  "trapSlots": [
+    { "slotId": "tr_fd_flame", "trapType": "FLAME_NOZZLE", "tileX": 19, "tileY": 25, "widthTiles": 2, "phaseOffsetMs": 300, "cyclePeriodMs": 3000 }
+  ],
+  "teleporterTilePos": null,
+  "rewardPedestalTilePos": null,
+  "loreAnchor": null,
+  "lightAnchors": [
+    { "tileX": 10, "tileY": 23, "preset": "TORCH_AMBER", "radiusPx": 170, "flickerAmplitude": 0.11 },
+    { "tileX": 20, "tileY": 24, "preset": "FURNACE_CRIMSON", "radiusPx": 185, "flickerAmplitude": 0.14 },
+    { "tileX": 39, "tileY": 17, "preset": "TORCH_AMBER", "radiusPx": 170, "flickerAmplitude": 0.11 }
+  ]
+}

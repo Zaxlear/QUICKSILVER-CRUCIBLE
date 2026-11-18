@@ -1,0 +1,393 @@
+{
+  "biomeId": "biome_02_vitriol_sewers",
+  "tileSize": 16,
+  "columns": 8,
+  "rows": 7,
+  "image": "biome02_vitriol_tileset.png",
+  "normalMap": "biome02_vitriol_tileset_n.png",
+  "tiles": [
+    {
+      "index": 0,
+      "kind": "autotile47",
+      "bitmask": 0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "index": 1,
+      "kind": "autotile47",
+      "bitmask": 1,
+      "x": 16,
+      "y": 0
+    },
+    {
+      "index": 2,
+      "kind": "autotile47",
+      "bitmask": 4,
+      "x": 32,
+      "y": 0
+    },
+    {
+      "index": 3,
+      "kind": "autotile47",
+      "bitmask": 5,
+      "x": 48,
+      "y": 0
+    },
+    {
+      "index": 4,
+      "kind": "autotile47",
+      "bitmask": 7,
+      "x": 64,
+      "y": 0
+    },
+    {
+      "index": 5,
+      "kind": "autotile47",
+      "bitmask": 16,
+      "x": 80,
+      "y": 0
+    },
+    {
+      "index": 6,
+      "kind": "autotile47",
+      "bitmask": 17,
+      "x": 96,
+      "y": 0
+    },
+    {
+      "index": 7,
+      "kind": "autotile47",
+      "bitmask": 20,
+      "x": 112,
+      "y": 0
+    },
+    {
+      "index": 8,
+      "kind": "autotile47",
+      "bitmask": 21,
+      "x": 0,
+      "y": 16
+    },
+    {
+      "index": 9,
+      "kind": "autotile47",
+      "bitmask": 23,
+      "x": 16,
+      "y": 16
+    },
+    {
+      "index": 10,
+      "kind": "autotile47",
+      "bitmask": 28,
+      "x": 32,
+      "y": 16
+    },
+    {
+      "index": 11,
+      "kind": "autotile47",
+      "bitmask": 29,
+      "x": 48,
+      "y": 16
+    },
+    {
+      "index": 12,
+      "kind": "autotile47",
+      "bitmask": 31,
+      "x": 64,
+      "y": 16
+    },
+    {
+      "index": 13,
+      "kind": "autotile47",
+      "bitmask": 64,
+      "x": 80,
+      "y": 16
+    },
+    {
+      "index": 14,
+      "kind": "autotile47",
+      "bitmask": 65,
+      "x": 96,
+      "y": 16
+    },
+    {
+      "index": 15,
+      "kind": "autotile47",
+      "bitmask": 68,
+      "x": 112,
+      "y": 16
+    },
+    {
+      "index": 16,
+      "kind": "autotile47",
+      "bitmask": 69,
+      "x": 0,
+      "y": 32
+    },
+    {
+      "index": 17,
+      "kind": "autotile47",
+      "bitmask": 71,
+      "x": 16,
+      "y": 32
+    },
+    {
+      "index": 18,
+      "kind": "autotile47",
+      "bitmask": 80,
+      "x": 32,
+      "y": 32
+    },
+    {
+      "index": 19,
+      "kind": "autotile47",
+      "bitmask": 81,
+      "x": 48,
+      "y": 32
+    },
+    {
+      "index": 20,
+      "kind": "autotile47",
+      "bitmask": 84,
+      "x": 64,
+      "y": 32
+    },
+    {
+      "index": 21,
+      "kind": "autotile47",
+      "bitmask": 85,
+      "x": 80,
+      "y": 32
+    },
+    {
+      "index": 22,
+      "kind": "autotile47",
+      "bitmask": 87,
+      "x": 96,
+      "y": 32
+    },
+    {
+      "index": 23,
+      "kind": "autotile47",
+      "bitmask": 92,
+      "x": 112,
+      "y": 32
+    },
+    {
+      "index": 24,
+      "kind": "autotile47",
+      "bitmask": 93,
+      "x": 0,
+      "y": 48
+    },
+    {
+      "index": 25,
+      "kind": "autotile47",
+      "bitmask": 95,
+      "x": 16,
+      "y": 48
+    },
+    {
+      "index": 26,
+      "kind": "autotile47",
+      "bitmask": 112,
+      "x": 32,
+      "y": 48
+    },
+    {
+      "index": 27,
+      "kind": "autotile47",
+      "bitmask": 113,
+      "x": 48,
+      "y": 48
+    },
+    {
+      "index": 28,
+      "kind": "autotile47",
+      "bitmask": 116,
+      "x": 64,
+      "y": 48
+    },
+    {
+      "index": 29,
+      "kind": "autotile47",
+      "bitmask": 117,
+      "x": 80,
+      "y": 48
+    },
+    {
+      "index": 30,
+      "kind": "autotile47",
+      "bitmask": 119,
+      "x": 96,
+      "y": 48
+    },
+    {
+      "index": 31,
+      "kind": "autotile47",
+      "bitmask": 124,
+      "x": 112,
+      "y": 48
+    },
+    {
+      "index": 32,
+      "kind": "autotile47",
+      "bitmask": 125,
+      "x": 0,
+      "y": 64
+    },
+    {
+      "index": 33,
+      "kind": "autotile47",
+      "bitmask": 127,
+      "x": 16,
+      "y": 64
+    },
+    {
+      "index": 34,
+      "kind": "autotile47",
+      "bitmask": 193,
+      "x": 32,
+      "y": 64
+    },
+    {
+      "index": 35,
+      "kind": "autotile47",
+      "bitmask": 197,
+      "x": 48,
+      "y": 64
+    },
+    {
+      "index": 36,
+      "kind": "autotile47",
+      "bitmask": 199,
+      "x": 64,
+      "y": 64
+    },
+    {
+      "index": 37,
+      "kind": "autotile47",
+      "bitmask": 209,
+      "x": 80,
+      "y": 64
+    },
+    {
+      "index": 38,
+      "kind": "autotile47",
+      "bitmask": 213,
+      "x": 96,
+      "y": 64
+    },
+    {
+      "index": 39,
+      "kind": "autotile47",
+      "bitmask": 215,
+      "x": 112,
+      "y": 64
+    },
+    {
+      "index": 40,
+      "kind": "autotile47",
+      "bitmask": 221,
+      "x": 0,
+      "y": 80
+    },
+    {
+      "index": 41,
+      "kind": "autotile47",
+      "bitmask": 223,
+      "x": 16,
+      "y": 80
+    },
+    {
+      "index": 42,
+      "kind": "autotile47",
+      "bitmask": 241,
+      "x": 32,
+      "y": 80
+    },
+    {
+      "index": 43,
+      "kind": "autotile47",
+      "bitmask": 245,
+      "x": 48,
+      "y": 80
+    },
+    {
+      "index": 44,
+      "kind": "autotile47",
+      "bitmask": 247,
+      "x": 64,
+      "y": 80
+    },
+    {
+      "index": 45,
+      "kind": "autotile47",
+      "bitmask": 253,
+      "x": 80,
+      "y": 80
+    },
+    {
+      "index": 46,
+      "kind": "autotile47",
+      "bitmask": 255,
+      "x": 96,
+      "y": 80
+    },
+    {
+      "index": 47,
+      "kind": "solid_alt_masonry",
+      "x": 112,
+      "y": 80
+    },
+    {
+      "index": 48,
+      "kind": "furnace_molten_grate",
+      "x": 0,
+      "y": 96
+    },
+    {
+      "index": 49,
+      "kind": "oneway_grate_left",
+      "x": 16,
+      "y": 96
+    },
+    {
+      "index": 50,
+      "kind": "oneway_grate_mid",
+      "x": 32,
+      "y": 96
+    },
+    {
+      "index": 51,
+      "kind": "oneway_grate_right",
+      "x": 48,
+      "y": 96
+    },
+    {
+      "index": 52,
+      "kind": "climb_wall_left",
+      "x": 64,
+      "y": 96
+    },
+    {
+      "index": 53,
+      "kind": "climb_wall_right",
+      "x": 80,
+      "y": 96
+    },
+    {
+      "index": 54,
+      "kind": "breakable_slag_left",
+      "x": 96,
+      "y": 96
+    },
+    {
+      "index": 55,
+      "kind": "breakable_slag_right",
+      "x": 112,
+      "y": 96
+    }
+  ]
+}

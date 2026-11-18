@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN" class="dark select-none overflow-hidden bg-[#0b0c10]">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="水银坩埚" />
+    <meta name="theme-color" content="#0b0c10" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-180.png" />
+    <title>QUICKSILVER CRUCIBLE | 水银坩埚</title>
+  </head>
+  <body class="m-0 p-0 w-screen h-screen overflow-hidden touch-none select-none bg-[#0b0c10]">
+    <!-- WebGL 渲染容器 -->
+    <div id="game-root" class="fixed inset-0 z-0 overflow-hidden bg-[#0b0c10]"></div>
+    <!-- Preact 零着色器污染 UI 与触控热区层 -->
+    <div
+      id="ui-root"
+      class="fixed inset-0 z-10 pointer-events-none"
+      style="
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        padding-left: env(safe-area-inset-left, 0px);
+      "
+    ></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

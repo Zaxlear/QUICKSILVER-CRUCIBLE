@@ -1,0 +1,796 @@
+{
+  "textures": [
+    {
+      "image": "bosses_atlas.png",
+      "normalMap": "bosses_atlas_n.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 1024,
+        "h": 1024
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "boss_01_furnace_warden_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 196,
+            "y": 196,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p1_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 358,
+            "y": 196,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p1_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 520,
+            "y": 196,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p1_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 682,
+            "y": 196,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p1_leap_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 844,
+            "y": 196,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p1_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 2,
+            "y": 390,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p1_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 164,
+            "y": 390,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p2_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 326,
+            "y": 390,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p2_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 488,
+            "y": 390,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p2_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 650,
+            "y": 390,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p2_whirl_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 812,
+            "y": 390,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_p2_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 2,
+            "y": 552,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_01_furnace_warden_roar_open_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 160,
+            "h": 160
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 160,
+            "h": 160
+          },
+          "frame": {
+            "x": 164,
+            "y": 552,
+            "w": 160,
+            "h": 160
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p1_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 326,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p1_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 408,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p1_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 490,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p1_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 572,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p1_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 654,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p2_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 192,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 192,
+            "h": 192
+          },
+          "frame": {
+            "x": 2,
+            "y": 2,
+            "w": 192,
+            "h": 192
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p2_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 192,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 192,
+            "h": 192
+          },
+          "frame": {
+            "x": 196,
+            "y": 2,
+            "w": 192,
+            "h": 192
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p2_laser_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 192,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 192,
+            "h": 192
+          },
+          "frame": {
+            "x": 390,
+            "y": 2,
+            "w": 192,
+            "h": 192
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p2_slam_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 192,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 192,
+            "h": 192
+          },
+          "frame": {
+            "x": 584,
+            "y": 2,
+            "w": 192,
+            "h": 192
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p2_slash_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 192,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 192,
+            "h": 192
+          },
+          "frame": {
+            "x": 778,
+            "y": 2,
+            "w": 192,
+            "h": 192
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p2_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 192,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 192,
+            "h": 192
+          },
+          "frame": {
+            "x": 2,
+            "y": 196,
+            "w": 192,
+            "h": 192
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p3_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 736,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p3_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 818,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p3_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 900,
+            "y": 552,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p3_submerge_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 2,
+            "y": 714,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p3_sun_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 84,
+            "y": 714,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p3_thrust_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 166,
+            "y": 714,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "boss_02_grand_alchemist_p3_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 248,
+            "y": 714,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "quicksilver-crucible-asset-factory",
+    "version": "1.0.0",
+    "frameCount": 31
+  }
+}

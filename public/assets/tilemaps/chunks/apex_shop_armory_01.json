@@ -1,0 +1,142 @@
+{
+  "chunkId": "apex_shop_armory_01",
+  "biomePool": [
+    "biome_04_crucible_apex"
+  ],
+  "role": "SHOP",
+  "widthTiles": 40,
+  "heightTiles": 30,
+  "solidRects": [
+    {
+      "tileX": 0,
+      "tileY": 0,
+      "widthTiles": 18,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 22,
+      "tileY": 0,
+      "widthTiles": 18,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 0,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 19
+    },
+    {
+      "tileX": 37,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 19
+    },
+    {
+      "tileX": 0,
+      "tileY": 26,
+      "widthTiles": 18,
+      "heightTiles": 4
+    },
+    {
+      "tileX": 22,
+      "tileY": 26,
+      "widthTiles": 18,
+      "heightTiles": 4
+    }
+  ],
+  "oneWayPlatforms": [
+    {
+      "tileX": 16,
+      "tileY": 22,
+      "widthTiles": 10
+    },
+    {
+      "tileX": 16,
+      "tileY": 18,
+      "widthTiles": 10
+    },
+    {
+      "tileX": 16,
+      "tileY": 14,
+      "widthTiles": 8
+    },
+    {
+      "tileX": 16,
+      "tileY": 10,
+      "widthTiles": 8
+    },
+    {
+      "tileX": 17,
+      "tileY": 6,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 18,
+      "tileY": 26,
+      "widthTiles": 4
+    }
+  ],
+  "climbableWalls": [],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    {
+      "socketId": "w_in",
+      "direction": "WEST",
+      "tileX": 0,
+      "tileY": 25,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "e_in",
+      "direction": "EAST",
+      "tileX": 39,
+      "tileY": 25,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "n_in",
+      "direction": "NORTH",
+      "tileX": 18,
+      "tileY": 0,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "s_in",
+      "direction": "SOUTH",
+      "tileX": 18,
+      "tileY": 29,
+      "apertureTiles": 4,
+      "requiredRune": null
+    }
+  ],
+  "enemySpawns": [],
+  "trapSlots": [],
+  "teleporterTilePos": {
+    "tileX": 9,
+    "tileY": 25
+  },
+  "rewardPedestalTilePos": {
+    "tileX": 28,
+    "tileY": 25
+  },
+  "loreAnchor": null,
+  "lightAnchors": [
+    {
+      "tileX": 10,
+      "tileY": 23,
+      "preset": "VOLTAIC_CYAN",
+      "radiusPx": 175,
+      "flickerAmplitude": 0.06
+    },
+    {
+      "tileX": 28,
+      "tileY": 22,
+      "preset": "MERCURY_SILVER",
+      "radiusPx": 220,
+      "flickerAmplitude": 0.08
+    }
+  ]
+}

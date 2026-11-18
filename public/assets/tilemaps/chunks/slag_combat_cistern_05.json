@@ -1,0 +1,54 @@
+{
+  "chunkId": "slag_combat_cistern_05",
+  "biomePool": ["biome_01_slag_retort"],
+  "role": "COMBAT",
+  "widthTiles": 50,
+  "heightTiles": 30,
+  "solidRects": [
+    { "tileX": 0, "tileY": 0, "widthTiles": 50, "heightTiles": 3 },
+    { "tileX": 0, "tileY": 3, "widthTiles": 3, "heightTiles": 19 },
+    { "tileX": 0, "tileY": 26, "widthTiles": 14, "heightTiles": 4 },
+    { "tileX": 14, "tileY": 28, "widthTiles": 8, "heightTiles": 2 },
+    { "tileX": 22, "tileY": 26, "widthTiles": 6, "heightTiles": 4 },
+    { "tileX": 28, "tileY": 28, "widthTiles": 8, "heightTiles": 2 },
+    { "tileX": 36, "tileY": 26, "widthTiles": 14, "heightTiles": 4 },
+    { "tileX": 47, "tileY": 3, "widthTiles": 3, "heightTiles": 19 },
+    { "tileX": 35, "tileY": 7, "widthTiles": 2, "heightTiles": 9 },
+    { "tileX": 35, "tileY": 14, "widthTiles": 12, "heightTiles": 2 }
+  ],
+  "oneWayPlatforms": [
+    { "tileX": 14, "tileY": 26, "widthTiles": 8 },
+    { "tileX": 28, "tileY": 26, "widthTiles": 8 },
+    { "tileX": 9, "tileY": 21, "widthTiles": 8 },
+    { "tileX": 20, "tileY": 16, "widthTiles": 10 },
+    { "tileX": 21, "tileY": 11, "widthTiles": 8 }
+  ],
+  "climbableWalls": [],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    { "socketId": "w_main", "direction": "WEST", "tileX": 0, "tileY": 25, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "e_main", "direction": "EAST", "tileX": 49, "tileY": 25, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "n_secret", "direction": "NORTH", "tileX": 23, "tileY": 0, "apertureTiles": 4, "requiredRune": "rune_vitriol_tendril" }
+  ],
+  "enemySpawns": [
+    { "slotId": "sp_s01", "tileX": 10, "tileY": 25, "allowedArchetypes": ["MELEE_FODDER"], "minCrucibleHeat": 0, "patrolSpanTiles": [5, 13] },
+    { "slotId": "sp_s02", "tileX": 25, "tileY": 15, "allowedArchetypes": ["RANGED_HARASS"], "minCrucibleHeat": 0, "patrolSpanTiles": [21, 29] },
+    { "slotId": "sp_s03", "tileX": 41, "tileY": 25, "allowedArchetypes": ["SHIELD_TANK", "FLANKER"], "minCrucibleHeat": 0, "patrolSpanTiles": [37, 45] }
+  ],
+  "trapSlots": [
+    { "slotId": "tr_acid_l", "trapType": "ACID_GEYSER", "tileX": 15, "tileY": 27, "widthTiles": 6, "phaseOffsetMs": 0, "cyclePeriodMs": 3200 },
+    { "slotId": "tr_acid_r", "trapType": "ACID_GEYSER", "tileX": 29, "tileY": 27, "widthTiles": 6, "phaseOffsetMs": 1600, "cyclePeriodMs": 3200 },
+    { "slotId": "tr_arc_mid", "trapType": "VOLTAIC_ARC_GATE", "tileX": 24, "tileY": 25, "widthTiles": 2, "phaseOffsetMs": 400, "cyclePeriodMs": 2400 }
+  ],
+  "teleporterTilePos": null,
+  "rewardPedestalTilePos": null,
+  "loreAnchor": null,
+  "conduitPairs": [
+    { "pairId": "cond_vault_01", "entryTileX": 25, "entryTileY": 25, "exitTileX": 41, "exitTileY": 13 }
+  ],
+  "lightAnchors": [
+    { "tileX": 18, "tileY": 26, "preset": "VITRIOL_VAT_GREEN", "radiusPx": 180, "flickerAmplitude": 0.08 },
+    { "tileX": 32, "tileY": 26, "preset": "VITRIOL_VAT_GREEN", "radiusPx": 180, "flickerAmplitude": 0.08 },
+    { "tileX": 41, "tileY": 11, "preset": "VOLTAIC_CYAN", "radiusPx": 155, "flickerAmplitude": 0.07 }
+  ]
+}

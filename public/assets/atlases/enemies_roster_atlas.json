@@ -1,0 +1,2246 @@
+{
+  "textures": [
+    {
+      "image": "enemies_roster_atlas.png",
+      "normalMap": "enemies_roster_atlas_n.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 1024,
+        "h": 1024
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "mob_01_slag_husk_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 594,
+            "y": 198,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_01_slag_husk_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 660,
+            "y": 198,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_01_slag_husk_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 726,
+            "y": 198,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_01_slag_husk_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 792,
+            "y": 198,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_01_slag_husk_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 858,
+            "y": 198,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_01_slag_husk_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 924,
+            "y": 198,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_01_slag_husk_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 2,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_02_frenzied_miner_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 68,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_02_frenzied_miner_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 134,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_02_frenzied_miner_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 200,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_02_frenzied_miner_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 266,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_02_frenzied_miner_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 332,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_02_frenzied_miner_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 398,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_02_frenzied_miner_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 464,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_03_alembic_thrower_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 530,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_03_alembic_thrower_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 596,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_03_alembic_thrower_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 662,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_03_alembic_thrower_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 728,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_03_alembic_thrower_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 794,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_03_alembic_thrower_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 860,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_03_alembic_thrower_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 926,
+            "y": 272,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 2,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 68,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 134,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 200,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 266,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 332,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_swell_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 398,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_04_acid_spitter_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 464,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_05_brass_sentinel_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 394,
+            "y": 100,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_05_brass_sentinel_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 476,
+            "y": 100,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_05_brass_sentinel_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 558,
+            "y": 100,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_05_brass_sentinel_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 640,
+            "y": 100,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_05_brass_sentinel_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 722,
+            "y": 100,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_05_brass_sentinel_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 804,
+            "y": 100,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_05_brass_sentinel_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 80
+          },
+          "frame": {
+            "x": 886,
+            "y": 100,
+            "w": 80,
+            "h": 80
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_06_flail_executor_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 2,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_06_flail_executor_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 100,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_06_flail_executor_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 198,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_06_flail_executor_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 296,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_06_flail_executor_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 394,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_06_flail_executor_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 492,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_06_flail_executor_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 590,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_07_voltaic_weaver_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 530,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_07_voltaic_weaver_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 596,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_07_voltaic_weaver_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 662,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_07_voltaic_weaver_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 728,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_07_voltaic_weaver_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 794,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_07_voltaic_weaver_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 860,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_07_voltaic_weaver_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 926,
+            "y": 338,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 166,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_ball_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 216,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 266,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 316,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 366,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 416,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 466,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_08_clockwork_tick_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 48,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 48,
+            "h": 48
+          },
+          "frame": {
+            "x": 516,
+            "y": 470,
+            "w": 48,
+            "h": 48
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 2,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_chant_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 76,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 150,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 224,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 298,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 372,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 446,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_09_ossuary_prelate_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 72,
+            "h": 72
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 72,
+            "h": 72
+          },
+          "frame": {
+            "x": 520,
+            "y": 198,
+            "w": 72,
+            "h": 72
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 2,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 68,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 134,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 200,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 266,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 332,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_smoke_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 398,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_10_pendulum_assassin_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 464,
+            "y": 404,
+            "w": 64,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 530,
+            "y": 404,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 612,
+            "y": 404,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 694,
+            "y": 404,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 776,
+            "y": 404,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 858,
+            "y": 404,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 940,
+            "y": 404,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_puddle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 2,
+            "y": 470,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_11_mercury_stalker_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 80,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 80,
+            "h": 64
+          },
+          "frame": {
+            "x": 84,
+            "y": 470,
+            "w": 80,
+            "h": 64
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_12_astral_inquisitor_attack_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 688,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_12_astral_inquisitor_hurt_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 786,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_12_astral_inquisitor_idle_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 884,
+            "y": 2,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_12_astral_inquisitor_idle_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 2,
+            "y": 100,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_12_astral_inquisitor_move_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 100,
+            "y": 100,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_12_astral_inquisitor_move_1",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 198,
+            "y": 100,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        },
+        {
+          "filename": "mob_12_astral_inquisitor_windup_0",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 96,
+            "h": 96
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 96,
+            "h": 96
+          },
+          "frame": {
+            "x": 296,
+            "y": 100,
+            "w": 96,
+            "h": 96
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 1
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "quicksilver-crucible-asset-factory",
+    "version": "1.0.0",
+    "frameCount": 89
+  }
+}

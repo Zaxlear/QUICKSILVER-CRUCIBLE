@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+@layer base {
+  html,
+  body,
+  #game-root {
+    background-color: #0b0c10;
+  }
+
+  #ui-root {
+    background-color: transparent;
+  }
+
+  html,
+  body,
+  #game-root,
+  #ui-root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    touch-action: none;
+    overscroll-behavior: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'PingFang SC',
+      'Hiragino Sans GB', 'Microsoft YaHei', monospace;
+  }
+}
+
+.pixel-crisp {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+#game-root > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}

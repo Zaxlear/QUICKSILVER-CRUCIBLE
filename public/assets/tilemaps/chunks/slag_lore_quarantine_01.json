@@ -1,0 +1,37 @@
+{
+  "chunkId": "slag_lore_quarantine_01",
+  "biomePool": ["biome_01_slag_retort"],
+  "role": "LORE",
+  "widthTiles": 40,
+  "heightTiles": 30,
+  "solidRects": [
+    { "tileX": 0, "tileY": 0, "widthTiles": 40, "heightTiles": 3 },
+    { "tileX": 0, "tileY": 3, "widthTiles": 3, "heightTiles": 19 },
+    { "tileX": 0, "tileY": 26, "widthTiles": 40, "heightTiles": 4 },
+    { "tileX": 37, "tileY": 3, "widthTiles": 3, "heightTiles": 19 }
+  ],
+  "oneWayPlatforms": [
+    { "tileX": 14, "tileY": 22, "widthTiles": 12 },
+    { "tileX": 15, "tileY": 18, "widthTiles": 10 },
+    { "tileX": 16, "tileY": 14, "widthTiles": 8 },
+    { "tileX": 16, "tileY": 10, "widthTiles": 8 },
+    { "tileX": 17, "tileY": 6, "widthTiles": 6 }
+  ],
+  "climbableWalls": [],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    { "socketId": "w_in", "direction": "WEST", "tileX": 0, "tileY": 25, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "e_in", "direction": "EAST", "tileX": 39, "tileY": 25, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "n_in", "direction": "NORTH", "tileX": 18, "tileY": 0, "apertureTiles": 4, "requiredRune": null },
+    { "socketId": "s_in", "direction": "SOUTH", "tileX": 18, "tileY": 29, "apertureTiles": 4, "requiredRune": null }
+  ],
+  "enemySpawns": [],
+  "trapSlots": [],
+  "teleporterTilePos": { "tileX": 9, "tileY": 25 },
+  "rewardPedestalTilePos": null,
+  "loreAnchor": { "tileX": 28, "tileY": 25, "lorePoolTag": "lore_01_quarantine_notice" },
+  "lightAnchors": [
+    { "tileX": 9, "tileY": 23, "preset": "MERCURY_SILVER", "radiusPx": 175, "flickerAmplitude": 0.05 },
+    { "tileX": 28, "tileY": 22, "preset": "TORCH_AMBER", "radiusPx": 215, "flickerAmplitude": 0.13 }
+  ]
+}

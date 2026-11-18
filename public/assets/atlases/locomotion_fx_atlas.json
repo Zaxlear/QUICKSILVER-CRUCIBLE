@@ -1,0 +1,246 @@
+{
+  "textures": [
+    {
+      "image": "locomotion_fx_atlas.png",
+      "normalMap": "locomotion_fx_atlas_n.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 128,
+        "h": 32
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "claw_spark_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 12,
+            "h": 12
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 2,
+            "w": 9,
+            "h": 9
+          },
+          "frame": {
+            "x": 52,
+            "y": 2,
+            "w": 9,
+            "h": 9
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "claw_spark_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 12,
+            "h": 12
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 3,
+            "w": 7,
+            "h": 7
+          },
+          "frame": {
+            "x": 103,
+            "y": 2,
+            "w": 7,
+            "h": 7
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "dust_puff_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 4,
+            "w": 13,
+            "h": 10
+          },
+          "frame": {
+            "x": 37,
+            "y": 2,
+            "w": 13,
+            "h": 10
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "dust_puff_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 3,
+            "w": 15,
+            "h": 12
+          },
+          "frame": {
+            "x": 20,
+            "y": 2,
+            "w": 15,
+            "h": 12
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "dust_puff_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 2,
+            "w": 16,
+            "h": 13
+          },
+          "frame": {
+            "x": 2,
+            "y": 2,
+            "w": 16,
+            "h": 13
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "dust_puff_3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 2,
+            "w": 14,
+            "h": 8
+          },
+          "frame": {
+            "x": 63,
+            "y": 2,
+            "w": 14,
+            "h": 8
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "mercury_vapor_0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 24,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 6,
+            "w": 22,
+            "h": 8
+          },
+          "frame": {
+            "x": 79,
+            "y": 2,
+            "w": 22,
+            "h": 8
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "mercury_vapor_1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 24,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 6,
+            "w": 19,
+            "h": 7
+          },
+          "frame": {
+            "x": 2,
+            "y": 17,
+            "w": 19,
+            "h": 7
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "mercury_vapor_2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 24,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 6,
+            "w": 17,
+            "h": 7
+          },
+          "frame": {
+            "x": 23,
+            "y": 17,
+            "w": 17,
+            "h": 7
+          },
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "quicksilver-crucible-asset-factory",
+    "version": "1.0.0",
+    "frameCount": 9
+  }
+}
