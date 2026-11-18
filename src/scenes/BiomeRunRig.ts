@@ -167,7 +167,7 @@ export class BiomeRunRig {
     const locked = this.teleporters.isWarping || this.runes.isInConduitTransit;
     const interactPressed = !locked && this.actionMap.wasJustPressed('interact');
     if (!locked) this.player.fixedUpdate(dtSec);
-    this.combat.stepFixed(dtSec, interactPressed);
+    this.combat.stepFixed(dtSec, interactPressed, this.teleporters.activeRoomId);
 
     const { x: px, y: py, colliderWidth: cw, colliderHeight: ch, vx } = this.player.physics;
     this.loreRooms.stepFixed({

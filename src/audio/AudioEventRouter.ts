@@ -7,7 +7,47 @@ import type { AudioProgramId, AudioUserSettings, SfxGroupId } from '../data/audi
 import { AUDIO_CONSTANTS, DEFAULT_AUDIO_SETTINGS } from '../data/audio.data';
 import type { TypedEventBus } from '../core/EventBus';
 import type { AdaptiveStemMixer } from './AdaptiveStemMixer';
+import type { SfxPoolPlayer } from './SfxPoolPlayer';
 import type { WebAudioFilterRack } from './WebAudioFilterRack';
+
+const COMBAT_PREWARM_SFX: readonly SfxGroupId[] = [
+  'sfx_swing_light',
+  'sfx_swing_heavy',
+  'sfx_hit_flesh',
+  'sfx_hit_clockwork',
+  'sfx_crit_impact',
+  'sfx_parry_clang',
+  'sfx_dodge_whoosh',
+  'sfx_enemy_warn_parry',
+  'sfx_enemy_warn_red',
+  'sfx_enemy_dissolve',
+  'sfx_ichor_pickup',
+  'sfx_breach_stun',
+];
+
+/** 手势解锁后按 40ms 间隔分片预热高频战斗音效池，消除进战斗图首次挥砍解码卡顿 */
+export function startCombatSfxPrewarmQueue(
+  sfxPool: SfxPoolPlayer,
+  isAlive: () => boolean
+): () => void {
+  let cursor = 0;
+  let timerId: ReturnType<typeof setTimeout> | null = null;
+  const step = (): void => {
+    if (!isAlive() || cursor >= COMBAT_PREWARM_SFX.length) {
+      timerId = null;
+      return;
+    }
+    sfxPool.prewarmGroup(COMBAT_PREWARM_SFX[cursor++]!);
+    timerId = setTimeout(step, 40);
+  };
+  timerId = setTimeout(step, 60);
+  return () => {
+    if (timerId !== null) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+  };
+}
 
 export function loadPersistedAudioSettings(): AudioUserSettings {
   try {

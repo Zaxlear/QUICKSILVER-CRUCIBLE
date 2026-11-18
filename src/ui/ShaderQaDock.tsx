@@ -1,3 +1,4 @@
+import { memo } from 'preact/compat';
 import { useState } from 'preact/hooks';
 import {
   EventBus,
@@ -25,7 +26,10 @@ const SHADER_BUTTONS: readonly {
  * 独立 Preact GLSL 着色器巡检控制坞（src/ui/ShaderQaDock.tsx）。
  * 移动端触控模式下自动折叠为顶部紧凑胶囊，确保左右底部触控热区 100% 无遮挡。
  */
-export function ShaderQaDock({ showcase, compactMobileMode = false }: ShaderQaDockProps) {
+export const ShaderQaDock = memo(function ShaderQaDock({
+  showcase,
+  compactMobileMode = false,
+}: ShaderQaDockProps) {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   if (compactMobileMode && !drawerOpen) {
@@ -91,4 +95,4 @@ export function ShaderQaDock({ showcase, compactMobileMode = false }: ShaderQaDo
       </button>
     </div>
   );
-}
+});

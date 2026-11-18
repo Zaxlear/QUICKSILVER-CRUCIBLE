@@ -4,11 +4,11 @@
 
 import type Phaser from 'phaser';
 import type { CombatTargetView } from '../../combat/CombatTypes';
-import { ASH_DISSOLVE_PIPELINE_KEY, DATA_ASH_NOISE_SCALE, DATA_ASH_PROGRESS, DATA_HIT_FLASH_AMOUNT, DATA_HIT_FLASH_COLOR, DepthLayer, HIT_FLASH_PIPELINE_KEY, sampleHitFlashCurve } from '../../core/Constants';
+import { ASH_DISSOLVE_PIPELINE_KEY, DATA_ASH_NOISE_SCALE, DATA_ASH_PROGRESS, DATA_HIT_FLASH_AMOUNT, DATA_HIT_FLASH_COLOR, HIT_FLASH_PIPELINE_KEY, sampleHitFlashCurve } from '../../core/Constants';
 import { ELITE_SCALING, ENEMY_CATALOG, type EliteAffixId, type EnemyId, type EnemySpeciesSpec, type TelegraphKind } from '../../data/biomes.data';
 import { COMBAT_CONSTANTS } from '../../data/weapons.data';
 import type { IWorldDisplayRegistrar } from '../../world/ParallaxComposer';
-import { formatEnemyOverheadLabel, type EnemyHitOutcome, type EnemySpawnInit, type EnemyStepContext } from './EnemyTypes';
+import { EnemyOverheadLabelMemo, spawnEnemyLitSprite, type EnemyHitOutcome, type EnemySpawnInit, type EnemyStepContext, type EnemyViewBounds } from './EnemyTypes';
 import { clampGroundX } from './PerceptionSensor';
 import type { EnemyCrispHudHandle, TelegraphRenderer } from './TelegraphRenderer';
 
@@ -37,7 +37,6 @@ export abstract class BaseEnemy {
   public poise: number;
   public maxPoise: number;
   public readonly damageScale: number;
-
   public aggroed = false;
   public isShieldedByPrelate = false;
   public telegraph: TelegraphKind = 'NONE';
@@ -51,6 +50,8 @@ export abstract class BaseEnemy {
   protected animClockMs = 0;
   protected readonly framePrefix: string;
   private hitFlashMs = -1;
+  private lastFrameKey = '';
+  private readonly labelMemo = new EnemyOverheadLabelMemo();
   private readonly hud: EnemyCrispHudHandle | null;
   private readonly registrar: IWorldDisplayRegistrar | null;
 
@@ -75,18 +76,9 @@ export abstract class BaseEnemy {
     this.poise = this.maxPoise;
     this.damageScale = (init.damageScale ?? 1.0) * (this.isElite ? 1.25 : 1.0);
 
-    const atlasKey = init.atlasKey ?? 'enemies_roster_atlas';
-    if (scene && registrar) {
-      const sc = this.isElite ? ELITE_SCALING.SCALE_MULTIPLIER : 1.0;
-      const initFrame = atlasKey === 'bosses_atlas' ? `${this.framePrefix}_p1_idle_0` : `${this.framePrefix}_idle_0`;
-      this.sprite = registrar.registerWorldLit(
-        scene.add.sprite(init.x, init.y, atlasKey, initFrame)
-          .setOrigin(0.5, 1.0).setScale(sc).setAlpha(this.isClone ? 0.58 : 1.0).setDepth(DepthLayer.ENEMIES).setPipeline('Light2D')
-      );
-      if (this.isClone) this.sprite.setTint(0x9aa5b8);
-    } else {
-      this.sprite = null;
-    }
+    const spawned = spawnEnemyLitSprite(scene, registrar, init, this.framePrefix, this.isElite, this.isClone);
+    this.sprite = spawned.sprite;
+    this.lastFrameKey = spawned.initialFrameKey;
     this.hud = telegraphRenderer?.createEnemyHud(init.x, init.y) ?? null;
   }
 
@@ -102,6 +94,11 @@ export abstract class BaseEnemy {
   protected get poiseArmorFloor(): number { return 0; }
   protected get activeColliderSize() {
     return { w: this.spec.colliderWidthPx, h: this.spec.colliderHeightPx, offY: this.spec.overheadOffsetY };
+  }
+
+  public setDormantHidden(): void {
+    if (this.sprite?.visible) this.sprite.setVisible(false);
+    this.hud?.sync(this.x, this.y, 0, 'NONE', false, '', false, false, false);
   }
 
   public toTargetView(inConductiveHazard: boolean): CombatTargetView {
@@ -123,7 +120,6 @@ export abstract class BaseEnemy {
       this.hitFlashMs = 0; this.applyFlashUniform(0);
       return { killed: false, triggeredBreachStun: false, blockedByWard: true, thornsReflectedDamage: 0 };
     }
-
     const isRearHit = attackerX !== undefined && (attackerX - this.x) * this.facing < 0;
     const thornsReflectedDamage =
       this.eliteAffixes.includes('elite_thorns_shell') && !this.isStunned && isRearHit
@@ -133,15 +129,11 @@ export abstract class BaseEnemy {
     this.aggroed = true;
     this.hp = Math.max(0, this.hp - damage);
     this.hitFlashMs = 0; this.applyFlashUniform(0);
-
     if (this.hp <= 0) {
-      if (this.interceptLethalForDeathrattle()) {
-        return { killed: false, triggeredBreachStun: false, blockedByWard: false, thornsReflectedDamage };
-      }
+      if (this.interceptLethalForDeathrattle()) return { killed: false, triggeredBreachStun: false, blockedByWard: false, thornsReflectedDamage };
       this.beginAshDissolve();
       return { killed: true, triggeredBreachStun: false, blockedByWard: false, thornsReflectedDamage };
     }
-
     if (!this.isUnpushable) this.pushBack(knockDirX * 7);
     if (breach >= this.poiseArmorFloor) {
       this.poise = Math.max(0, this.poise - breach);
@@ -162,10 +154,7 @@ export abstract class BaseEnemy {
   }
 
   public onParriedByPlayer(): number { return COMBAT_CONSTANTS.ENEMY_BREACH_STUN_MS; }
-  public pushBack(dxPx: number): void {
-    if (!this.isUnpushable) this.x = clampGroundX(this.x + dxPx, this.patrolMinX, this.patrolMaxX);
-  }
-
+  public pushBack(dxPx: number): void { if (!this.isUnpushable) this.x = clampGroundX(this.x + dxPx, this.patrolMinX, this.patrolMaxX); }
   public onAllyKilledInRoom(): void {}
   protected onStunnedReset(): void {}
   protected interceptIncomingDamage(_damage: number): boolean { return false; }
@@ -186,7 +175,6 @@ export abstract class BaseEnemy {
         if (!this.dissolving) this.sprite?.setPipeline('Light2D');
       } else this.applyFlashUniform(this.hitFlashMs);
     }
-
     if (this.dissolving) {
       this.phaseClockMs += ctx.dtMs;
       const prog = Math.min(1, this.phaseClockMs / 520);
@@ -195,7 +183,6 @@ export abstract class BaseEnemy {
       if (prog >= 1) { this.sprite?.setVisible(false); this.dissolving = false; this.dead = true; }
       return false;
     }
-
     if (this.dead) {
       if (this.isEvergreenDummy && (this.phaseClockMs += ctx.dtMs) >= 1600) {
         this.hp = this.maxHp; this.poise = this.maxPoise; this.x = this.spawnX; this.y = this.spawnY; this.dead = false;
@@ -203,7 +190,6 @@ export abstract class BaseEnemy {
       }
       return false;
     }
-
     let diedFromBurst = false;
     if (this.stunnedMs > 0) {
       this.stunnedMs = Math.max(0, this.stunnedMs - ctx.dtMs);
@@ -212,7 +198,7 @@ export abstract class BaseEnemy {
       diedFromBurst = this.stepBehavior(ctx) === 'SELF_DESTRUCTED';
       if (diedFromBurst) this.beginAshDissolve();
     }
-    this.syncVisuals(embeddedArrows);
+    this.syncVisuals(embeddedArrows, ctx.viewBounds);
     return diedFromBurst;
   }
 
@@ -230,15 +216,24 @@ export abstract class BaseEnemy {
     this.sprite.setData(DATA_HIT_FLASH_AMOUNT, s.amount).setData(DATA_HIT_FLASH_COLOR, s.rgb).setPipeline(HIT_FLASH_PIPELINE_KEY);
   }
 
-  private syncVisuals(embeddedArrows: number): void {
+  private syncVisuals(embeddedArrows: number, viewBounds?: EnemyViewBounds): void {
+    if (viewBounds && !this.isBoss && (this.x < viewBounds.minX - 112 || this.x > viewBounds.maxX + 112 || this.y < viewBounds.minY - 96 || this.y > viewBounds.maxY + 128)) {
+      this.setDormantHidden();
+      return;
+    }
     const suffix = this.isStunned ? (this.isBoss ? this.resolveStunPoseSuffix() : 'hurt_0') : this.resolvePoseSuffix();
-    this.sprite?.setFrame(`${this.framePrefix}_${suffix}`).setPosition(this.x, this.y).setFlipX(this.facing < 0);
-    const sc = this.isElite ? ELITE_SCALING.SCALE_MULTIPLIER : 1.0;
-    const label = formatEnemyOverheadLabel({
+    const nextFrame = `${this.framePrefix}_${suffix}`;
+    if (this.sprite) {
+      if (!this.sprite.visible) this.sprite.setVisible(true);
+      if (nextFrame !== this.lastFrameKey) { this.sprite.setFrame(nextFrame); this.lastFrameKey = nextFrame; }
+      this.sprite.setPosition(this.x, this.y).setFlipX(this.facing < 0);
+    }
+    const label = this.labelMemo.resolve({
       isBoss: this.isBoss, isElite: this.isElite, eliteAffixes: this.eliteAffixes,
       isShielded: this.isShieldedByPrelate, isStunned: this.isStunned,
       hp: this.hp, maxHp: this.maxHp, embeddedArrows, statusBadge: this.statusBadgeLabel,
     });
+    const sc = this.isElite ? ELITE_SCALING.SCALE_MULTIPLIER : 1.0;
     this.hud?.sync(this.x, this.y, Math.round(this.activeColliderSize.offY * sc), this.telegraph, (Math.floor(this.animClockMs / 75) & 1) === 0, label, this.isShieldedByPrelate, this.isElite || this.isBoss, true);
   }
 }

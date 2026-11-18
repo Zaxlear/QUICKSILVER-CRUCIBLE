@@ -1,10 +1,6 @@
 /**
  * 带房间地面瓦片真实碰撞反弹与渐隐血迹的水银飙血 / 黄铜火花发射器
  * （src/render/vfx/BloodSparkEmitter.ts）。
- *
- * 严格对齐 docs/04_ART_VFX_AUDIO_PIPELINE.md 第 2.3 节参数：
- * - vfx_mercury_blood: 10~18 颗（暴击 28 颗），gravityY=680，地面碰撞 bounce=0.35，二次触地化为 1.5s 血迹；
- * - vfx_brass_sparks: 14~26 颗长条火花，gravityY=520，高弹跳 bounce=0.58，ADD 混合且角度对齐速度切线。
  */
 
 import Phaser from 'phaser';
@@ -19,6 +15,8 @@ interface FloorSurfaceSpan {
   readonly x1: number;
   readonly y: number;
 }
+
+const FLOOR_COLUMN_PX = 128;
 
 class PooledImpactParticle implements IPoolable {
   public readonly sprite: Phaser.GameObjects.Sprite;
@@ -73,7 +71,7 @@ class PooledFloorStain implements IPoolable {
 export class BloodSparkEmitter {
   private readonly particlePool: ObjectPool<PooledImpactParticle>;
   private readonly stainPool: ObjectPool<PooledFloorStain>;
-  private readonly floorSpans: FloorSurfaceSpan[] = [];
+  private readonly floorColumns = new Map<number, FloorSurfaceSpan[]>();
 
   public constructor(scene: Phaser.Scene, cameraRig: CameraRig, world: CollisionWorld) {
     this.particlePool = new ObjectPool(() => new PooledImpactParticle(scene, cameraRig), 96, 256);
@@ -150,7 +148,13 @@ export class BloodSparkEmitter {
     }
   }
 
-  public stepFixed(dtSec: number, viewMinX: number, viewMaxX: number): void {
+  public stepFixed(
+    dtSec: number,
+    viewMinX: number,
+    viewMaxX: number,
+    viewMinY = -Infinity,
+    viewMaxY = Infinity
+  ): void {
     this.particlePool.forEachActive((p) => {
       p.elapsedSec += dtSec;
       if (p.elapsedSec >= p.lifetimeSec) {
@@ -179,13 +183,12 @@ export class BloodSparkEmitter {
       }
 
       const t = p.elapsedSec / p.lifetimeSec;
-      const inView = p.x >= viewMinX - 32 && p.x <= viewMaxX + 32;
-      p.sprite.setVisible(inView);
+      const inView =
+        p.x >= viewMinX - 32 && p.x <= viewMaxX + 32 && p.y >= viewMinY - 32 && p.y <= viewMaxY + 32;
+      if (p.sprite.visible !== inView) p.sprite.setVisible(inView);
       if (inView) {
         p.sprite.setPosition(p.x, p.y).setAlpha(1 - t * 0.78);
-        if (p.kind === 'spark') {
-          p.sprite.setRotation(Math.atan2(p.vy, p.vx));
-        }
+        if (p.kind === 'spark') p.sprite.setRotation(Math.atan2(p.vy, p.vx));
       }
     });
 
@@ -216,23 +219,26 @@ export class BloodSparkEmitter {
       .setActive(true);
   }
 
-  private indexFloorSurfaces(world: CollisionWorld): void {
-    for (let i = 0; i < world.solidRects.length; i++) {
-      const r = world.solidRects[i]!;
-      this.floorSpans.push({ x0: r.x, x1: r.x + r.w, y: r.y });
-    }
-    for (let i = 0; i < world.oneWayPlatforms.length; i++) {
-      const p = world.oneWayPlatforms[i]!;
-      this.floorSpans.push({ x0: p.x, x1: p.x + p.w, y: p.y });
+  private addFloorSpan(x0: number, x1: number, y: number): void {
+    const span: FloorSurfaceSpan = { x0, x1, y };
+    for (let c = Math.floor(x0 / FLOOR_COLUMN_PX); c <= Math.floor(x1 / FLOOR_COLUMN_PX); c++) {
+      const col = this.floorColumns.get(c);
+      if (col) col.push(span);
+      else this.floorColumns.set(c, [span]);
     }
   }
 
+  private indexFloorSurfaces(world: CollisionWorld): void {
+    for (const r of world.solidRects) this.addFloorSpan(r.x, r.x + r.w, r.y);
+    for (const p of world.oneWayPlatforms) this.addFloorSpan(p.x, p.x + p.w, p.y);
+  }
+
   private probeFloorCrossing(x: number, prevY: number, nextY: number): number | null {
-    for (let i = 0; i < this.floorSpans.length; i++) {
-      const f = this.floorSpans[i]!;
-      if (x >= f.x0 && x <= f.x1 && prevY <= f.y + 2 && nextY >= f.y) {
-        return f.y;
-      }
+    const bucket = this.floorColumns.get(Math.floor(x / FLOOR_COLUMN_PX));
+    if (!bucket) return null;
+    for (let i = 0; i < bucket.length; i++) {
+      const f = bucket[i]!;
+      if (x >= f.x0 && x <= f.x1 && prevY <= f.y + 2 && nextY >= f.y) return f.y;
     }
     return null;
   }

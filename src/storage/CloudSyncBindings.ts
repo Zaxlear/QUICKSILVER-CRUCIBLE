@@ -16,9 +16,33 @@ import type {
 } from '../data/storage.data';
 import { mergeMetaProgressions } from './CrdtMetaMerger';
 import type { LocalVault } from './LocalVault';
-import { syncNarrativeIntoMetaRecord } from './MetaSyncHelpers';
+import { buildFallbackSanctumLocalSnapshot, syncNarrativeIntoMetaRecord } from './MetaSyncHelpers';
+import { buildSimulatedDivergentRemoteSnapshot } from './RunSnapshotBuilder';
 import type { SnapshotConflictMachine } from './SnapshotConflictMachine';
 import type { AuthSessionSummary, ICloudSaveGateway } from './SupabaseClient';
+
+export function detectInitialOnlineState(): boolean {
+  return typeof navigator !== 'undefined'
+    ? navigator.onLine !== false &&
+        (typeof sessionStorage === 'undefined' || sessionStorage.getItem('qc_qa_offline_sim') !== '1')
+    : true;
+}
+
+export async function stageSimulatedDivergentRun(
+  vault: LocalVault,
+  gateway: ICloudSaveGateway,
+  currentSnap: ActiveRunSnapshot | null,
+  deviceId: string,
+  deviceLabel: string
+): Promise<ActiveRunSnapshot> {
+  const localSnap =
+    currentSnap && currentSnap.lifecycleState === 'ACTIVE'
+      ? currentSnap
+      : await buildFallbackSanctumLocalSnapshot(deviceId, deviceLabel);
+  const saved = await vault.saveActiveRun(localSnap, true);
+  gateway.injectSimulatedRemoteSnapshot(await buildSimulatedDivergentRemoteSnapshot(saved.runSeed));
+  return saved;
+}
 
 export interface CloudSyncQaApi {
   getStatus(): CloudSyncStatusSnapshot | null;
@@ -35,7 +59,10 @@ declare global {
 }
 
 export interface SyncBindingCallbacks {
-  readonly onMutateMeta: (patch?: { readonly killArchetypeId?: string; readonly forgeSpendIchor?: number }) => void;
+  readonly onMutateMeta: (
+    patch?: { readonly killArchetypeId?: string; readonly forgeSpendIchor?: number },
+    debounced?: boolean
+  ) => void;
   readonly onToggleDrawer: (open?: boolean) => void;
   readonly onTriggerSync: () => void;
   readonly onSimulateConflict: () => Promise<void>;
@@ -58,7 +85,7 @@ export async function executeMetaCrdtSyncStep(
   const session = await gateway.ensureAnonymousSession(deviceId, deviceLabel);
   const localFreshMeta = await syncNarrativeIntoMetaRecord(meta);
   const remoteMeta = await gateway.mergeMetaProgression(localFreshMeta);
-  const mergedMeta = await vault.saveMeta(await mergeMetaProgressions(localFreshMeta, remoteMeta));
+  const mergedMeta = await vault.saveMeta(await mergeMetaProgressions(localFreshMeta, remoteMeta), true);
   NarrativeStore.hydrateFromMeta(mergedMeta);
   return { session, mergedMeta };
 }
@@ -165,7 +192,7 @@ export async function executeConflictResolutionStep(params: {
 
 export function bindCloudSyncListeners(win: Window | undefined, cb: SyncBindingCallbacks): () => void {
   const unbinds: Array<() => void> = [
-    EventBus.on('combat:enemy_killed', ({ archetypeId }) => cb.onMutateMeta({ killArchetypeId: archetypeId })),
+    EventBus.on('combat:enemy_killed', ({ archetypeId }) => cb.onMutateMeta({ killArchetypeId: archetypeId }, true)),
     EventBus.on('world:rune_unlocked', () => cb.onMutateMeta()),
     EventBus.on('narrative:seal_collected', () => cb.onMutateMeta()),
     EventBus.on('ui:command:invest_forge_ichor', ({ amount }) => cb.onMutateMeta({ forgeSpendIchor: amount ?? 25 })),

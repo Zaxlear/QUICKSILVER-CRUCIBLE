@@ -206,30 +206,36 @@ export class LightingDirector {
       this.sortIndices[j + 1] = keyIdx;
     }
 
+    const halfViewDiag =
+      Math.hypot(this.scene.scale.width || 640, this.scene.scale.height || 360) * 0.5 + 48;
     const activeAnchors = Math.min(totalAnchors, MAX_AMBIENT_ANCHOR_LIGHTS);
     for (let slotIdx = 0; slotIdx < MAX_AMBIENT_ANCHOR_LIGHTS; slotIdx++) {
       const hwLight = this.ambientHardwareLights[slotIdx]!;
       if (slotIdx < activeAnchors) {
-        const anchor = this.anchors[this.sortIndices[slotIdx]!]!;
-        const presetCfg = LIGHT_ANCHOR_COLOR_PRESETS[anchor.preset];
-        const baseI = anchor.baseIntensity ?? presetCfg.baseIntensity;
-        const flickered = evaluateTorchFlicker(
-          baseI,
-          anchor.radiusPx,
-          anchor.flickerAmplitude,
-          this.simTimeSec,
-          anchor.phaseRad
-        );
-        hwLight
-          .setPosition(anchor.x, anchor.y)
-          .setColor(presetCfg.colorNum)
-          .setRadius(flickered.radiusPx)
-          .setIntensity(flickered.intensity)
-          .setVisible(true);
-        litCount++;
-      } else {
-        hwLight.setVisible(false).setIntensity(0);
+        const sortedIdx = this.sortIndices[slotIdx]!;
+        const anchor = this.anchors[sortedIdx]!;
+        const maxReach = halfViewDiag + anchor.radiusPx;
+        if (this.sqDistances[sortedIdx]! <= maxReach * maxReach) {
+          const presetCfg = LIGHT_ANCHOR_COLOR_PRESETS[anchor.preset];
+          const baseI = anchor.baseIntensity ?? presetCfg.baseIntensity;
+          const flickered = evaluateTorchFlicker(
+            baseI,
+            anchor.radiusPx,
+            anchor.flickerAmplitude,
+            this.simTimeSec,
+            anchor.phaseRad
+          );
+          hwLight
+            .setPosition(anchor.x, anchor.y)
+            .setColor(presetCfg.colorNum)
+            .setRadius(flickered.radiusPx)
+            .setIntensity(flickered.intensity)
+            .setVisible(true);
+          litCount++;
+          continue;
+        }
       }
+      if (hwLight.visible) hwLight.setVisible(false).setIntensity(0);
     }
 
     this.activeCount = litCount;

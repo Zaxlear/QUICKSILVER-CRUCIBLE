@@ -172,14 +172,28 @@ export function attachSceneSaveHotReload(
     const { dag, rng, rig } = autoCheckpointHooks;
     const capturer = () => captureLiveBiomeRunSnapshot(dag, rng, rig);
     CloudSync.registerLiveRunCapturer(capturer);
-    const saveNow = (): void => { void capturer().then((snap) => CloudSync.saveCheckpointSnapshot(snap)); };
+    let checkpointTimer: ReturnType<typeof setTimeout> | null = null;
+    const flushCheckpoint = (): void => {
+      checkpointTimer = null;
+      void capturer().then((snap) => CloudSync.saveCheckpointSnapshot(snap));
+    };
+    const scheduleCheckpoint = (): void => {
+      if (checkpointTimer !== null) clearTimeout(checkpointTimer);
+      checkpointTimer = setTimeout(flushCheckpoint, 320);
+    };
     unbinds.push(
-      EventBus.on('world:room_entered', saveNow),
-      EventBus.on('world:checkpoint_reached', saveNow),
-      EventBus.on('world:teleporter_activated', saveNow),
-      () => CloudSync.registerLiveRunCapturer(null)
+      EventBus.on('world:room_entered', scheduleCheckpoint),
+      EventBus.on('world:checkpoint_reached', scheduleCheckpoint),
+      EventBus.on('world:teleporter_activated', scheduleCheckpoint),
+      () => {
+        if (checkpointTimer !== null) {
+          clearTimeout(checkpointTimer);
+          checkpointTimer = null;
+        }
+        CloudSync.registerLiveRunCapturer(null);
+      }
     );
-    saveNow();
+    scheduleCheckpoint();
   }
 
   return () => { for (const off of unbinds) off(); };

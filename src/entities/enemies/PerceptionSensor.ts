@@ -5,6 +5,7 @@
  * 严格遵循单向依赖与零 GC 铁律：纯几何数值运算，100% 支持无头 Vitest 单测。
  */
 
+import { pointHitsIndexedRects } from '../../core/SpatialRectIndex';
 import type { SolidWallRect } from '../../combat/CombatTypes';
 
 export interface PerceptionQuery {
@@ -30,13 +31,7 @@ export interface PerceptionResult {
 const RAY_STEP_PX = 12;
 
 export function pointInsideAnySolid(x: number, y: number, solidRects: readonly SolidWallRect[]): boolean {
-  for (let i = 0; i < solidRects.length; i++) {
-    const r = solidRects[i]!;
-    if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-      return true;
-    }
-  }
-  return false;
+  return pointHitsIndexedRects(x, y, solidRects);
 }
 
 /**

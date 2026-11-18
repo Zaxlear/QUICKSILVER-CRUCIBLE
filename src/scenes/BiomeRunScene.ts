@@ -62,6 +62,7 @@ export class BiomeRunScene extends Phaser.Scene {
   private heroSprite!: Phaser.GameObjects.Sprite;
   private unbindSave!: () => void;
   private telemetryTimerMs = 0;
+  private lastDagDiagKey = '';
 
   public constructor() { super({ key: 'BiomeRunScene' }); }
 
@@ -162,13 +163,6 @@ export class BiomeRunScene extends Phaser.Scene {
         this.cameraRig.stepSimulation(dtSec);
         this.postFx.shieldRefract.stepTime(dtSec);
         this.postFx.chromaticImpact.stepDecay(dtSec);
-
-        const cam = this.cameraRig.worldMainCam;
-        this.atmosphere.stepFixed(dtSec, cam.scrollX, cam.scrollY, cam.width, cam.height);
-        const lx = this.rig.teleporters.isWarping ? cam.midPoint.x : player.physics.x;
-        const ly = this.rig.teleporters.isWarping ? cam.midPoint.y : player.physics.y - 18;
-        this.lighting.setHeroCorePosition(lx, ly);
-        this.lighting.step(dtSec, lx, ly - 8);
       },
       (alpha) => {
         const interp = player.computeInterpolatedTransform(alpha);
@@ -176,11 +170,19 @@ export class BiomeRunScene extends Phaser.Scene {
         this.heroSprite.setPosition(interp.x + atkJitterX, interp.y).setFlipX(player.physics.facing < 0);
         this.shaderCtrl.syncShieldCenter(interp.x, interp.y - 18);
         const cam = this.cameraRig.worldMainCam;
+        const renderDtSec = this.clock.isPaused ? 0 : Math.min(Math.max(deltaMs / 1000, 0), 0.05);
+        if (renderDtSec > 0) {
+          this.atmosphere.stepFixed(renderDtSec, cam.scrollX, cam.scrollY, cam.width, cam.height);
+          const lx = this.rig.teleporters.isWarping ? cam.midPoint.x : interp.x;
+          const ly = this.rig.teleporters.isWarping ? cam.midPoint.y : interp.y - 18;
+          this.lighting.setHeroCorePosition(lx, ly);
+          this.lighting.step(renderDtSec, lx, ly - 8);
+        }
         this.parallax.syncWithCamera(cam.scrollX, cam.scrollY);
         this.tileRenderer.cullToViewport(cam.scrollX, cam.scrollY, cam.scrollX + cam.width, cam.scrollY + cam.height);
       }
     );
-    if ((this.telemetryTimerMs += deltaMs) >= 80) { this.telemetryTimerMs = 0; this.publishTelemetry(); }
+    if ((this.telemetryTimerMs += deltaMs) >= 120) { this.telemetryTimerMs = 0; this.publishTelemetry(); }
   }
 
   private publishTelemetry(): void {
@@ -211,9 +213,13 @@ export class BiomeRunScene extends Phaser.Scene {
     const showcase = { ...this.shaderCtrl.snapshot(this.lighting.activeHardwareLightCount, activeAnim), activeSceneKey: 'BiomeRunScene' };
     window.__QC_SHOWCASE_STATE__ = showcase;
     EventBus.emit('system:showcase_state_changed', showcase);
-    window.__QC_BIOME_DAG__ = buildBiomeDagDebugTelemetry(
-      this.dag, this.rig.teleporters.activeRoomId, this.rig.teleporters.activatedSteleIds, this.rig.runes.unlockedRunes
-    );
+    const diagKey = `${this.rig.teleporters.activeRoomId}:${this.rig.teleporters.activatedSteleIds.length}:${this.rig.runes.unlockedRunes.length}`;
+    if (diagKey !== this.lastDagDiagKey) {
+      this.lastDagDiagKey = diagKey;
+      window.__QC_BIOME_DAG__ = buildBiomeDagDebugTelemetry(
+        this.dag, this.rig.teleporters.activeRoomId, this.rig.teleporters.activatedSteleIds, this.rig.runes.unlockedRunes
+      );
+    }
   }
 
   private handleScaleResize(gameSize: Phaser.Structs.Size): void {

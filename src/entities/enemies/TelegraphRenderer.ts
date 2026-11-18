@@ -1,34 +1,17 @@
 /**
  * 敌方双相机隔离预警渲染器（src/entities/enemies/TelegraphRenderer.ts）：
- * 1. 副摄像机 TelegraphOverlayCam（无色差/无震动旋转）：渲染黄色可招架 `[!]`、红色破防 `[✚!]`
- *    闪烁提示框及怪物头顶韧性/精英/护盾状态签；
- * 2. 主摄像机 WorldMainCam（Light2D + Bloom）：零 GC 池化渲染「骸骨堂司铎」指向友军的金色护盾引导光束、
- *    无敌光环、电弧织网者锁定瞄准线、水银地突尖刺与星界重力坍缩法阵。
+ * 1. 副摄像机 TelegraphOverlayCam：委托 EnemyCrispHud 脏守卫驱动黄色 `[!]`、红色 `[✚!]` 与怪物头顶签；
+ * 2. 主摄像机 WorldMainCam（Light2D + Bloom）：零 GC 预热池渲染司铎光束、无敌光环、织网者瞄准线与地面尖刺。
  */
 
 import type Phaser from 'phaser';
-import { DepthLayer, PALETTE_VOID_HEX } from '../../core/Constants';
-import { EventBus } from '../../core/EventBus';
-import type { TelegraphKind } from '../../data/biomes.data';
+import { DepthLayer } from '../../core/Constants';
 import type { IWorldDisplayRegistrar } from '../../world/ParallaxComposer';
+import { createEnemyCrispHud, type EnemyCrispHudHandle } from './EnemyCrispHud';
 
-const MONO_FONT = 'ui-monospace, SFMono-Regular, Menlo, monospace';
+export type { EnemyCrispHudHandle };
+
 const BLEND_MODE_ADD = 1;
-
-export interface EnemyCrispHudHandle {
-  sync(
-    x: number,
-    y: number,
-    overheadOffsetY: number,
-    telegraph: TelegraphKind,
-    blinkOn: boolean,
-    labelText: string,
-    isShielded: boolean,
-    isElite: boolean,
-    visible: boolean
-  ): void;
-  destroy(): void;
-}
 
 export class TelegraphRenderer {
   private readonly beamPool: Phaser.GameObjects.Sprite[] = [];
@@ -40,83 +23,16 @@ export class TelegraphRenderer {
   public constructor(
     private readonly scene: Phaser.Scene | null,
     private readonly registrar: IWorldDisplayRegistrar | null
-  ) {}
+  ) {
+    if (this.scene && this.registrar) {
+      for (let i = 0; i < 4; i++) this.preallocateBeam();
+      for (let i = 0; i < 6; i++) this.preallocateFx();
+    }
+  }
 
   public createEnemyHud(initX: number, initY: number): EnemyCrispHudHandle | null {
     if (!this.scene || !this.registrar) return null;
-    const reg = this.registrar;
-
-    const badge = reg.registerCrispOverlay(
-      this.scene.add
-        .text(initX, initY - 62, '[!]', {
-          fontFamily: MONO_FONT,
-          fontSize: '13px',
-          fontStyle: 'bold',
-          color: '#FBBF24',
-          stroke: PALETTE_VOID_HEX,
-          strokeThickness: 3,
-        })
-        .setOrigin(0.5, 0.5)
-        .setDepth(DepthLayer.CRISP_TELEGRAPH + 1)
-        .setVisible(false)
-    );
-
-    const status = reg.registerCrispOverlay(
-      this.scene.add
-        .text(initX, initY - 48, '', {
-          fontFamily: MONO_FONT,
-          fontSize: '9px',
-          color: '#E8EFF5',
-          stroke: PALETTE_VOID_HEX,
-          strokeThickness: 2,
-        })
-        .setOrigin(0.5, 0.5)
-        .setDepth(DepthLayer.CRISP_TELEGRAPH)
-    );
-
-    let prevTelegraph: TelegraphKind = 'NONE';
-    return {
-      sync: (x, y, offY, telegraph, blinkOn, labelText, isShielded, isElite, visible) => {
-        if (!visible) {
-          prevTelegraph = 'NONE';
-          badge.setVisible(false);
-          status.setVisible(false);
-          return;
-        }
-        if (telegraph !== prevTelegraph && telegraph !== 'NONE') {
-          EventBus.emit('audio:sfx_requested', {
-            sfxId: telegraph === 'YELLOW_PARRIABLE' ? 'sfx_enemy_warn_parry' : 'sfx_enemy_warn_red',
-            worldX: x,
-          });
-        }
-        prevTelegraph = telegraph;
-        status
-          .setVisible(true)
-          .setText(labelText)
-          .setColor(isShielded ? '#FBBF24' : isElite ? '#FDBA74' : '#E8EFF5')
-          .setPosition(x, y - offY + 12);
-
-        if (telegraph === 'NONE') {
-          badge.setVisible(false);
-        } else {
-          const isYellow = telegraph === 'YELLOW_PARRIABLE';
-          badge
-            .setVisible(true)
-            .setText(isYellow ? '[!]' : '[✚!]')
-            .setColor(isYellow ? '#FBBF24' : '#FB7185')
-            .setStroke(isYellow ? PALETTE_VOID_HEX : '#240B12', 3)
-            .setPosition(x, y - offY - 3)
-            .setAlpha(blinkOn ? 1.0 : 0.48)
-            .setScale(isYellow ? 1.0 : 1.12);
-        }
-      },
-      destroy: () => {
-        reg.unregister(badge);
-        badge.destroy();
-        reg.unregister(status);
-        status.destroy();
-      },
-    };
+    return createEnemyCrispHud(this.scene, this.registrar, initX, initY);
   }
 
   public beginFrame(dtMs: number): void {
@@ -150,8 +66,7 @@ export class TelegraphRenderer {
       .setVisible(true);
 
     if (kind === 'PRELATE_TETHER') {
-      const halo = this.acquireFxSprite();
-      halo
+      this.acquireFxSprite()
         .setTexture('enemy_fx_atlas', `prelate_ward_halo_${bit}`)
         .setPosition(x1, y1 + 4)
         .setRotation(0)
@@ -194,10 +109,10 @@ export class TelegraphRenderer {
 
   public endFrame(): void {
     for (let i = this.beamCursor; i < this.beamPool.length; i++) {
-      this.beamPool[i]!.setVisible(false);
+      if (this.beamPool[i]!.visible) this.beamPool[i]!.setVisible(false);
     }
     for (let i = this.fxCursor; i < this.fxPool.length; i++) {
-      this.fxPool[i]!.setVisible(false);
+      if (this.fxPool[i]!.visible) this.fxPool[i]!.setVisible(false);
     }
   }
 
@@ -212,35 +127,35 @@ export class TelegraphRenderer {
     this.fxPool.length = 0;
   }
 
-  private acquireBeamSprite(): Phaser.GameObjects.Sprite {
-    let spr = this.beamPool[this.beamCursor];
-    if (!spr) {
-      spr = this.registrar!.registerWorldLit(
-        this.scene!.add
-          .sprite(0, 0, 'enemy_fx_atlas', 'prelate_gold_beam_0')
-          .setDepth(DepthLayer.VFX_PARTICLES + 1)
-          .setBlendMode(BLEND_MODE_ADD)
-          .setVisible(false)
-      );
-      this.beamPool.push(spr);
-    }
-    this.beamCursor += 1;
+  private preallocateBeam(): Phaser.GameObjects.Sprite {
+    const spr = this.registrar!.registerWorldLit(
+      this.scene!.add
+        .sprite(0, 0, 'enemy_fx_atlas', 'prelate_gold_beam_0')
+        .setDepth(DepthLayer.VFX_PARTICLES + 1)
+        .setBlendMode(BLEND_MODE_ADD)
+        .setVisible(false)
+    );
+    this.beamPool.push(spr);
     return spr;
   }
 
-  private acquireFxSprite(): Phaser.GameObjects.Sprite {
-    let spr = this.fxPool[this.fxCursor];
-    if (!spr) {
-      spr = this.registrar!.registerWorldLit(
-        this.scene!.add
-          .sprite(0, 0, 'enemy_fx_atlas', 'prelate_ward_halo_0')
-          .setDepth(DepthLayer.VFX_PARTICLES)
-          .setBlendMode(BLEND_MODE_ADD)
-          .setVisible(false)
-      );
-      this.fxPool.push(spr);
-    }
-    this.fxCursor += 1;
+  private preallocateFx(): Phaser.GameObjects.Sprite {
+    const spr = this.registrar!.registerWorldLit(
+      this.scene!.add
+        .sprite(0, 0, 'enemy_fx_atlas', 'prelate_ward_halo_0')
+        .setDepth(DepthLayer.VFX_PARTICLES)
+        .setBlendMode(BLEND_MODE_ADD)
+        .setVisible(false)
+    );
+    this.fxPool.push(spr);
     return spr;
+  }
+
+  private acquireBeamSprite(): Phaser.GameObjects.Sprite {
+    return this.beamPool[this.beamCursor++] ?? this.preallocateBeam();
+  }
+
+  private acquireFxSprite(): Phaser.GameObjects.Sprite {
+    return this.fxPool[this.fxCursor++] ?? this.preallocateFx();
   }
 }

@@ -162,7 +162,7 @@ export class BiomeCombatSession {
     this.synergy.activateSkillSlot(slot);
   }
 
-  public stepFixed(dtSec: number, interactPressed: boolean): void {
+  public stepFixed(dtSec: number, interactPressed: boolean, activeRoomId?: string): void {
     const { x: px, y: py, facing } = this.player.physics;
     if (this.shieldRefractPulseSec > 0) this.shieldRefractPulseSec = Math.max(0, this.shieldRefractPulseSec - dtSec);
 
@@ -192,7 +192,7 @@ export class BiomeCombatSession {
     );
     if (projImpacts.length > 0) applyResolvedProjectileImpacts(this.resolverCtx(), projImpacts, this.onRespawnPlayer);
 
-    stepEnemyDirectorRoster(dtSec, this.director, this.baked.solidRects, this.player, this.projectiles, this.particles, this.lighting, this.synergy, this.onRespawnPlayer);
+    stepEnemyDirectorRoster(dtSec, this.director, this.baked.solidRects, this.player, this.projectiles, this.particles, this.lighting, this.synergy, this.onRespawnPlayer, this.cameraRig, activeRoomId);
     this.synergy.stepFixed(dtSec, this.heroSprite);
     this.loot.stepFixed(dtSec, px, py, interactPressed && !this.modals.isModalOpen, (drop) => this.modals.openWeaponCompare(drop), (scr) => this.modals.openScrollPick(scr.id), () => this.modals.setMutationForgeOpen(true));
     this.particles.syncProjectileSprites(this.projectiles);

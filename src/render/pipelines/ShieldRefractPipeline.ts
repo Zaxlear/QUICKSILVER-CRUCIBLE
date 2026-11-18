@@ -21,6 +21,7 @@ export class ShieldRefractPipeline extends Phaser.Renderer.WebGL.Pipelines.PostF
       name: SHIELD_REFRACT_PIPELINE_KEY,
       fragShader: shieldRefractFrag,
     });
+    this.active = false;
   }
 
   public get isShieldActive(): boolean {
@@ -37,6 +38,7 @@ export class ShieldRefractPipeline extends Phaser.Renderer.WebGL.Pipelines.PostF
     this.shieldEnabled = enabled;
     if (!enabled || cam.width <= 0 || cam.height <= 0) {
       this.shieldRadiusUv = 0.0;
+      this.active = false;
       return;
     }
 
@@ -46,6 +48,7 @@ export class ShieldRefractPipeline extends Phaser.Renderer.WebGL.Pipelines.PostF
     this.shieldCenterUvX = Math.max(0, Math.min(1, screenX));
     this.shieldCenterUvY = Math.max(0, Math.min(1, 1.0 - screenY));
     this.shieldRadiusUv = Math.max(0, radiusPx / cam.height);
+    this.active = this.isShieldActive;
   }
 
   public stepTime(dtSec: number): void {

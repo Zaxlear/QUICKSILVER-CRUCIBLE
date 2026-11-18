@@ -22,6 +22,7 @@ export async function syncNarrativeIntoMetaRecord(
   current: MetaProgressionRecord,
   extraPatch?: {
     readonly killArchetypeId?: string;
+    readonly killBatch?: Readonly<Record<string, number>>;
     readonly forgeSpendIchor?: number;
     readonly bankedIchorDelta?: number;
     readonly startedNewRun?: boolean;
@@ -32,6 +33,11 @@ export async function syncNarrativeIntoMetaRecord(
   if (extraPatch?.killArchetypeId) {
     const key = extraPatch.killArchetypeId;
     nextKills[key] = (nextKills[key] ?? 0) + 1;
+  }
+  if (extraPatch?.killBatch) {
+    for (const [key, delta] of Object.entries(extraPatch.killBatch)) {
+      if (delta > 0) nextKills[key] = (nextKills[key] ?? 0) + delta;
+    }
   }
 
   const nextForge = {

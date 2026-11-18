@@ -45,6 +45,8 @@ export class CombatLootSpawner {
   public readonly forgeStations: ForgeCrucibleStation[] = [];
   private readonly promptLabel: Phaser.GameObjects.Text;
   private bobClockSec = 0;
+  private lastPromptText = '';
+  private lastPromptColor = '#38BDF8';
 
   public constructor(
     private readonly scene: Phaser.Scene,
@@ -89,11 +91,7 @@ export class CombatLootSpawner {
 
     for (const f of this.forgeStations) {
       if (Math.hypot(px - f.x, py - f.baseY) < 32) {
-        this.promptLabel
-          .setText('[E/V] 开启 变异构筑与永恒锻炉')
-          .setColor('#A855F7')
-          .setPosition(f.x, f.baseY - 52)
-          .setVisible(true);
+        this.syncPrompt('[E/V] 开启 变异构筑与永恒锻炉', '#A855F7', f.x, f.baseY - 52);
         if (interactJustPressed) onOpenMutationForge?.();
         return;
       }
@@ -112,28 +110,33 @@ export class CombatLootSpawner {
     if (bestWeapon) {
       const def = WEAPON_CATALOG[bestWeapon.weapon.weaponId];
       const badge = formatWeaponQualityBadge(bestWeapon.weapon.level, bestWeapon.weapon.forgeGrade);
-      this.promptLabel
-        .setText(`[E/ACT] 检视 ${def.nameZh} ${badge}`)
-        .setColor('#38BDF8')
-        .setPosition(bestWeapon.x, bestWeapon.baseY - 30)
-        .setVisible(true);
+      this.syncPrompt(`[E/ACT] 检视 ${def.nameZh} ${badge}`, '#38BDF8', bestWeapon.x, bestWeapon.baseY - 30);
       if (interactJustPressed) onInspectWeapon(bestWeapon);
       return;
     }
 
     for (const s of this.scrollDrops) {
       if (!s.consumed && Math.hypot(px - s.x, py - s.baseY) < 30) {
-        this.promptLabel
-          .setText('[E/ACT] 汲取 炼金三系卷轴')
-          .setColor('#FBBF24')
-          .setPosition(s.x, s.baseY - 34)
-          .setVisible(true);
+        this.syncPrompt('[E/ACT] 汲取 炼金三系卷轴', '#FBBF24', s.x, s.baseY - 34);
         if (interactJustPressed) onInspectScroll(s);
         return;
       }
     }
 
-    this.promptLabel.setVisible(false);
+    if (this.promptLabel.visible) this.promptLabel.setVisible(false);
+  }
+
+  private syncPrompt(text: string, color: string, x: number, y: number): void {
+    if (text !== this.lastPromptText) {
+      this.promptLabel.setText(text);
+      this.lastPromptText = text;
+    }
+    if (color !== this.lastPromptColor) {
+      this.promptLabel.setColor(color);
+      this.lastPromptColor = color;
+    }
+    this.promptLabel.setPosition(x, y);
+    if (!this.promptLabel.visible) this.promptLabel.setVisible(true);
   }
 
   public swapWeaponOnFloor(dropId: string, displacedWeapon: RolledWeaponInstance): boolean {

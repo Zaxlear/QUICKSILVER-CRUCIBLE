@@ -1,3 +1,4 @@
+import { selectRectCandidates } from '../../core/SpatialRectIndex';
 import { PLAYER_KINEMATICS } from '../../data/playerKinematics.data';
 
 export interface SolidRectPx {
@@ -37,8 +38,10 @@ export interface SweptBodyMutable {
   oneWayIgnoreTicks: number;
 }
 
+const solidScratch: SolidRectPx[] = [];
+
 /**
- * 轴分离扫掠子步进碰撞求解器（单步 > 6px 自动细分防高速穿墙）。
+ * 轴分离扫掠子步进碰撞求解器（单步 > 6px 自动细分防高速穿墙，空间网格 O(1) 候选集）。
  */
 export function canStandingBodyFit(
   body: Pick<SweptBodyMutable, 'x' | 'y' | 'colliderWidth'>,
@@ -46,8 +49,9 @@ export function canStandingBodyFit(
 ): boolean {
   const halfW = body.colliderWidth * 0.5;
   const top = body.y - PLAYER_KINEMATICS.STANDING_HEIGHT_PX;
-  for (let i = 0; i < world.solidRects.length; i++) {
-    const r = world.solidRects[i]!;
+  const cands = selectRectCandidates(world.solidRects, body.x - halfW, top, body.x + halfW, body.y, solidScratch);
+  for (let i = 0; i < cands.length; i++) {
+    const r = cands[i]!;
     if (body.x + halfW > r.x && body.x - halfW < r.x + r.w && body.y > r.y && top < r.y + r.h) {
       return false;
     }
@@ -62,8 +66,9 @@ export function probeGroundSupport(
 ): 'none' | 'solid' | 'oneway' {
   const halfW = body.colliderWidth * 0.5;
   const probeY = body.y + epsPx;
-  for (let i = 0; i < world.solidRects.length; i++) {
-    const r = world.solidRects[i]!;
+  const cands = selectRectCandidates(world.solidRects, body.x - halfW, body.y - 1, body.x + halfW, probeY, solidScratch);
+  for (let i = 0; i < cands.length; i++) {
+    const r = cands[i]!;
     if (body.x + halfW > r.x + 0.2 && body.x - halfW < r.x + r.w - 0.2) {
       if (body.y <= r.y + 0.5 && probeY >= r.y) return 'solid';
     }
@@ -90,9 +95,10 @@ export function solveHorizontalSubstep(
   body.x += dx;
   const halfW = body.colliderWidth * 0.5;
   const top = body.y - body.colliderHeight;
+  const cands = selectRectCandidates(world.solidRects, body.x - halfW, top, body.x + halfW, body.y, solidScratch);
 
-  for (let i = 0; i < world.solidRects.length; i++) {
-    const r = world.solidRects[i]!;
+  for (let i = 0; i < cands.length; i++) {
+    const r = cands[i]!;
     if (body.y <= r.y + 0.01 || top >= r.y + r.h - 0.01) continue;
     if (body.x + halfW > r.x && body.x - halfW < r.x + r.w) {
       body.x = dx > 0 ? r.x - halfW : r.x + r.w + halfW;
@@ -116,9 +122,10 @@ export function solveVerticalSubstep(
   const halfW = body.colliderWidth * 0.5;
   const top = body.y - body.colliderHeight;
   let support: 'none' | 'solid' | 'oneway' = 'none';
+  const cands = selectRectCandidates(world.solidRects, body.x - halfW, top, body.x + halfW, body.y, solidScratch);
 
-  for (let i = 0; i < world.solidRects.length; i++) {
-    const r = world.solidRects[i]!;
+  for (let i = 0; i < cands.length; i++) {
+    const r = cands[i]!;
     if (body.x + halfW <= r.x + 0.01 || body.x - halfW >= r.x + r.w - 0.01) continue;
     if (body.y > r.y && top < r.y + r.h) {
       if (dy >= 0) {

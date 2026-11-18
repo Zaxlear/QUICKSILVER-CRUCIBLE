@@ -1,17 +1,24 @@
+import { useEffect, useState } from 'preact/hooks';
+import { EventBus } from '../core/EventBus';
 import type { TouchButtonHudItem, TouchHudSnapshot } from '../data/playerKinematics.data';
 
 export interface TouchControlsOverlayProps {
-  readonly touchHud: TouchHudSnapshot | null;
+  readonly touchHud?: TouchHudSnapshot | null;
 }
 
 const HUD_SHEET_URL = '/assets/atlases/touch_hud_sheet.png';
 
+function readInitialTouchSnapshot(): TouchHudSnapshot | null {
+  const am = typeof window !== 'undefined' ? window.__QC_ACTION_MAP__ : undefined;
+  return am ? am.touchPad.buildHudSnapshot(am.activeDevice) : null;
+}
+
 function resolveButtonRingClasses(btn: TouchButtonHudItem): string {
   if (btn.pressed) {
     if (btn.accentRole === 'primary' || btn.accentRole === 'secondary') {
-      return 'border-[#FBBF24] bg-[#3D2817]/90 shadow-[0_0_14px_rgba(251,191,36,0.75)] scale-95';
+      return 'border-[#FBBF24] bg-[#3D2817]/90 shadow-[0_0_10px_rgba(251,191,36,0.7)] scale-95';
     }
-    return 'border-[#38BDF8] bg-[#1E2233]/92 shadow-[0_0_14px_rgba(56,189,248,0.75)] scale-95';
+    return 'border-[#38BDF8] bg-[#1E2233]/92 shadow-[0_0_10px_rgba(56,189,248,0.7)] scale-95';
   }
   switch (btn.accentRole) {
     case 'primary':
@@ -28,32 +35,40 @@ function resolveButtonRingClasses(btn: TouchButtonHudItem): string {
 /**
  * 移动端自适应半透明虚拟摇杆与人体工学弧形动作键视觉反馈层（src/ui/TouchControlsOverlay.tsx）。
  *
- * 严格遵循单向数据流与零占位符铁律：
- * - 不持有任何 Phaser / PlayerEntity 引用，纯渲染 EventBus 快照；
- * - 全部按键与星盘摇杆采用 48 色像素图集 touch_hud_sheet.png，零内联几何 SVG。
+ * 独立自订阅 `input:touch_hud_updated` 并采用 `translate3d` 合成层定位：
+ * 搓动摇杆时零 Layout 回流，且彻底隔离顶层 UiOverlayRoot / HudBar / 小地图的无效重渲染。
  */
-export function TouchControlsOverlay({ touchHud }: TouchControlsOverlayProps) {
-  if (!touchHud || !touchHud.visible) {
+export function TouchControlsOverlay({ touchHud: externalHud }: TouchControlsOverlayProps) {
+  const [liveHud, setLiveHud] = useState<TouchHudSnapshot | null>(() => externalHud ?? readInitialTouchSnapshot());
+
+  useEffect(() => {
+    if (externalHud !== undefined) return;
+    const seed = readInitialTouchSnapshot();
+    if (seed) setLiveHud(seed);
+    return EventBus.on('input:touch_hud_updated', setLiveHud);
+  }, [externalHud]);
+
+  const activeHud = externalHud !== undefined ? externalHud : liveHud;
+  if (!activeHud || !activeHud.visible) {
     return null;
   }
 
-  const { stick, buttons } = touchHud;
+  const { stick, buttons } = activeHud;
 
   return (
     <div
       data-testid="touch-controls-overlay"
       class="pointer-events-none fixed inset-0 z-20 select-none"
     >
-      {/* 左半屏动态盲操星盘浮动虚拟摇杆 */}
+      {/* 左半屏动态盲操星盘浮动虚拟摇杆（GPU translate3d 零回流合成） */}
       <div
         data-testid="touch-floating-stick"
         data-active={stick.active ? 'true' : 'false'}
-        class={`absolute w-16 h-16 transition-opacity duration-75 ${
+        class={`absolute left-0 top-0 w-16 h-16 will-change-transform transition-opacity duration-75 ${
           stick.active ? 'opacity-95' : 'opacity-45'
         }`}
         style={{
-          left: `${stick.originX - 32}px`,
-          top: `${stick.originY - 32}px`,
+          transform: `translate3d(${stick.originX - 32}px, ${stick.originY - 32}px, 0)`,
         }}
       >
         <div
@@ -74,12 +89,11 @@ export function TouchControlsOverlay({ touchHud }: TouchControlsOverlayProps) {
       {/* 跟随拇指偏移的活态水银球核心 */}
       <div
         data-testid="touch-stick-knob"
-        class={`absolute w-16 h-16 transition-opacity duration-75 ${
+        class={`absolute left-0 top-0 w-16 h-16 will-change-transform transition-opacity duration-75 ${
           stick.active ? 'opacity-100' : 'opacity-55'
         }`}
         style={{
-          left: `${stick.knobX - 32}px`,
-          top: `${stick.knobY - 32}px`,
+          transform: `translate3d(${stick.knobX - 32}px, ${stick.knobY - 32}px, 0)`,
         }}
       >
         <div
@@ -102,14 +116,13 @@ export function TouchControlsOverlay({ touchHud }: TouchControlsOverlayProps) {
             data-testid={`touch-btn-${btn.action}`}
             data-pressed={btn.pressed ? 'true' : 'false'}
             aria-label={btn.label}
-            class={`absolute rounded-full border-2 flex flex-col items-center justify-center transition-transform duration-75 ${resolveButtonRingClasses(
+            class={`absolute left-0 top-0 rounded-full border-2 flex flex-col items-center justify-center transition-transform duration-75 ${resolveButtonRingClasses(
               btn
             )}`}
             style={{
               width: `${diameter}px`,
               height: `${diameter}px`,
-              left: `${btn.centerX - btn.radiusPx}px`,
-              top: `${btn.centerY - btn.radiusPx}px`,
+              transform: `translate3d(${btn.centerX - btn.radiusPx}px, ${btn.centerY - btn.radiusPx}px, 0)`,
             }}
           >
             <div

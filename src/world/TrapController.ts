@@ -73,6 +73,14 @@ export class TrapController {
         else inst.enemyCooldowns.set(eid, cd - dtMs);
       }
 
+      if (
+        Math.abs(inst.baseX + inst.widthPx * 0.5 - playerBody.x) > 580 ||
+        Math.abs(inst.baseY - playerBody.y) > 420
+      ) {
+        if (inst.warnLabel?.visible) inst.warnLabel.setVisible(false);
+        continue;
+      }
+
       const st = evaluateTrapPhase(inst.slot, this.simTimeMs);
       const spec = TRAP_BEHAVIOR_SPECS[inst.slot.trapType];
 

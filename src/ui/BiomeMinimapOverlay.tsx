@@ -3,6 +3,7 @@
  * （src/ui/BiomeMinimapOverlay.tsx）。
  */
 
+import { memo } from 'preact/compat';
 import { EventBus, type MinimapSnapshotPayload } from '../core/EventBus';
 import { ALL_RUNE_IDS, EXPLORATION_RUNES } from '../data/runes.data';
 import { computeNormalizedMapBounds, resolveRoleMeta } from './MinimapTacticalModal';
@@ -14,7 +15,10 @@ export interface BiomeMinimapWidgetProps {
   readonly compactMobileMode: boolean;
 }
 
-export function BiomeMinimapWidget({ minimap, compactMobileMode }: BiomeMinimapWidgetProps) {
+export const BiomeMinimapWidget = memo(function BiomeMinimapWidget({
+  minimap,
+  compactMobileMode,
+}: BiomeMinimapWidgetProps) {
   if (!minimap) return null;
 
   const bounds = computeNormalizedMapBounds(minimap);
@@ -123,7 +127,7 @@ export function BiomeMinimapWidget({ minimap, compactMobileMode }: BiomeMinimapW
       </div>
     </div>
   );
-}
+});
 
 export function WorldLoreBannerToast({ minimap }: { readonly minimap: MinimapSnapshotPayload | null }) {
   if (!minimap?.banner) return null;

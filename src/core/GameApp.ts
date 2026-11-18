@@ -54,7 +54,7 @@ export class GameApp {
         pixelArt: true,
         antialias: false,
         roundPixels: false,
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: Boolean(import.meta.env.DEV),
         maxLights: MAX_HARDWARE_LIGHTS,
         powerPreference: 'high-performance',
       },

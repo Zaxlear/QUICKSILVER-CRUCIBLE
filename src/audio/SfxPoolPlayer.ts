@@ -170,6 +170,16 @@ export class SfxPoolPlayer {
     return this.slots.get(sfxId)?.activeVoices.length ?? 0;
   }
 
+  /** 分片预热指定音效组的全部采样句柄，消除首次交战时的 decodeAudioData 主线程尖峰 */
+  public prewarmGroup(sfxId: SfxGroupId): void {
+    const slot = this.slots.get(sfxId);
+    const spec = SFX_POOL_CATALOG[sfxId];
+    if (!slot || !spec) return;
+    for (let v = 0; v < spec.variants; v++) {
+      this.acquireVariantHandle(sfxId, slot, v);
+    }
+  }
+
   public destroy(): void {
     for (const slot of this.slots.values()) {
       slot.activeVoices.length = 0;

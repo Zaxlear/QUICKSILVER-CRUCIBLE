@@ -1,5 +1,5 @@
 /**
- * 房间遭遇战刷怪节奏、精英词缀赋予、友军护盾/狂暴联动与仇恨统计总管
+ * 房间遭遇战刷怪节奏、精英词缀赋予、邻接房间 AI 分级唤醒与仇恨统计总管
  * （src/entities/enemies/EnemyDirector.ts）。
  */
 
@@ -15,7 +15,7 @@ import type { IWorldDisplayRegistrar } from '../../world/ParallaxComposer';
 import { BaseEnemy, type EnemySpawnInit } from './BaseEnemy';
 import { EliteAffixController } from './EliteAffixController';
 import { ENTRANCE_VANGUARDS, instantiateEnemySpecies } from './EnemyFactory';
-import type { EnemyStepContext } from './EnemyTypes';
+import type { EnemyStepContext, EnemyViewBounds } from './EnemyTypes';
 import { TelegraphRenderer } from './TelegraphRenderer';
 
 export { instantiateEnemySpecies };
@@ -26,6 +26,8 @@ export class EnemyDirector {
   public readonly eliteController: EliteAffixController;
   private readonly spawnRng: DeterministicRng;
   private readonly roomBuckets = new Map<string, BaseEnemy[]>();
+  private readonly roomNeighborhoods = new Map<string, Set<string>>();
+  private readonly awakeElitesScratch: BaseEnemy[] = [];
   private lastAggroCount = -1;
 
   public constructor(
@@ -38,6 +40,7 @@ export class EnemyDirector {
     this.spawnRng = rootRng.fork(RNG_CHANNEL_HASH.ENEMY_SPAWN);
     this.telegraphRenderer = new TelegraphRenderer(scene, registrar);
     this.eliteController = new EliteAffixController(scene, registrar);
+    this.indexRoomNeighborhoods(dag);
     this.populateBiomeRoster(dag, crucibleHeat);
   }
 
@@ -81,15 +84,28 @@ export class EnemyDirector {
     playerStealthed: boolean,
     solidRects: readonly SolidWallRect[],
     getEmbeddedArrows: (enemyId: string) => number,
-    callbacks: Pick<EnemyStepContext, 'onStrikePlayer' | 'onSpawnProjectile' | 'onSpawnAcidOrFireHazard'>
+    callbacks: Pick<EnemyStepContext, 'onStrikePlayer' | 'onSpawnProjectile' | 'onSpawnAcidOrFireHazard'>,
+    viewBounds?: EnemyViewBounds,
+    activeRoomId?: string
   ): void {
     const dtMs = dtSec * 1000;
+    const awakeRooms = activeRoomId ? this.roomNeighborhoods.get(activeRoomId) : undefined;
     this.telegraphRenderer.beginFrame(dtMs);
-    for (let i = 0; i < this.enemies.length; i++) this.enemies[i]!.isShieldedByPrelate = false;
+
+    this.awakeElitesScratch.length = 0;
+    for (let i = 0; i < this.enemies.length; i++) {
+      const e = this.enemies[i]!;
+      e.isShieldedByPrelate = false;
+      if (e.isElite && !e.isClone && e.isAlive) {
+        const nearOrAggro =
+          !awakeRooms || awakeRooms.has(e.roomId) || e.aggroed || Math.abs(e.x - playerX) <= 640;
+        if (nearOrAggro) this.awakeElitesScratch.push(e);
+      }
+    }
 
     const pendingClones: BaseEnemy[] = [];
     this.eliteController.stepFixed(
-      dtSec, dtMs, this.enemies, playerX, playerY, playerFacing, solidRects,
+      dtSec, dtMs, this.awakeElitesScratch, playerX, playerY, playerFacing, solidRects,
       (dmg, dirX, src) => callbacks.onStrikePlayer(dmg, dirX, false, src),
       (host) => pendingClones.push(host)
     );
@@ -106,10 +122,23 @@ export class EnemyDirector {
 
     for (let i = 0; i < this.enemies.length; i++) {
       const en = this.enemies[i]!;
+      if (
+        awakeRooms &&
+        !awakeRooms.has(en.roomId) &&
+        !en.aggroed &&
+        !en.isDissolving &&
+        !(en.isEvergreenDummy && !en.isAlive) &&
+        Math.abs(en.x - playerX) > 640
+      ) {
+        en.setDormantHidden();
+        continue;
+      }
+
       const roomAllies = this.roomBuckets.get(en.roomId) ?? [];
       const selfDestructed = en.stepFixed(
         {
           dtSec, dtMs, playerX, playerY, playerFacing, playerStealthed, solidRects, roomAllies,
+          viewBounds,
           onStrikePlayer: callbacks.onStrikePlayer,
           onSpawnProjectile: callbacks.onSpawnProjectile,
           onSpawnAcidOrFireHazard: callbacks.onSpawnAcidOrFireHazard,
@@ -135,6 +164,14 @@ export class EnemyDirector {
     this.roomBuckets.clear();
     this.eliteController.destroy();
     this.telegraphRenderer.destroy();
+  }
+
+  private indexRoomNeighborhoods(dag: GeneratedBiomeDag): void {
+    for (const n of dag.nodes) this.roomNeighborhoods.set(n.nodeId, new Set([n.nodeId]));
+    for (const b of dag.bridges) {
+      this.roomNeighborhoods.get(b.fromNodeId)?.add(b.toNodeId);
+      this.roomNeighborhoods.get(b.toNodeId)?.add(b.fromNodeId);
+    }
   }
 
   private populateBiomeRoster(dag: GeneratedBiomeDag, crucibleHeat: number): void {

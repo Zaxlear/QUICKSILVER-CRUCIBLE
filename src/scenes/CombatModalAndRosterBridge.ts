@@ -8,13 +8,19 @@ import type { SolidWallRect } from '../combat/CombatTypes';
 import { COMBAT_CONSTANTS, type PlayerCombatHudSnapshot } from '../data/weapons.data';
 import type { BaseEnemy } from '../entities/enemies/BaseEnemy';
 import type { EnemyDirector } from '../entities/enemies/EnemyDirector';
+import type { EnemyViewBounds } from '../entities/enemies/EnemyTypes';
 import type { PlayerEntity } from '../entities/player/PlayerEntity';
+import type { CameraRig } from '../render/CameraRig';
 import type { LightingDirector } from '../render/LightingDirector';
 import type { ParticleDirector } from '../render/vfx/ParticleDirector';
 import { CombatModalController } from './CombatModalController';
 import type { SkillAndSynergyCoordinator } from './SkillAndSynergyCoordinator';
 
 export { CombatModalController };
+
+const viewBoundsScratch: { minX: number; minY: number; maxX: number; maxY: number } = {
+  minX: 0, minY: 0, maxX: 0, maxY: 0,
+};
 
 export function stepEnemyDirectorRoster(
   dtSec: number,
@@ -25,8 +31,19 @@ export function stepEnemyDirectorRoster(
   particles: ParticleDirector,
   lighting: LightingDirector,
   synergy: SkillAndSynergyCoordinator,
-  onRespawnPlayer: () => void
+  onRespawnPlayer: () => void,
+  cameraRig?: CameraRig,
+  activeRoomId?: string
 ): void {
+  let vb: EnemyViewBounds | undefined;
+  if (cameraRig) {
+    const cam = cameraRig.worldMainCam;
+    viewBoundsScratch.minX = cam.scrollX;
+    viewBoundsScratch.minY = cam.scrollY;
+    viewBoundsScratch.maxX = cam.scrollX + cam.width;
+    viewBoundsScratch.maxY = cam.scrollY + cam.height;
+    vb = viewBoundsScratch;
+  }
   const px = player.physics.x;
   const py = player.physics.y;
   const facing = player.physics.facing;
@@ -90,7 +107,9 @@ export function stepEnemyDirectorRoster(
         particles.emitWeaponSmear('react_burst_ring_0', wx, wy - 10, 1, 0.28, 'synergy_fx_atlas');
         lighting.spawnTransientFlash(wx, wy - 14, isPoison ? 0x3ce682 : 0xff5e2b, rad * 2.2, 2.3, 240);
       },
-    }
+    },
+    vb,
+    activeRoomId
   );
 }
 

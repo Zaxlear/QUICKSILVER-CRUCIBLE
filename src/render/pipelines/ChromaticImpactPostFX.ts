@@ -20,6 +20,7 @@ export class ChromaticImpactPostFX extends Phaser.Renderer.WebGL.Pipelines.PostF
       name: CHROMATIC_IMPACT_PIPELINE_KEY,
       fragShader: chromaticImpactFrag,
     });
+    this.active = false;
   }
 
   public get effectiveIntensity(): number {
@@ -40,6 +41,7 @@ export class ChromaticImpactPostFX extends Phaser.Renderer.WebGL.Pipelines.PostF
       this.impactCenterUvX = 0.5;
       this.impactCenterUvY = 0.5;
     }
+    this.active = this.effectiveIntensity > 0.001;
   }
 
   public setSustainedHold(active: boolean, holdIntensity = 0.85, uvX = 0.5, uvY = 0.52): void {
@@ -48,6 +50,7 @@ export class ChromaticImpactPostFX extends Phaser.Renderer.WebGL.Pipelines.PostF
       this.impactCenterUvX = uvX;
       this.impactCenterUvY = uvY;
     }
+    this.active = this.effectiveIntensity > 0.001;
   }
 
   public stepDecay(dtSec: number): void {
@@ -59,6 +62,7 @@ export class ChromaticImpactPostFX extends Phaser.Renderer.WebGL.Pipelines.PostF
     } else {
       this.pulseIntensity = 0.0;
     }
+    this.active = this.effectiveIntensity > 0.001;
   }
 
   public override onPreRender(): void {

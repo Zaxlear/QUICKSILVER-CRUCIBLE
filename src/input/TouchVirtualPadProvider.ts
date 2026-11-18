@@ -95,12 +95,7 @@ export class TouchVirtualPadProvider implements IInputProvider {
     };
   }
 
-  public injectPointer(
-    type: 'down' | 'move' | 'up',
-    pointerId: number,
-    clientX: number,
-    clientY: number
-  ): void {
+  public injectPointer(type: 'down' | 'move' | 'up', pointerId: number, clientX: number, clientY: number): void {
     if (type === 'down') this.handleDown(pointerId, clientX, clientY);
     else if (type === 'move') this.handleMove(pointerId, clientX, clientY);
     else this.handleUp(pointerId);
@@ -184,8 +179,19 @@ export class TouchVirtualPadProvider implements IInputProvider {
   private handleMove(pointerId: number, x: number, y: number): void {
     if (pointerId === this.stickPointerId) {
       this.hadRecentTouch = true;
+      const ox = Math.round(this.stick.originX);
+      const oy = Math.round(this.stick.originY);
+      const kx = Math.round(this.stick.knobX);
+      const ky = Math.round(this.stick.knobY);
       solveFloatingStickStep(this.stick, x, y);
-      this.hudDirty = true;
+      if (
+        Math.round(this.stick.originX) !== ox ||
+        Math.round(this.stick.originY) !== oy ||
+        Math.round(this.stick.knobX) !== kx ||
+        Math.round(this.stick.knobY) !== ky
+      ) {
+        this.hudDirty = true;
+      }
       return;
     }
 
@@ -219,9 +225,7 @@ export class TouchVirtualPadProvider implements IInputProvider {
 
   private syncPressedFlags(): void {
     this.buttons = buildErgonomicArcButtons(this.viewport, (act) => {
-      for (const held of this.rightPointerActions.values()) {
-        if (held === act) return true;
-      }
+      for (const held of this.rightPointerActions.values()) if (held === act) return true;
       return false;
     });
   }
@@ -237,7 +241,5 @@ export class TouchVirtualPadProvider implements IInputProvider {
     this.handleMove(ev.pointerId, ev.clientX, ev.clientY);
   };
 
-  private readonly onPointerUp = (ev: PointerEvent): void => {
-    this.handleUp(ev.pointerId);
-  };
+  private readonly onPointerUp = (ev: PointerEvent): void => { this.handleUp(ev.pointerId); };
 }

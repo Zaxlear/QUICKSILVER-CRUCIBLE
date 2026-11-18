@@ -3,6 +3,7 @@
  * 100% 挂载于 #ui-root DOM 层，零着色器模糊污染。
  */
 
+import { memo } from 'preact/compat';
 import { EventBus, type CloudSyncStatusSnapshot } from '../core/EventBus';
 import { MUTATION_CATALOG } from '../data/mutations.data';
 import type { PlayerCombatHudSnapshot } from '../data/weapons.data';
@@ -16,7 +17,7 @@ export interface HudBarProps {
   readonly syncStatus?: CloudSyncStatusSnapshot | null;
 }
 
-export function HudBar({ combat, compactMobileMode, syncStatus }: HudBarProps) {
+export const HudBar = memo(function HudBar({ combat, compactMobileMode, syncStatus }: HudBarProps) {
   const maxHp = Math.max(1, combat.maxHp);
   const redPct = Math.min(100, Math.max(0, (combat.hp / maxHp) * 100));
   const totalWithRallyPct = Math.min(
@@ -182,9 +183,13 @@ export function HudBar({ combat, compactMobileMode, syncStatus }: HudBarProps) {
       )}
     </div>
   );
-}
+});
 
-export function DesktopWeaponLoadoutDock({ combat }: { readonly combat: PlayerCombatHudSnapshot }) {
+export const DesktopWeaponLoadoutDock = memo(function DesktopWeaponLoadoutDock({
+  combat,
+}: {
+  readonly combat: PlayerCombatHudSnapshot;
+}) {
   return (
     <div data-testid="hud-weapon-dock" class="pointer-events-none flex items-center gap-1.5 flex-wrap">
       <WeaponSlotCard slotInfo={combat.primarySlot} keyLabel="J" compact={false} />
@@ -193,4 +198,4 @@ export function DesktopWeaponLoadoutDock({ combat }: { readonly combat: PlayerCo
       {combat.skillTwoSlot && <SkillSlotCard skillInfo={combat.skillTwoSlot} keyLabel="C" compact={false} />}
     </div>
   );
-}
+});

@@ -53,6 +53,7 @@ export class LoreRoomSpawner {
   private readonly safeRoomRects: Array<{ x: number; y: number; w: number; h: number }> = [];
   private readonly promptLabel: Phaser.GameObjects.Text | null;
   private animClockMs = 0;
+  private lastVesperBit = -1;
   private pendingInvestigation: { anchor: LoreAnchorPoint; remainingMs: number } | null = null;
 
   public constructor(
@@ -107,8 +108,11 @@ export class LoreRoomSpawner {
     );
 
     const bit = (Math.floor(this.animClockMs / 360) & 1) as 0 | 1;
-    for (const a of this.anchors) {
-      if (a.kind === 'NPC_VESPER' && a.sprite) a.sprite.setFrame(`npc_vesper_idle_${bit}`);
+    if (bit !== this.lastVesperBit) {
+      this.lastVesperBit = bit;
+      for (const a of this.anchors) {
+        if (a.kind === 'NPC_VESPER' && a.sprite) a.sprite.setFrame(`npc_vesper_idle_${bit}`);
+      }
     }
 
     if (this.pendingInvestigation) {

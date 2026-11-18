@@ -4,6 +4,7 @@
  */
 
 import { ObjectPool } from '../core/ObjectPool';
+import { paddedPointHitsIndexedRects } from '../core/SpatialRectIndex';
 import { COMBAT_CONSTANTS, type WeaponId } from '../data/weapons.data';
 import {
   PooledProjectile,
@@ -211,11 +212,7 @@ export class ProjectilePool {
   }
 
   private hitsSolidWall(x: number, y: number, r: number, walls: readonly SolidWallRect[]): boolean {
-    for (let i = 0; i < walls.length; i++) {
-      const w = walls[i]!;
-      if (x + r > w.x && x - r < w.x + w.w && y + r > w.y && y - r < w.y + w.h) return true;
-    }
-    return false;
+    return paddedPointHitsIndexedRects(x, y, r, walls);
   }
 
   private findHitEnemy(p: PooledProjectile, enemies: readonly CombatTargetView[]): CombatTargetView | null {

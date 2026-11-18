@@ -2,9 +2,38 @@
  * 敌方 AI 家族共享运行时契约与步进上下文定义（src/entities/enemies/EnemyTypes.ts）。
  */
 
+import type Phaser from 'phaser';
 import type { SolidWallRect } from '../../combat/CombatTypes';
-import { ELITE_AFFIX_CATALOG, type EliteAffixId, type EnemyId } from '../../data/biomes.data';
+import { DepthLayer } from '../../core/Constants';
+import { ELITE_AFFIX_CATALOG, ELITE_SCALING, type EliteAffixId, type EnemyId } from '../../data/biomes.data';
+import type { IWorldDisplayRegistrar } from '../../world/ParallaxComposer';
 import type { BaseEnemy } from './BaseEnemy';
+
+export function spawnEnemyLitSprite(
+  scene: Phaser.Scene | null,
+  registrar: IWorldDisplayRegistrar | null,
+  init: EnemySpawnInit,
+  framePrefix: string,
+  isElite: boolean,
+  isClone: boolean
+): { readonly sprite: Phaser.GameObjects.Sprite | null; readonly initialFrameKey: string } {
+  const atlasKey = init.atlasKey ?? 'enemies_roster_atlas';
+  const initialFrameKey =
+    atlasKey === 'bosses_atlas' ? `${framePrefix}_p1_idle_0` : `${framePrefix}_idle_0`;
+  if (!scene || !registrar) return { sprite: null, initialFrameKey };
+  const sc = isElite ? ELITE_SCALING.SCALE_MULTIPLIER : 1.0;
+  const sprite = registrar.registerWorldLit(
+    scene.add
+      .sprite(init.x, init.y, atlasKey, initialFrameKey)
+      .setOrigin(0.5, 1.0)
+      .setScale(sc)
+      .setAlpha(isClone ? 0.58 : 1.0)
+      .setDepth(DepthLayer.ENEMIES)
+      .setPipeline('Light2D')
+  );
+  if (isClone) sprite.setTint(0x9aa5b8);
+  return { sprite, initialFrameKey };
+}
 
 export function formatEnemyOverheadLabel(params: {
   readonly isBoss: boolean;
@@ -22,6 +51,33 @@ export function formatEnemyOverheadLabel(params: {
     ? `★${params.eliteAffixes.map((a) => ELITE_AFFIX_CATALOG[a].badgeZh).join('·')} `
     : '';
   return `${elitePrefix}${params.isShielded ? '⛨WARD ' : ''}${params.isStunned ? 'STUN! ' : ''}${params.hp}/${params.maxHp}${params.embeddedArrows > 0 ? ` ➴${params.embeddedArrows}` : ''}${params.statusBadge ? ` [${params.statusBadge}]` : ''}`;
+}
+
+export class EnemyOverheadLabelMemo {
+  private lastHp = -1;
+  private lastShielded = false;
+  private lastStunned = false;
+  private lastArrows = -1;
+  private lastBadge = '\u0000';
+  private cached = '';
+
+  public resolve(params: Parameters<typeof formatEnemyOverheadLabel>[0]): string {
+    if (
+      params.hp !== this.lastHp ||
+      params.isShielded !== this.lastShielded ||
+      params.isStunned !== this.lastStunned ||
+      params.embeddedArrows !== this.lastArrows ||
+      params.statusBadge !== this.lastBadge
+    ) {
+      this.lastHp = params.hp;
+      this.lastShielded = params.isShielded;
+      this.lastStunned = params.isStunned;
+      this.lastArrows = params.embeddedArrows;
+      this.lastBadge = params.statusBadge;
+      this.cached = formatEnemyOverheadLabel(params);
+    }
+    return this.cached;
+  }
 }
 
 export interface EnemySpawnInit {
@@ -51,6 +107,13 @@ export interface EnemyHitOutcome {
   readonly thornsReflectedDamage: number;
 }
 
+export interface EnemyViewBounds {
+  readonly minX: number;
+  readonly minY: number;
+  readonly maxX: number;
+  readonly maxY: number;
+}
+
 export interface EnemyStepContext {
   readonly dtSec: number;
   readonly dtMs: number;
@@ -60,6 +123,7 @@ export interface EnemyStepContext {
   readonly playerStealthed: boolean;
   readonly solidRects: readonly SolidWallRect[];
   readonly roomAllies: readonly BaseEnemy[];
+  readonly viewBounds?: EnemyViewBounds;
   onStrikePlayer: (
     damage: number,
     dirX: -1 | 1,

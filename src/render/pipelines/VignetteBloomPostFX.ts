@@ -27,6 +27,7 @@ export class VignetteBloomPostFX extends Phaser.Renderer.WebGL.Pipelines.PostFXP
 
   public setBloomEnabled(enabled: boolean): void {
     this.bloomEnabled = enabled;
+    this.active = enabled;
   }
 
   public configure(strength: number, threshold: number, vignetteDarkness: number): void {

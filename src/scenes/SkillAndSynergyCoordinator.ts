@@ -177,8 +177,14 @@ export class SkillAndSynergyCoordinator {
     for (const mt of mutTicks) this.applyAuxiliaryDamageToTarget(mt.targetId, mt.amount, false, mt.worldX, mt.worldY);
 
     for (const ag of this.agents) {
+      const rec = this.statusMachine.getRecord(ag.id);
+      if (!rec) {
+        ag.statusBadgeLabel = '';
+        ag.speedScale = 1.0;
+        continue;
+      }
       ag.statusBadgeLabel = ElementalAuraEmitter.formatStatusBadges(ag.id, this.statusMachine);
-      ag.speedScale = computeTargetMoveSpeedMultiplier(this.statusMachine.getRecord(ag.id), ag.isBoss);
+      ag.speedScale = computeTargetMoveSpeedMultiplier(rec, ag.isBoss);
     }
 
     this.player.ctx.attackSpeedMultiplier = 1.0 + (this.skillRuntime.crimsonTransfusionSec > 0 ? SKILL_CONSTANTS.CRIMSON_TRANSFUSION_ATK_SPEED_BONUS : 0);

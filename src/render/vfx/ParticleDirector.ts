@@ -62,6 +62,17 @@ export class ParticleDirector {
         .setBlendMode(Phaser.BlendModes.ADD)
         .setVisible(false)
     );
+    for (let i = 0; i < 16; i++) {
+      this.projSprites.push(
+        cameraRig.registerWorldLit(
+          scene.add
+            .sprite(0, 0, 'weapons_fx_atlas', 'proj_mercury_arrow')
+            .setDepth(DepthLayer.PROJECTILES)
+            .setPipeline('Light2D')
+            .setVisible(false)
+        )
+      );
+    }
   }
 
   /** 渲染近战刀光、刺剑银芒、重锤地裂波与圆盾震荡扇形波 */
@@ -183,7 +194,7 @@ export class ParticleDirector {
 
   public stepFixed(dtSec: number): void {
     const cam = this.cameraRig.worldMainCam;
-    this.bloodSparks.stepFixed(dtSec, cam.scrollX, cam.scrollX + cam.width);
+    this.bloodSparks.stepFixed(dtSec, cam.scrollX, cam.scrollX + cam.width, cam.scrollY, cam.scrollY + cam.height);
     this.damageNumbers.stepFixed(dtSec);
 
     this.fxPool.forEachActive((fx) => {

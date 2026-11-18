@@ -44,6 +44,8 @@ export class ParallaxComposer {
   private readonly layers: Phaser.GameObjects.TileSprite[] = [];
   private readonly scrollFactors: readonly number[];
   private readonly registrar: IWorldDisplayRegistrar;
+  private lastCamScrollX = NaN;
+  private lastCamScrollY = NaN;
 
   public constructor(
     scene: Phaser.Scene,
@@ -53,10 +55,12 @@ export class ParallaxComposer {
   ) {
     this.registrar = registrar;
     this.scrollFactors = scrollFactors;
+    const initW = Math.min(LOGICAL_MAX_WIDTH, Math.max(320, Math.ceil(scene.scale.width)));
+    const initH = Math.min(LOGICAL_MAX_HEIGHT, Math.max(240, Math.ceil(scene.scale.height)));
 
     for (let i = 0; i < 5; i++) {
       const layer = scene.add
-        .tileSprite(0, 0, LOGICAL_MAX_WIDTH, LOGICAL_MAX_HEIGHT, `${texturePrefix}${i}`)
+        .tileSprite(0, 0, initW, initH, `${texturePrefix}${i}`)
         .setScrollFactor(0)
         .setOrigin(0, 0)
         .setDepth(PARALLAX_DEPTHS[i]!);
@@ -75,6 +79,14 @@ export class ParallaxComposer {
   }
 
   public syncWithCamera(camScrollX: number, camScrollY: number): void {
+    if (
+      Math.abs(camScrollX - this.lastCamScrollX) < 0.05 &&
+      Math.abs(camScrollY - this.lastCamScrollY) < 0.05
+    ) {
+      return;
+    }
+    this.lastCamScrollX = camScrollX;
+    this.lastCamScrollY = camScrollY;
     for (let i = 0; i < this.layers.length; i++) {
       const factor = this.scrollFactors[i] ?? 0.2;
       const layer = this.layers[i]!;
@@ -84,8 +96,8 @@ export class ParallaxComposer {
   }
 
   public resize(logicalWidth: number, logicalHeight: number): void {
-    const w = Math.max(logicalWidth, LOGICAL_MAX_WIDTH);
-    const h = Math.max(logicalHeight, LOGICAL_MAX_HEIGHT);
+    const w = Math.min(LOGICAL_MAX_WIDTH, Math.max(320, Math.ceil(logicalWidth)));
+    const h = Math.min(LOGICAL_MAX_HEIGHT, Math.max(240, Math.ceil(logicalHeight)));
     for (const layer of this.layers) {
       layer.setSize(w, h);
     }

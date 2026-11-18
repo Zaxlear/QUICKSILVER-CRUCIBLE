@@ -155,10 +155,6 @@ export class BossArenaScene extends Phaser.Scene {
         this.shaderCtrl.step(dtSec);
         this.postFx.shieldRefract.stepTime(dtSec);
         this.postFx.chromaticImpact.stepDecay(dtSec);
-        const cam = this.cameraRig.worldMainCam;
-        this.atmosphere.stepFixed(dtSec, cam.scrollX, cam.scrollY, cam.width, cam.height);
-        this.lighting.setHeroCorePosition(player.physics.x, player.physics.y - 18);
-        this.lighting.step(dtSec, player.physics.x, player.physics.y - 24);
         this.ghostTrail.step(dtSec);
         this.locomotionVfx.step(dtSec);
       },
@@ -167,6 +163,12 @@ export class BossArenaScene extends Phaser.Scene {
         this.heroSprite.setPosition(interp.x, interp.y).setFlipX(player.physics.facing < 0);
         this.shaderCtrl.syncShieldCenter(interp.x, interp.y - 18);
         const cam = this.cameraRig.worldMainCam;
+        const renderDtSec = this.clock.isPaused ? 0 : Math.min(Math.max(deltaMs / 1000, 0), 0.05);
+        if (renderDtSec > 0) {
+          this.atmosphere.stepFixed(renderDtSec, cam.scrollX, cam.scrollY, cam.width, cam.height);
+          this.lighting.setHeroCorePosition(interp.x, interp.y - 18);
+          this.lighting.step(renderDtSec, interp.x, interp.y - 24);
+        }
         this.parallax.syncWithCamera(cam.scrollX, cam.scrollY);
         this.tileRenderer.cullToViewport(cam.scrollX, cam.scrollY, cam.scrollX + cam.width, cam.scrollY + cam.height);
       }

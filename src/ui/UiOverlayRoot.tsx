@@ -17,7 +17,6 @@ import {
   type WeaponCompareModalPayload,
 } from '../core/EventBus';
 import { DEFAULT_AUDIO_TELEMETRY } from '../data/audio.data';
-import type { TouchHudSnapshot } from '../data/playerKinematics.data';
 import { AuthSyncDrawer } from './AuthSyncDrawer';
 import { BiomeMinimapWidget, WorldLoreBannerToast } from './BiomeMinimapOverlay';
 import { BossHealthBar } from './BossHealthBar';
@@ -46,6 +45,17 @@ const DEFAULT_COMBAT_HUD: PlayerCombatHudSnapshot = {
   secondarySlot: { slot: 'secondary', weaponId: 'wpn_slag_buckler', nameZh: '矿渣反冲圆盾', iconSlot: 5, qualityBadge: 'I', colorHex: '#3CE682', scaledDps: 173, ammoLeft: null, maxAmmo: null, isReady: true },
 };
 
+function isSameShowcase(a: ShowcaseStatePayload, b: ShowcaseStatePayload): boolean {
+  return (
+    a.activeSceneKey === b.activeSceneKey &&
+    a.shaders.hitFlash === b.shaders.hitFlash &&
+    a.shaders.ashDissolve === b.shaders.ashDissolve &&
+    a.shaders.shieldRefract === b.shaders.shieldRefract &&
+    a.shaders.chromaticImpact === b.shaders.chromaticImpact &&
+    a.shaders.vignetteBloom === b.shaders.vignetteBloom
+  );
+}
+
 /**
  * 顶层独立 Preact DOM 覆盖层（挂载于 #ui-root，100% 免疫 WebGL 全屏后处理与镜头震动）。
  */
@@ -62,11 +72,10 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
   const [audioState, setAudioState] = useState<AudioTelemetrySnapshot>(DEFAULT_AUDIO_TELEMETRY);
   const [syncStatus, setSyncStatus] = useState<CloudSyncStatusSnapshot | null>(null);
   const [conflictModal, setConflictModal] = useState<SaveConflictModalPayload | null>(null);
-  const [touchHud, setTouchHud] = useState<TouchHudSnapshot | null>(null);
+  const [touchVisible, setTouchVisible] = useState<boolean>(initialViewport.tier === 'TIER_3_MOBILE_EXPAND');
   const [minimap, setMinimap] = useState<MinimapSnapshotPayload | null>(null);
-  const [telemetry, setTelemetry] = useState<BootTelemetryPayload>({
-    rendererType: 2, isWebGL: true, framebufferLit: false, maxLights: 24, activeLights: 5,
-    fixedSimHz: 120, totalFixedTicks: 0, isPaused: initialPortraitLocked, trauma: 0, rngSeed: 0x51c0ffee,
+  const [telemetry, setTelemetry] = useState<Pick<BootTelemetryPayload, 'fixedSimHz' | 'isPaused'>>({
+    fixedSimHz: 120, isPaused: initialPortraitLocked,
   });
   const [showcase, setShowcase] = useState<ShowcaseStatePayload>({
     activeSceneKey: 'SanctumHubScene', heroAnimKey: 'hero_idle', activeLights: 5,
@@ -74,15 +83,24 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
   });
 
   useEffect(() => {
+    const syncClockState = (next: BootTelemetryPayload): void => {
+      setTelemetry((prev) =>
+        prev.fixedSimHz === next.fixedSimHz && prev.isPaused === next.isPaused
+          ? prev
+          : { fixedSimHz: next.fixedSimHz, isPaused: next.isPaused }
+      );
+    };
     const unbinds = [
       EventBus.on('system:viewport_changed', setViewport),
       EventBus.on('system:orientation_lock_changed', ({ isPortraitLocked: locked }) => {
         setIsPortraitLocked(locked);
         EventBus.emit('ui:command:set_orientation_pause', { paused: locked });
       }),
-      EventBus.on('system:boot_ready', setTelemetry),
-      EventBus.on('system:telemetry_updated', setTelemetry),
-      EventBus.on('system:showcase_state_changed', setShowcase),
+      EventBus.on('system:boot_ready', syncClockState),
+      EventBus.on('system:telemetry_updated', syncClockState),
+      EventBus.on('system:showcase_state_changed', (next) => {
+        setShowcase((prev) => (isSameShowcase(prev, next) ? prev : next));
+      }),
       EventBus.on('player:combat_hud_updated', setCombatHud),
       EventBus.on('boss:hud_updated', setBossHud),
       EventBus.on('narrative:dialogue_updated', setDialogueBanner),
@@ -93,7 +111,9 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
       EventBus.on('audio:state_updated', setAudioState),
       EventBus.on('save:sync_status_updated', setSyncStatus),
       EventBus.on('save:conflict_modal_updated', setConflictModal),
-      EventBus.on('input:touch_hud_updated', setTouchHud),
+      EventBus.on('input:touch_hud_updated', (snap) => {
+        setTouchVisible((prev) => (prev === snap.visible ? prev : snap.visible));
+      }),
       EventBus.on('world:minimap_updated', setMinimap),
     ];
     const onUiClick = (ev: MouseEvent): void => {
@@ -110,7 +130,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
   }, []);
 
   const { top, right, bottom, left } = viewport.safeInsets;
-  const isTouchModeVisible = Boolean(touchHud?.visible) || viewport.tier === 'TIER_3_MOBILE_EXPAND';
+  const isTouchModeVisible = touchVisible || viewport.tier === 'TIER_3_MOBILE_EXPAND';
   const anyModalBlockingTouch =
     Boolean(
       pauseMenu.open || compareModal?.open || scrollModal?.open ||
@@ -167,7 +187,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
       <PauseAudioMenu pauseMenu={pauseMenu} audio={audioState} compactMobileMode={isTouchModeVisible} />
       <AuthSyncDrawer syncStatus={syncStatus} compactMobileMode={isTouchModeVisible} />
       <SaveConflictModal payload={conflictModal} />
-      {!isPortraitLocked && !anyModalBlockingTouch && <TouchControlsOverlay touchHud={touchHud} />}
+      {!isPortraitLocked && !anyModalBlockingTouch && <TouchControlsOverlay />}
 
       {isPortraitLocked && (
         <div

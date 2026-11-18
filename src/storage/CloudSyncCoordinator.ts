@@ -1,22 +1,18 @@
-/**
- * 跨房间检查点、移动端切后台毫秒级落盘与双轨云同步总调度器（src/storage/CloudSyncCoordinator.ts）。
- */
+/** 跨房间检查点、战斗击杀批量防抖、移动端切后台毫秒级落盘与双轨云同步总调度器（src/storage/CloudSyncCoordinator.ts）。 */
 
 import { EventBus } from '../core/EventBus';
 import { NarrativeStore } from '../core/NarrativeSessionStore';
-import type {
-  ActiveRunSnapshot, AuthPromoteMethod, CloudSyncStatusSnapshot, MetaProgressionRecord, SaveConflictChoice,
-} from '../data/storage.data';
+import type { ActiveRunSnapshot, AuthPromoteMethod, CloudSyncStatusSnapshot, MetaProgressionRecord, SaveConflictChoice } from '../data/storage.data';
 import {
-  bindCloudSyncListeners, emitSaveConflictModalEvents, executeConflictResolutionStep,
-  executeMetaCrdtSyncStep, executeSnapshotArbitrationStep,
+  bindCloudSyncListeners, detectInitialOnlineState, emitSaveConflictModalEvents,
+  executeConflictResolutionStep, executeMetaCrdtSyncStep, executeSnapshotArbitrationStep,
+  stageSimulatedDivergentRun,
 } from './CloudSyncBindings';
+import { KillMutationBatcher } from './KillMutationBatcher';
 import { LocalVault } from './LocalVault';
 import {
-  buildCloudSyncStatusSnapshot, buildFallbackSanctumLocalSnapshot,
-  buildRunHistoryArchiveEntry, syncNarrativeIntoMetaRecord,
+  buildCloudSyncStatusSnapshot, buildRunHistoryArchiveEntry, syncNarrativeIntoMetaRecord,
 } from './MetaSyncHelpers';
-import { buildSimulatedDivergentRemoteSnapshot } from './RunSnapshotBuilder';
 import { createDefaultMetaProgression, createSecureUuid } from './SaveSchema';
 import { SnapshotConflictMachine } from './SnapshotConflictMachine';
 import { createCloudSaveGateway, type AuthSessionSummary, type ICloudSaveGateway } from './SupabaseClient';
@@ -33,11 +29,7 @@ export class CloudSyncCoordinator {
   private localRunDirty = false;
   private drawerOpen = false;
   private pwaSwReady = false;
-  private isOnline =
-    typeof navigator !== 'undefined'
-      ? navigator.onLine !== false &&
-        (typeof sessionStorage === 'undefined' || sessionStorage.getItem('qc_qa_offline_sim') !== '1')
-      : true;
+  private isOnline = detectInitialOnlineState();
   private deviceId = 'dev_pending';
   private deviceLabel = 'Desktop · WebGL';
   private lastSyncedAt: string | null = null;
@@ -47,6 +39,7 @@ export class CloudSyncCoordinator {
   };
   private liveRunCapturer: (() => Promise<ActiveRunSnapshot | null>) | null = null;
   private bootPromise: Promise<void> | null = null;
+  private readonly killBatcher = new KillMutationBatcher(() => { void this.flushPendingKills(); }, 2000);
 
   public constructor(vault?: LocalVault, gateway?: ICloudSaveGateway) {
     this.vault = vault ?? new LocalVault();
@@ -69,8 +62,7 @@ export class CloudSyncCoordinator {
   }
 
   public bootstrap(win?: Window): Promise<void> {
-    if (!this.bootPromise) this.bootPromise = this.runBootstrap(win);
-    return this.bootPromise;
+    return (this.bootPromise ??= this.runBootstrap(win));
   }
 
   public async waitUntilBootReady(): Promise<ActiveRunSnapshot | null> {
@@ -92,10 +84,10 @@ export class CloudSyncCoordinator {
   }
 
   public async saveCheckpointSnapshot(snapshot: ActiveRunSnapshot): Promise<void> {
-    this.activeRun = await this.vault.saveActiveRun(snapshot);
+    this.activeRun = await this.vault.saveActiveRun(snapshot, true);
     this.localRunDirty = true;
     this.emitStatus(`已落盘房间检查点 ${snapshot.currentRoomId} (SHA-256)`);
-    if (this.isOnline) void this.syncWithCloud();
+    if (this.isOnline) void this.syncWithCloud(true);
   }
 
   public async finalizeRunOutcome(outcome: 'VICTORY' | 'DEAD' | 'ABANDONED', finalSnap: ActiveRunSnapshot, killedById: string | null = null): Promise<void> {
@@ -105,11 +97,12 @@ export class CloudSyncCoordinator {
     const entry = buildRunHistoryArchiveEntry(closed, outcome, killedById);
     await this.vault.appendRunHistory(entry);
     await this.mutateMeta({ bankedIchorDelta: outcome === 'VICTORY' ? closed.playerSnapshot.unbankedIchor : 0, clearedRun: outcome === 'VICTORY' });
-    if (this.isOnline) { await this.gateway.archiveRunHistory(entry); await this.syncWithCloud(); }
+    if (this.isOnline) { await this.gateway.archiveRunHistory(entry); await this.syncWithCloud(true); }
   }
 
-  public async syncWithCloud(): Promise<void> {
+  public async syncWithCloud(skipLiveRecapture = false): Promise<void> {
     if (!this.meta) this.meta = await createDefaultMetaProgression();
+    await this.flushPendingKills();
     if (!this.isOnline) {
       this.fsm.notifyNetworkOffline();
       this.emitStatus('当前处于离线模式，Dexie 本地防篡改保护生效中');
@@ -122,9 +115,9 @@ export class CloudSyncCoordinator {
       this.meta = metaOut.mergedMeta;
 
       this.fsm.advanceMetaSyncToArbitration();
-      if (this.liveRunCapturer && this.localRunDirty) {
+      if (!skipLiveRecapture && this.liveRunCapturer && this.localRunDirty) {
         const live = await this.liveRunCapturer();
-        if (live) this.activeRun = await this.vault.saveActiveRun(live);
+        if (live) this.activeRun = await this.vault.saveActiveRun(live, true);
       }
 
       const arb = await executeSnapshotArbitrationStep({
@@ -148,15 +141,11 @@ export class CloudSyncCoordinator {
   }
 
   public async simulateDivergentConflict(): Promise<void> {
-    let localSnap = this.liveRunCapturer ? await this.liveRunCapturer() : this.activeRun;
-    if (!localSnap || localSnap.lifecycleState !== 'ACTIVE') {
-      localSnap = await buildFallbackSanctumLocalSnapshot(this.deviceId, this.deviceLabel);
-    }
-    this.activeRun = await this.vault.saveActiveRun(localSnap);
+    const candidate = this.liveRunCapturer ? await this.liveRunCapturer() : this.activeRun;
+    this.activeRun = await stageSimulatedDivergentRun(this.vault, this.gateway, candidate, this.deviceId, this.deviceLabel);
     this.localRunDirty = true;
-    this.gateway.injectSimulatedRemoteSnapshot(await buildSimulatedDivergentRemoteSnapshot(localSnap.runSeed));
     this.drawerOpen = false;
-    await this.syncWithCloud();
+    await this.syncWithCloud(true);
   }
 
   public async resolveConflict(choice: SaveConflictChoice): Promise<void> {
@@ -185,13 +174,17 @@ export class CloudSyncCoordinator {
 
     this.fsm.finishBootLocalRead(this.isOnline);
     bindCloudSyncListeners(win, {
-      onMutateMeta: (p) => { void this.mutateMeta(p); },
+      onMutateMeta: (p, debounced) => {
+        if (debounced && p?.killArchetypeId) this.killBatcher.recordKill(p.killArchetypeId);
+        else void this.mutateMeta(p);
+      },
       onToggleDrawer: (o) => { this.drawerOpen = o !== undefined ? o : !this.drawerOpen; this.emitStatus(); },
       onTriggerSync: () => { void this.syncWithCloud(); },
       onSimulateConflict: () => this.simulateDivergentConflict(),
       onResolveConflict: (c) => { void this.resolveConflict(c); },
       onAuthPromote: (m, e) => { void this.handlePromote(m, e); },
       onEmergencyFlush: async () => {
+        await this.flushPendingKills();
         if (this.liveRunCapturer) {
           const snap = await this.liveRunCapturer();
           if (snap) this.vault.stageForImmediateFlush(this.meta, snap);
@@ -211,17 +204,25 @@ export class CloudSyncCoordinator {
     if (this.isOnline) await this.syncWithCloud();
   }
 
+  private async flushPendingKills(): Promise<void> {
+    if (this.killBatcher.hasPending) await this.mutateMeta();
+  }
+
   private async handlePromote(method: AuthPromoteMethod, email?: string): Promise<void> {
     try {
       const res = await this.gateway.promoteAccount(method, email);
       this.session = res.session;
       this.emitStatus(res.messageZh);
-    } catch (err) { this.emitStatus(err instanceof Error ? err.message : '账号绑定请求失败'); }
+    } catch (err) {
+      this.emitStatus(err instanceof Error ? err.message : '账号绑定请求失败');
+    }
   }
 
   private async mutateMeta(patch?: Parameters<typeof syncNarrativeIntoMetaRecord>[1]): Promise<void> {
     if (!this.meta) return;
-    this.meta = await this.vault.saveMeta(await syncNarrativeIntoMetaRecord(this.meta, patch));
+    const batch = this.killBatcher.drainBatch();
+    const mergedPatch = batch ? { ...patch, killBatch: batch } : patch;
+    this.meta = await this.vault.saveMeta(await syncNarrativeIntoMetaRecord(this.meta, mergedPatch), true);
     this.emitStatus();
   }
 
@@ -237,8 +238,7 @@ export class CloudSyncCoordinator {
 
   private emitStatus(nextMessage?: string): void {
     if (nextMessage) this.statusMessageZh = nextMessage;
-    if (!this.meta) return;
-    EventBus.emit('save:sync_status_updated', this.composeStatus());
+    if (this.meta) EventBus.emit('save:sync_status_updated', this.composeStatus());
   }
 }
 

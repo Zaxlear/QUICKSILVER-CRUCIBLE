@@ -109,8 +109,8 @@ export class LocalVault {
     return { deviceId: created.deviceId, deviceLabel: created.deviceLabel };
   }
 
-  public async saveMeta(record: MetaProgressionRecord): Promise<MetaProgressionRecord> {
-    const signed = (await verifySaveSha256(record)) ? record : await signMetaProgression(record);
+  public async saveMeta(record: MetaProgressionRecord, alreadySigned = false): Promise<MetaProgressionRecord> {
+    const signed = alreadySigned || (await verifySaveSha256(record)) ? record : await signMetaProgression(record);
     const curPrimary = await this.rawDb.metaSlots.get('primary');
     const curPrimaryValid = curPrimary ? await verifySaveSha256(curPrimary.record) : false;
     const now = Date.now();
@@ -158,8 +158,8 @@ export class LocalVault {
     return { data: fallback, tamperDetected: true, recoveredFromBackup: false };
   }
 
-  public async saveActiveRun(snapshot: ActiveRunSnapshot): Promise<ActiveRunSnapshot> {
-    const signed = (await verifySaveSha256(snapshot)) ? snapshot : await signActiveRunSnapshot(snapshot);
+  public async saveActiveRun(snapshot: ActiveRunSnapshot, alreadySigned = false): Promise<ActiveRunSnapshot> {
+    const signed = alreadySigned || (await verifySaveSha256(snapshot)) ? snapshot : await signActiveRunSnapshot(snapshot);
     const curPrimary = await this.rawDb.runSlots.get('primary');
     const curPrimaryValid = curPrimary ? await verifySaveSha256(curPrimary.snapshot) : false;
     const now = Date.now();
