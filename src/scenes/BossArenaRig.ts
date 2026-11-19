@@ -44,10 +44,6 @@ import { SkillAndSynergyCoordinator } from './SkillAndSynergyCoordinator';
 declare global {
   interface Window {
     __QC_BOSS_STATE__?: BossHudSnapshot & { readonly quicksilverSeaActive: boolean; readonly gratePhase?: string };
-    __QC_BOSS_ARENA__?: {
-      damageBoss: (amount: number) => void;
-      chooseEnding: (choice: 'USURP_THRONE' | 'INJECT_ALKAHEST') => void;
-    };
   }
 }
 
@@ -136,11 +132,6 @@ export class BossArenaRig {
       onCheckVictory: () => this.checkBossVictory(),
       onEmitHud: () => this.emitBossHud(),
     });
-
-    window.__QC_BOSS_ARENA__ = {
-      damageBoss: (amt) => { this.boss.applyHit(amt, 2.5, 1, this.player.physics.x); this.checkBossVictory(); this.emitBossHud(); },
-      chooseEnding: (c) => EventBus.emit('ui:command:resolve_ending_choice', { choice: c }),
-    };
     this.emitBossHud();
   }
 

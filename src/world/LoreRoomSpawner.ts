@@ -164,13 +164,14 @@ export class LoreRoomSpawner {
   }
 
   private populateBiomeLoreAndVesper(dag: GeneratedBiomeDag, rng: DeterministicRng): void {
-    const startNode = dag.nodes[0];
-    if (startNode) {
-      const vx = (startNode.worldTileX + 6) * TILE_SIZE_PX + 8;
-      const vy = (startNode.worldTileY + 26) * TILE_SIZE_PX;
+    const hubNode = dag.nodes.find((n) => n.chunk.role === 'TELEPORTER_HUB');
+    if (hubNode) {
+      const floorTileY = hubNode.chunk.teleporterTilePos ? hubNode.chunk.teleporterTilePos.tileY + 1 : 28;
+      const vx = (hubNode.worldTileX + 33) * TILE_SIZE_PX + 8;
+      const vy = (hubNode.worldTileY + floorTileY) * TILE_SIZE_PX;
       const vSprite = this.spawnSprite(vx, vy, 'sanctum_hub_atlas', 'npc_vesper_idle_0');
       this.registrar?.registerAmbientLight({ id: `vesper_light_${dag.biomeId}`, x: vx + 10, y: vy - 24, preset: 'TORCH_AMBER', radiusPx: 150, flickerAmplitude: 0.08 });
-      this.anchors.push({ id: `vesper_${dag.biomeId}`, kind: 'NPC_VESPER', roomId: startNode.nodeId, x: vx, y: vy, sprite: vSprite });
+      this.anchors.push({ id: `vesper_${dag.biomeId}`, kind: 'NPC_VESPER', roomId: hubNode.nodeId, x: vx, y: vy, sprite: vSprite });
     }
 
     const regularPool = BIOME_REGULAR_LORE_POOLS[dag.biomeId];

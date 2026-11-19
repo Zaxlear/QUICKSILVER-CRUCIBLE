@@ -319,6 +319,7 @@ describe('Milestone 7 — 4 Biomes Normal Assets, 12 Enemy AI Species & 4 Elite 
     const dirB = new EnemyDirector(null, null, dag, new DeterministicRng(0x1234abcd));
 
     expect(rootRngA.stepCount).toBe(0); // Zero parent RNG pollution!
+    expect(dirA.enemies.filter((e) => e.roomId === dag.nodes[0]!.nodeId)).toHaveLength(0); // Entrance room has zero dummy spawns!
     expect(dirA.enemies.map((e) => `${e.speciesId}:${e.eliteAffixes.join(',')}`)).toEqual(
       dirB.enemies.map((e) => `${e.speciesId}:${e.eliteAffixes.join(',')}`)
     );
@@ -333,5 +334,10 @@ describe('Milestone 7 — 4 Biomes Normal Assets, 12 Enemy AI Species & 4 Elite 
     });
     off();
     expect(intensityEvents.some((c) => c >= 1)).toBe(true);
+
+    // Killed enemies stay permanently dead even after 500 ticks (> 4.1s) — no 1.6s dummy resurrection!
+    first.applyHit(99999, 99, 1);
+    stepTicks(first, 500, first.x, first.y);
+    expect(first.isAlive).toBe(false);
   });
 });

@@ -23,7 +23,6 @@ import { ParticleDirector } from '../render/vfx/ParticleDirector';
 import { buildViewportSnapshot } from '../render/ViewportScaler';
 import { CloudSync } from '../storage/CloudSyncCoordinator';
 import { BiomeAtmosphereEmitter } from '../world/BiomeAtmosphereEmitter';
-import { CombatLootSpawner } from '../world/CombatLootSpawner';
 import { DialogueBannerController } from '../world/DialogueBannerController';
 import { ParallaxComposer, type IWorldDisplayRegistrar } from '../world/ParallaxComposer';
 import { WorldTileRenderer } from '../world/WorldTileRenderer';
@@ -51,7 +50,6 @@ export class SanctumHubScene extends Phaser.Scene {
   private ghostTrail!: GhostTrailRenderer;
   private locomotionVfx!: LocomotionVfxRenderer;
   private particles!: ParticleDirector;
-  private lootStub!: CombatLootSpawner;
   private modals!: CombatModalController;
   private player!: PlayerEntity;
   private heroSprite!: Phaser.GameObjects.Sprite;
@@ -125,8 +123,7 @@ export class SanctumHubScene extends Phaser.Scene {
     this.player.stats.resetFullHealth();
 
     const rng = new DeterministicRng(0x51c0ffee);
-    this.lootStub = new CombatLootSpawner(this, registrar, dag, this.player.inventory, rng);
-    this.modals = new CombatModalController(this.player, this.lootStub, rng, this.clock, this.cameraRig, () => this.syncTelemetry());
+    this.modals = new CombatModalController(this.player, null, rng, this.clock, this.cameraRig, () => this.syncTelemetry());
     this.cameraRig.setWorldBounds(baked.worldBoundsPx);
     this.cameraRig.setFocus(spawnX, SANCTUM_FLOOR_Y - 26);
 
@@ -238,7 +235,7 @@ export class SanctumHubScene extends Phaser.Scene {
   private cleanup(): void {
     this.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
     window.removeEventListener('keydown', this.mapKeyHandler);
-    this.unbindUi(); this.modals.destroy(); this.lootStub.destroy(); this.bannerCtrl.destroy();
+    this.unbindUi(); this.modals.destroy(); this.bannerCtrl.destroy();
     this.sanctumProps.destroy(); this.particles.destroy(); this.atmosphere.destroy();
     this.tileRenderer.destroy(); this.parallax.destroy(); this.actionMap.destroy(); this.ghostTrail.clearAll();
   }

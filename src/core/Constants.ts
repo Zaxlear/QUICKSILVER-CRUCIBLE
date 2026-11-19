@@ -80,3 +80,16 @@ export function sampleHitFlashCurve(
     ],
   };
 }
+
+/**
+ * 判定是否开启开发态 QA 调试坞与小地图跃迁调试面板：
+ * - 生产构建（`!envDev`）下强制永久返回 `false`；
+ * - 开发环境下默认保持纯净正式 UI，仅在 URL 携带 `?dev=1` / `?qa=1`（或按 `F9` 切换）时开启。
+ */
+export function isDevQaQueryEnabled(search?: string, envDev: boolean = import.meta.env.DEV): boolean {
+  if (!envDev) return false;
+  const raw = search ?? (typeof window !== 'undefined' ? window.location.search : '');
+  if (!raw) return false;
+  const params = new URLSearchParams(raw);
+  return params.get('dev') === '1' || params.get('qa') === '1';
+}

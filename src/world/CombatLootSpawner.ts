@@ -1,5 +1,5 @@
 /**
- * 关卡地面掉落武器、12 武器演武陈列架、三系卷轴祭坛与「变异永恒锻炉祭坛」生成器
+ * 关卡地面掉落武器、三系卷轴祭坛与出口休整区「变异永恒锻炉祭坛」生成器
  * （src/world/CombatLootSpawner.ts）。
  */
 
@@ -10,7 +10,6 @@ import {
   ALL_WEAPON_IDS,
   WEAPON_CATALOG,
   type RolledWeaponInstance,
-  type WeaponId,
 } from '../data/weapons.data';
 import { formatWeaponQualityBadge, type PlayerInventory } from '../entities/player/PlayerInventory';
 import type { GeneratedBiomeDag } from './DagBiomeGenerator';
@@ -170,29 +169,9 @@ export class CombatLootSpawner {
   }
 
   private populateInitialDrops(dag: GeneratedBiomeDag, inventory: PlayerInventory, lootRng: DeterministicRng): void {
-    const startNode = dag.nodes[0]!;
-    const floorY = (startNode.worldTileY + 26) * TILE_SIZE_PX;
-    const baseEntranceX = (startNode.worldTileX + 4) * TILE_SIZE_PX;
-
-    const showcaseIds: readonly WeaponId[] = [
-      'wpn_mirror_aegis',
-      'wpn_cinnabar_twinblades',
-      'wpn_crucible_maul',
-      'wpn_pendulum_halberd',
-      'wpn_clockwork_repeater',
-      'wpn_vitriol_thrower',
-    ];
-    showcaseIds.forEach((wid, idx) => {
-      const wx = baseEntranceX + idx * 20;
-      const rolled = inventory.rollWeaponInstance(lootRng, wid, idx === 0 ? 'III' : 'II', idx === 0 ? 'S' : 'PLUS');
-      this.spawnWeaponEntity(`loot_ent_${idx}`, wx, floorY, rolled);
-    });
-
-    this.spawnScrollEntity('scroll_ent_0', (startNode.worldTileX + 14.5) * TILE_SIZE_PX, floorY);
-    this.spawnForgeStation('forge_ent_0', (startNode.worldTileX + 17) * TILE_SIZE_PX, floorY);
-
-    for (let i = 1; i < dag.nodes.length; i++) {
+    for (let i = 0; i < dag.nodes.length; i++) {
       const node = dag.nodes[i]!;
+      if (node.chunk.role === 'ENTRANCE') continue;
       if (node.chunk.role === 'EXIT') {
         this.spawnForgeStation(
           `forge_exit_${node.nodeId}`,

@@ -22,7 +22,6 @@ export abstract class BaseEnemy {
   public readonly isElite: boolean;
   public readonly isClone: boolean;
   public readonly eliteAffixes: readonly EliteAffixId[];
-  public readonly isEvergreenDummy: boolean;
   public readonly sprite: Phaser.GameObjects.Sprite | null;
 
   public x: number;
@@ -63,7 +62,6 @@ export abstract class BaseEnemy {
     this.isElite = Boolean(init.isElite);
     this.isClone = Boolean(init.isClone);
     this.eliteAffixes = init.eliteAffixes ?? [];
-    this.isEvergreenDummy = Boolean(init.evergreenRespawn);
     this.registrar = registrar;
     this.framePrefix = init.framePrefix ?? init.speciesId;
     this.x = init.x; this.y = init.y; this.spawnX = init.x; this.spawnY = init.y;
@@ -180,16 +178,15 @@ export abstract class BaseEnemy {
       const prog = Math.min(1, this.phaseClockMs / 520);
       this.sprite?.setData(DATA_ASH_PROGRESS, prog);
       this.hud?.sync(this.x, this.y, this.activeColliderSize.offY, 'NONE', false, '', false, false, false);
-      if (prog >= 1) { this.sprite?.setVisible(false); this.dissolving = false; this.dead = true; }
-      return false;
-    }
-    if (this.dead) {
-      if (this.isEvergreenDummy && (this.phaseClockMs += ctx.dtMs) >= 1600) {
-        this.hp = this.maxHp; this.poise = this.maxPoise; this.x = this.spawnX; this.y = this.spawnY; this.dead = false;
-        this.sprite?.setPipeline('Light2D').setVisible(true);
+      if (prog >= 1) {
+        this.sprite?.setVisible(false);
+        this.dissolving = false;
+        this.phaseClockMs = 0;
+        this.dead = true;
       }
       return false;
     }
+    if (this.dead) return false;
     let diedFromBurst = false;
     if (this.stunnedMs > 0) {
       this.stunnedMs = Math.max(0, this.stunnedMs - ctx.dtMs);

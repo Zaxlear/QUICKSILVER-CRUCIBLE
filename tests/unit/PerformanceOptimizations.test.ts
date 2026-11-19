@@ -99,14 +99,14 @@ describe('SpatialRectIndex collision & LOS acceleration parity', () => {
     const baked = bakeStitchedWorldGeometry(dag.nodes, dag.bridges);
     const director = new EnemyDirector(null, null, dag, rng);
 
-    const startRoomId = dag.nodes[0]!.nodeId;
-    const neighborIds = new Set<string>([startRoomId]);
+    const activeCombatRoomId = dag.nodes.find((n) => n.chunk.enemySpawns.length > 0)!.nodeId;
+    const neighborIds = new Set<string>([activeCombatRoomId]);
     for (const b of dag.bridges) {
-      if (b.fromNodeId === startRoomId) neighborIds.add(b.toNodeId);
-      if (b.toNodeId === startRoomId) neighborIds.add(b.fromNodeId);
+      if (b.fromNodeId === activeCombatRoomId) neighborIds.add(b.toNodeId);
+      if (b.toNodeId === activeCombatRoomId) neighborIds.add(b.fromNodeId);
     }
     const distantEnemy = director.enemies.find((e) => !neighborIds.has(e.roomId));
-    const startEnemy = director.enemies.find((e) => e.roomId === startRoomId);
+    const startEnemy = director.enemies.find((e) => e.roomId === activeCombatRoomId);
     expect(distantEnemy).toBeDefined();
     expect(startEnemy).toBeDefined();
 
@@ -127,7 +127,7 @@ describe('SpatialRectIndex collision & LOS acceleration parity', () => {
         onSpawnAcidOrFireHazard: () => {},
       },
       undefined,
-      startRoomId
+      activeCombatRoomId
     );
 
     expect(dormantSpy).toHaveBeenCalledTimes(1);

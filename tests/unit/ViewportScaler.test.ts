@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { isDevQaQueryEnabled } from '../../src/core/Constants';
 import {
   buildViewportSnapshot,
   computeViewportMetrics,
@@ -48,5 +49,13 @@ describe('ViewportScaler Adaptive Resolution Matrix', () => {
     expect(isPortraitOrientationLocked(393, 852, true)).toBe(true);
     expect(isPortraitOrientationLocked(393, 852, false)).toBe(true);
     expect(isPortraitOrientationLocked(1920, 1080, false)).toBe(false);
+  });
+
+  it('gates QA shader dock & minimap cheat controls strictly behind dev env + ?dev=1 / ?qa=1', () => {
+    expect(isDevQaQueryEnabled('', true)).toBe(false);
+    expect(isDevQaQueryEnabled('?dev=1', true)).toBe(true);
+    expect(isDevQaQueryEnabled('?qa=1', true)).toBe(true);
+    expect(isDevQaQueryEnabled('?dev=1', false)).toBe(false);
+    expect(isDevQaQueryEnabled('?qa=1', false)).toBe(false);
   });
 });

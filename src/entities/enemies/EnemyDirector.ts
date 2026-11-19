@@ -14,7 +14,7 @@ import type { GeneratedBiomeDag } from '../../world/DagBiomeGenerator';
 import type { IWorldDisplayRegistrar } from '../../world/ParallaxComposer';
 import { BaseEnemy, type EnemySpawnInit } from './BaseEnemy';
 import { EliteAffixController } from './EliteAffixController';
-import { ENTRANCE_VANGUARDS, instantiateEnemySpecies } from './EnemyFactory';
+import { instantiateEnemySpecies } from './EnemyFactory';
 import type { EnemyStepContext, EnemyViewBounds } from './EnemyTypes';
 import { TelegraphRenderer } from './TelegraphRenderer';
 
@@ -127,7 +127,6 @@ export class EnemyDirector {
         !awakeRooms.has(en.roomId) &&
         !en.aggroed &&
         !en.isDissolving &&
-        !(en.isEvergreenDummy && !en.isAlive) &&
         Math.abs(en.x - playerX) > 640
       ) {
         en.setDormantHidden();
@@ -176,24 +175,7 @@ export class EnemyDirector {
 
   private populateBiomeRoster(dag: GeneratedBiomeDag, crucibleHeat: number): void {
     const bSpec = BIOME_CATALOG[dag.biomeId];
-    const ent = dag.nodes[0]!;
-    const floorY = (ent.worldTileY + 26) * TILE_SIZE_PX;
-    const minX = (ent.worldTileX + 20) * TILE_SIZE_PX;
-    const maxX = (ent.worldTileX + ent.chunk.widthTiles - 5) * TILE_SIZE_PX;
-    const [vanguardA, vanguardB] = ENTRANCE_VANGUARDS[dag.biomeId];
-
-    this.spawnEnemy({
-      id: `ent_${dag.biomeId}_0`, speciesId: vanguardA, roomId: ent.nodeId,
-      x: (ent.worldTileX + 24) * TILE_SIZE_PX, y: floorY, patrolMinX: minX, patrolMaxX: minX + 112,
-      hpScale: bSpec.hpScale, damageScale: bSpec.damageScale, evergreenRespawn: true,
-    });
-    this.spawnEnemy({
-      id: `ent_${dag.biomeId}_1`, speciesId: vanguardB, roomId: ent.nodeId,
-      x: (ent.worldTileX + 33) * TILE_SIZE_PX, y: floorY, patrolMinX: minX + 108, patrolMaxX: maxX,
-      hpScale: bSpec.hpScale, damageScale: bSpec.damageScale, evergreenRespawn: true,
-    });
-
-    for (let n = 1; n < dag.nodes.length; n++) {
+    for (let n = 0; n < dag.nodes.length; n++) {
       const node = dag.nodes[n]!;
       node.chunk.enemySpawns.forEach((sp, idx) => {
         if (sp.minCrucibleHeat > crucibleHeat) return;

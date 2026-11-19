@@ -20,7 +20,7 @@ export class CombatModalController {
 
   public constructor(
     private readonly player: PlayerEntity,
-    private readonly loot: CombatLootSpawner,
+    private readonly loot: CombatLootSpawner | null,
     private readonly lootRng: DeterministicRng,
     private readonly clock: ClockController,
     private readonly cameraRig: CameraRig,
@@ -32,7 +32,7 @@ export class CombatModalController {
         if (this.pendingWeaponDrop && action !== 'cancel') {
           const slot: WeaponSlotId = action === 'equip_primary' ? 'primary' : 'secondary';
           const displaced = this.player.inventory.equipToSlot(slot, this.pendingWeaponDrop.weapon);
-          this.loot.swapWeaponOnFloor(this.pendingWeaponDrop.id, displaced);
+          this.loot?.swapWeaponOnFloor(this.pendingWeaponDrop.id, displaced);
         }
         this.pendingWeaponDrop = null;
         this.syncModalPause();
@@ -40,7 +40,7 @@ export class CombatModalController {
         this.onChanged();
       }),
       EventBus.on('ui:command:pick_scroll_color', ({ color }) => {
-        if (this.pendingScrollId && this.loot.consumeScrollDrop(this.pendingScrollId)) {
+        if (this.pendingScrollId && this.loot?.consumeScrollDrop(this.pendingScrollId)) {
           this.player.stats.applyScrollUpgrade(color);
           this.cameraRig.addTrauma(0.24);
         }
@@ -50,11 +50,13 @@ export class CombatModalController {
         this.onChanged();
       }),
       EventBus.on('ui:command:equip_weapon_direct', ({ slot, weaponId }) => {
+        if (!import.meta.env.DEV) return;
         const rolled = this.player.inventory.rollWeaponInstance(this.lootRng, weaponId, 'II', 'PLUS');
         this.player.inventory.equipToSlot(slot, rolled);
         this.onChanged();
       }),
       EventBus.on('ui:command:equip_skill_direct', ({ slot, skillId }) => {
+        if (!import.meta.env.DEV) return;
         const rolled = loadout.rollSkillInstance(this.lootRng, skillId, 'II', 'PLUS');
         loadout.equipSkill(slot, rolled);
         this.onChanged();

@@ -148,6 +148,7 @@ export function bindBiomeUiCommands(deps: {
       syncClockPause();
     }),
     EventBus.on('ui:command:trigger_trauma_pulse', ({ amount }) => {
+      if (!import.meta.env.DEV) return;
       const px = player.physics.x;
       const py = player.physics.y - 18;
       cameraRig.addTrauma(amount);
@@ -157,18 +158,22 @@ export function bindBiomeUiCommands(deps: {
       onStateChanged();
     }),
     EventBus.on('ui:command:toggle_shader', ({ shader, active }) => {
+      if (!import.meta.env.DEV) return;
       shaderCtrl.toggleShader(shader, active);
       onStateChanged();
     }),
     EventBus.on('ui:command:cycle_hero_anim', ({ direction, animKey }) => {
+      if (!import.meta.env.DEV) return;
       shaderCtrl.cycleHeroAnim(direction, animKey);
       onStateChanged();
     }),
     EventBus.on('ui:command:debug_player_hurt', ({ damage }) => {
+      if (!import.meta.env.DEV) return;
       player.receiveIncomingHit(damage, 1, true);
       onStateChanged();
     }),
     EventBus.on('ui:command:debug_player_respawn', () => {
+      if (!import.meta.env.DEV) return;
       const cp = getSafeCheckpoint();
       player.respawnAt(cp.x, cp.y);
       onStateChanged();
@@ -182,16 +187,20 @@ export function bindBiomeUiCommands(deps: {
       onEmitMinimap();
     }),
     EventBus.on('ui:command:toggle_rune', ({ runeId }) => {
+      if (!import.meta.env.DEV) return;
       runes?.toggleRune(runeId);
       onEmitMinimap();
     }),
     EventBus.on('ui:command:regenerate_biome', ({ seed }) => {
+      if (!import.meta.env.DEV) return;
       onRequestTransition(undefined, seed);
     }),
     EventBus.on('ui:command:switch_biome', ({ biomeId, seed }) => {
+      if (!import.meta.env.DEV) return;
       onRequestTransition(biomeId, seed);
     }),
     EventBus.on('ui:command:warp_campaign_stage', ({ target, toggleSeal }) => {
+      if (!import.meta.env.DEV) return;
       if (toggleSeal) {
         NarrativeStore.toggleSeal(toggleSeal);
         onSealToggled?.(toggleSeal);

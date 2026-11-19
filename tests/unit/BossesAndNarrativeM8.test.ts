@@ -261,6 +261,10 @@ describe('Milestone 8 — Multi-Phase Bosses, Sanctum Hub, 34 NPC Dialogues & Tr
 
     const loreShrine = spawner.anchors.find((a) => a.kind === 'LORE_SHRINE')!;
     expect(loreShrine).toBeDefined();
+    // Sister Vesper spawns in TELEPORTER_HUB, never in ENTRANCE room_00_entrance!
+    const vesperAnchor = spawner.anchors.find((a) => a.kind === 'NPC_VESPER')!;
+    expect(vesperAnchor).toBeDefined();
+    expect(vesperAnchor.roomId).not.toBe(dag.nodes[0]!.nodeId);
 
     const stats = new PlayerStats(120);
     stats.applyIncomingDamage(40);

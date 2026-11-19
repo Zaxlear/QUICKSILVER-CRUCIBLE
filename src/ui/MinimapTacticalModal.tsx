@@ -4,8 +4,8 @@
  */
 
 import { EventBus, type MinimapNodeSnapshot, type MinimapSnapshotPayload } from '../core/EventBus';
-import { ALL_BIOME_IDS, BIOME_CATALOG } from '../data/biomes.data';
 import { ALL_TRUE_ENDING_SEALS, TRUE_ENDING_SEAL_META } from '../data/dialogue.data';
+import { MinimapDevWarpControls } from './MinimapDevWarpControls';
 
 const MAP_ICON_SHEET = '/assets/atlases/minimap_ui_sheet.png';
 
@@ -44,9 +44,16 @@ export function computeNormalizedMapBounds(minimap: MinimapSnapshotPayload) {
   };
 }
 
-export function MinimapTacticalModal({ minimap }: { readonly minimap: MinimapSnapshotPayload }) {
+export function MinimapTacticalModal({
+  minimap,
+  devModeEnabled = false,
+}: {
+  readonly minimap: MinimapSnapshotPayload;
+  readonly devModeEnabled?: boolean;
+}) {
   if (!minimap.expanded) return null;
 
+  const showDevCheats = Boolean(import.meta.env.DEV && devModeEnabled);
   const bounds = computeNormalizedMapBounds(minimap);
   const activeSteles: readonly MinimapNodeSnapshot[] = minimap.nodes.filter((n) => n.teleporterActive);
   const sealsSet = new Set(minimap.collectedSeals ?? []);
@@ -68,15 +75,17 @@ export function MinimapTacticalModal({ minimap }: { readonly minimap: MinimapSna
             </div>
           </div>
           <div class="flex items-center gap-1.5">
-            <button
-              type="button"
-              data-ui-interactive="true"
-              data-testid="btn-regenerate-biome"
-              onClick={() => EventBus.emit('ui:command:regenerate_biome', {})}
-              class="cursor-pointer bg-[#1E2233] hover:bg-[#272C42] border border-[#556085] px-2 py-1 text-[10px] text-[#D4DEE8]"
-            >
-              [NEW SEED ↻]
-            </button>
+            {showDevCheats && (
+              <button
+                type="button"
+                data-ui-interactive="true"
+                data-testid="btn-regenerate-biome"
+                onClick={() => EventBus.emit('ui:command:regenerate_biome', {})}
+                class="cursor-pointer bg-[#1E2233] hover:bg-[#272C42] border border-[#556085] px-2 py-1 text-[10px] text-[#D4DEE8]"
+              >
+                [DEV: NEW SEED ↻]
+              </button>
+            )}
             <button
               type="button"
               data-ui-interactive="true"
@@ -89,84 +98,35 @@ export function MinimapTacticalModal({ minimap }: { readonly minimap: MinimapSna
           </div>
         </div>
 
-        {/* 圣所基地与双多阶段 Boss 决战房直达跃迁栏 */}
-        <div class="grid grid-cols-3 gap-1.5 mb-2">
-          <button
-            type="button"
-            data-ui-interactive="true"
-            data-testid="btn-warp-sanctum"
-            onClick={() => EventBus.emit('ui:command:warp_campaign_stage', { target: 'sanctum' })}
-            class="cursor-pointer px-2 py-1 bg-[#161824] hover:bg-[#1E2233] border border-[#3CE682] text-left text-[#3CE682]"
-          >
-            <div class="text-[10px] font-bold">0. 永恒锻炉圣所</div>
-            <div class="text-[8px] opacity-80">科尔维斯 & 伊索尔德</div>
-          </button>
-          <button
-            type="button"
-            data-ui-interactive="true"
-            data-testid="btn-warp-boss-1"
-            onClick={() => EventBus.emit('ui:command:warp_campaign_stage', { target: 'boss_01_furnace_warden' })}
-            class="cursor-pointer px-2 py-1 bg-[#240B12] hover:bg-[#3B121E] border border-[#FF5E2B] text-left text-[#FBBF24]"
-          >
-            <div class="text-[10px] font-bold">BOSS I · 典狱长萨尔弗</div>
-            <div class="text-[8px] opacity-80">大煅烧三号刑炉室</div>
-          </button>
-          <button
-            type="button"
-            data-ui-interactive="true"
-            data-testid="btn-warp-boss-2"
-            onClick={() => EventBus.emit('ui:command:warp_campaign_stage', { target: 'boss_02_grand_alchemist' })}
-            class="cursor-pointer px-2 py-1 bg-[#1E2233] hover:bg-[#272C42] border border-[#38BDF8] text-left text-[#38BDF8]"
-          >
-            <div class="text-[10px] font-bold">BOSS II · 帕拉塞尔苏斯</div>
-            <div class="text-[8px] opacity-80">星界王座 (P1/P2/真结局P3)</div>
-          </button>
-        </div>
+        {showDevCheats && <MinimapDevWarpControls minimap={minimap} />}
 
-        {/* 四大生态群落星盘切换栏 */}
-        <div class="grid grid-cols-4 gap-1.5 mb-2">
-          {ALL_BIOME_IDS.map((bid) => {
-            const spec = BIOME_CATALOG[bid];
-            const isActiveBiome = bid === minimap.biomeId && !minimap.currentRoomId.startsWith('sanctum') && !minimap.currentRoomId.startsWith('arena_');
-            return (
-              <button
-                key={bid}
-                type="button"
-                data-ui-interactive="true"
-                data-testid={`btn-switch-biome-${bid}`}
-                onClick={() => EventBus.emit('ui:command:switch_biome', { biomeId: bid })}
-                class={`cursor-pointer px-2 py-1 border text-left transition-colors ${
-                  isActiveBiome ? 'bg-[#291A0E] border-[#FBBF24] text-[#FBBF24]' : 'bg-[#161824] hover:bg-[#1E2233] border-[#323954] text-[#B8C4D4]'
-                }`}
-              >
-                <div class="text-[10px] font-bold">{spec.romanTier}. {spec.nameZh}</div>
-                <div class="text-[8px] opacity-80 truncate">{spec.nameEn}</div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* 原初质三枚真名封印状态栏（集齐三枚解锁帕拉塞尔苏斯隐藏 P3 真结局） */}
+        {/* 原初质三枚真名封印状态栏（正式模式为纯只读徽标，仅开发模式可点击调试切换） */}
         <div class="flex flex-wrap items-center justify-between gap-1.5 bg-[#0B0C10] border border-[#272C42] px-2 py-1 mb-2">
           <span class="text-[9px] text-[#9AA5B8]">真结局原初质真名封印 ({sealsSet.size}/3)：</span>
           <div class="flex flex-wrap gap-1">
             {ALL_TRUE_ENDING_SEALS.map((flag) => {
               const meta = TRUE_ENDING_SEAL_META[flag];
               const lit = sealsSet.has(flag);
-              return (
+              const badgeStyle = lit ? { borderColor: meta.accentHex, color: meta.accentHex } : undefined;
+              const badgeCls = `px-1.5 py-0.5 border text-[9px] font-bold ${
+                lit ? 'bg-[#1E2233] text-[#F8FAFC]' : 'bg-[#0B0C10] border-[#323954] text-[#556085]'
+              }`;
+              return showDevCheats ? (
                 <button
                   key={flag}
                   type="button"
                   data-ui-interactive="true"
                   data-testid={`btn-seal-${flag}`}
                   onClick={() => EventBus.emit('ui:command:warp_campaign_stage', { toggleSeal: flag })}
-                  class={`cursor-pointer px-1.5 py-0.5 border text-[9px] font-bold ${
-                    lit ? 'bg-[#1E2233] text-[#F8FAFC]' : 'bg-[#0B0C10] border-[#323954] text-[#556085]'
-                  }`}
-                  style={lit ? { borderColor: meta.accentHex, color: meta.accentHex } : undefined}
+                  class={`cursor-pointer ${badgeCls}`}
+                  style={badgeStyle}
                 >
                   {lit ? '✦ ' : '○ '}{meta.shortZh}
                 </button>
+              ) : (
+                <span key={flag} data-testid={`badge-seal-${flag}`} class={badgeCls} style={badgeStyle}>
+                  {lit ? '✦ ' : '○ '}{meta.shortZh}
+                </span>
               );
             })}
           </div>

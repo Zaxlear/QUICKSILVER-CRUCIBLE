@@ -114,6 +114,15 @@ export function triggerArenaParryShockwave(
   postFx.chromaticImpact.triggerPulse(cue.chromaticIntensity, px, py - 18, cameraRig.worldMainCam);
 }
 
+declare global {
+  interface Window {
+    __QC_BOSS_ARENA__?: {
+      damageBoss: (amount: number) => void;
+      chooseEnding: (choice: 'USURP_THRONE' | 'INJECT_ALKAHEST') => void;
+    };
+  }
+}
+
 export function bindArenaUiCommands(deps: {
   readonly boss: FurnaceWardenBoss | GrandAlchemistBoss;
   readonly player: PlayerEntity;
@@ -122,6 +131,16 @@ export function bindArenaUiCommands(deps: {
   readonly onEmitHud: () => void;
 }): () => void {
   const { boss, player, onCommitVictory, onCheckVictory, onEmitHud } = deps;
+  if (import.meta.env.DEV) {
+    window.__QC_BOSS_ARENA__ = {
+      damageBoss: (amt) => {
+        boss.applyHit(amt, 2.5, 1, player.physics.x);
+        onCheckVictory();
+        onEmitHud();
+      },
+      chooseEnding: (c) => EventBus.emit('ui:command:resolve_ending_choice', { choice: c }),
+    };
+  }
   const offChoice = EventBus.on('ui:command:resolve_ending_choice', ({ choice }) => {
     if (boss instanceof GrandAlchemistBoss) {
       if (boss.applyAlkahestDecision(choice) === 'END_FALSE_CALCIFICATION') onCommitVictory();
@@ -129,6 +148,7 @@ export function bindArenaUiCommands(deps: {
     }
   });
   const offSmite = EventBus.on('ui:command:debug_boss_smite', ({ ratio }) => {
+    if (!import.meta.env.DEV) return;
     player.stats.resetFullHealth();
     player.ctx.isInvulnerable = true;
     player.ctx.mercyInvulnTicks = 1200;
@@ -140,6 +160,7 @@ export function bindArenaUiCommands(deps: {
     onEmitHud();
   });
   return () => {
+    delete window.__QC_BOSS_ARENA__;
     offChoice();
     offSmite();
   };

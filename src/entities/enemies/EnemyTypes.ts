@@ -93,7 +93,6 @@ export interface EnemySpawnInit {
   readonly isElite?: boolean;
   readonly eliteAffixes?: readonly EliteAffixId[];
   readonly isClone?: boolean;
-  readonly evergreenRespawn?: boolean;
   readonly atlasKey?: string;
   readonly framePrefix?: string;
   readonly overrideBaseHp?: number;

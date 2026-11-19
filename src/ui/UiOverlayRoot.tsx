@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
+import { isDevQaQueryEnabled } from '../core/Constants';
 import {
   EventBus,
   type AudioTelemetrySnapshot,
@@ -81,6 +82,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
     activeSceneKey: 'SanctumHubScene', heroAnimKey: 'hero_idle', activeLights: 5,
     shaders: { hitFlash: false, ashDissolve: false, shieldRefract: false, chromaticImpact: false, vignetteBloom: true },
   });
+  const [devModeOpen, setDevModeOpen] = useState<boolean>(() => isDevQaQueryEnabled());
 
   useEffect(() => {
     const syncClockState = (next: BootTelemetryPayload): void => {
@@ -122,15 +124,24 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
         EventBus.emit('audio:sfx_requested', { sfxId: 'sfx_ui_confirm_cancel' });
       }
     };
+    const onDevHotkey = (ev: KeyboardEvent): void => {
+      if (import.meta.env.DEV && !ev.repeat && ev.code === 'F9') {
+        ev.preventDefault();
+        setDevModeOpen((prev) => !prev);
+      }
+    };
     window.addEventListener('click', onUiClick, true);
+    window.addEventListener('keydown', onDevHotkey);
     return () => {
       window.removeEventListener('click', onUiClick, true);
+      window.removeEventListener('keydown', onDevHotkey);
       for (const off of unbinds) off();
     };
   }, []);
 
   const { top, right, bottom, left } = viewport.safeInsets;
   const isTouchModeVisible = touchVisible || viewport.tier === 'TIER_3_MOBILE_EXPAND';
+  const showDevQaTools = Boolean(import.meta.env.DEV && devModeOpen);
   const anyModalBlockingTouch =
     Boolean(
       pauseMenu.open || compareModal?.open || scrollModal?.open ||
@@ -151,7 +162,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
       >
         <div class="flex items-start justify-between gap-2">
           <HudBar combat={combatHud} compactMobileMode={isTouchModeVisible} syncStatus={syncStatus} />
-          {isTouchModeVisible && <ShaderQaDock showcase={showcase} compactMobileMode={true} />}
+          {showDevQaTools && isTouchModeVisible && <ShaderQaDock showcase={showcase} compactMobileMode={true} />}
           <BiomeMinimapWidget minimap={minimap} compactMobileMode={isTouchModeVisible} />
         </div>
 
@@ -164,15 +175,14 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
                   {telemetry.fixedSimHz}Hz FIXED ·{' '}
                   <span class={telemetry.isPaused ? 'text-[#FF5E2B]' : 'text-[#3CE682]'}>
                     {telemetry.isPaused ? 'PAUSED' : 'RUNNING'}
-                  </span>{' '}
-                  · {showcase.activeSceneKey}
+                  </span>
                 </div>
                 <div class="text-[9px] text-[#9AA5B8] mt-0.5">
                   [J/K] WEAPONS · [Q/C] SKILLS · [SHIFT] ROLL · [E] ACT/TALK · [V] FORGE · [M] MAP · [ESC] AUDIO
                 </div>
               </div>
             </div>
-            <ShaderQaDock showcase={showcase} compactMobileMode={false} />
+            {showDevQaTools && <ShaderQaDock showcase={showcase} compactMobileMode={false} />}
           </div>
         )}
       </div>
@@ -180,7 +190,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
       <BossHealthBar payload={bossHud} compactMobileMode={isTouchModeVisible} />
       <DialogueBanner payload={dialogueBanner} compactMobileMode={isTouchModeVisible} />
       <WorldLoreBannerToast minimap={minimap} />
-      {minimap && <MinimapTacticalModal minimap={minimap} />}
+      {minimap && <MinimapTacticalModal minimap={minimap} devModeEnabled={showDevQaTools} />}
       <WeaponCompareModal payload={compareModal} />
       <ScrollPickModal payload={scrollModal} />
       <MutationForgeModal payload={mutationModal} />
