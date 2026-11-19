@@ -1,91 +1,110 @@
 {
-  "chunkId": "apex_combat_05_conduit",
+  "chunkId": "apex_combat_02_solar_gallery",
   "biomePool": [
     "biome_04_crucible_apex"
   ],
   "role": "COMBAT",
   "widthTiles": 48,
-  "heightTiles": 30,
+  "heightTiles": 32,
   "solidRects": [
     {
       "tileX": 0,
       "tileY": 0,
-      "widthTiles": 22,
+      "widthTiles": 20,
       "heightTiles": 3
     },
     {
-      "tileX": 26,
+      "tileX": 24,
       "tileY": 0,
-      "widthTiles": 22,
+      "widthTiles": 24,
       "heightTiles": 3
     },
     {
       "tileX": 0,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 19
+      "heightTiles": 21
     },
     {
       "tileX": 45,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 19
+      "heightTiles": 15
+    },
+    {
+      "tileX": 45,
+      "tileY": 22,
+      "widthTiles": 3,
+      "heightTiles": 6
     },
     {
       "tileX": 0,
-      "tileY": 26,
-      "widthTiles": 48,
+      "tileY": 28,
+      "widthTiles": 14,
       "heightTiles": 4
     },
     {
-      "tileX": 17,
-      "tileY": 16,
+      "tileX": 18,
+      "tileY": 30,
+      "widthTiles": 16,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 34,
+      "tileY": 22,
       "widthTiles": 14,
+      "heightTiles": 10
+    },
+    {
+      "tileX": 16,
+      "tileY": 24,
+      "widthTiles": 8,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 25,
+      "tileY": 19,
+      "widthTiles": 7,
       "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
-      "tileX": 20,
-      "tileY": 22,
-      "widthTiles": 10
+      "tileX": 14,
+      "tileY": 28,
+      "widthTiles": 4
     },
     {
-      "tileX": 20,
-      "tileY": 18,
-      "widthTiles": 10
-    },
-    {
-      "tileX": 20,
-      "tileY": 14,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 20,
-      "tileY": 10,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 21,
-      "tileY": 6,
+      "tileX": 10,
+      "tileY": 23,
       "widthTiles": 6
     },
     {
-      "tileX": 7,
-      "tileY": 21,
-      "widthTiles": 8
+      "tileX": 22,
+      "tileY": 27,
+      "widthTiles": 9
     },
     {
-      "tileX": 33,
-      "tileY": 21,
-      "widthTiles": 8
+      "tileX": 19,
+      "tileY": 15,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 19,
+      "tileY": 11,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 19,
+      "tileY": 7,
+      "widthTiles": 6
     }
   ],
   "climbableWalls": [
     {
       "tileX": 3,
       "topTileY": 5,
-      "heightTiles": 18,
+      "heightTiles": 19,
       "normalSide": "RIGHT"
     }
   ],
@@ -95,7 +114,7 @@
       "socketId": "w_main",
       "direction": "WEST",
       "tileX": 0,
-      "tileY": 25,
+      "tileY": 27,
       "apertureTiles": 4,
       "requiredRune": null
     },
@@ -103,123 +122,109 @@
       "socketId": "e_main",
       "direction": "EAST",
       "tileX": 47,
-      "tileY": 25,
+      "tileY": 21,
       "apertureTiles": 4,
       "requiredRune": null
     },
     {
       "socketId": "n_sock",
       "direction": "NORTH",
-      "tileX": 22,
+      "tileX": 20,
       "tileY": 0,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "s_sock",
+      "direction": "SOUTH",
+      "tileX": 14,
+      "tileY": 31,
       "apertureTiles": 4,
       "requiredRune": null
     }
   ],
   "enemySpawns": [
     {
-      "slotId": "sp_01",
-      "tileX": 11,
-      "tileY": 25,
-      "allowedArchetypes": [
-        "MELEE_FODDER",
-        "SHIELD_TANK"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        5,
-        18
-      ]
-    },
-    {
-      "slotId": "sp_02",
-      "tileX": 36,
-      "tileY": 25,
+      "slotId": "sp_1",
+      "tileX": 20,
+      "tileY": 23,
       "allowedArchetypes": [
         "FLANKER",
         "MELEE_FODDER"
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        29,
+        17,
+        23
+      ]
+    },
+    {
+      "slotId": "sp_2",
+      "tileX": 28,
+      "tileY": 18,
+      "allowedArchetypes": [
+        "RANGED_HARASS",
+        "SUPPORT_CASTER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        26,
+        31
+      ]
+    },
+    {
+      "slotId": "sp_3",
+      "tileX": 39,
+      "tileY": 21,
+      "allowedArchetypes": [
+        "SHIELD_TANK",
+        "MELEE_FODDER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        35,
         43
-      ]
-    },
-    {
-      "slotId": "sp_03",
-      "tileX": 24,
-      "tileY": 15,
-      "allowedArchetypes": [
-        "SUPPORT_CASTER",
-        "RANGED_HARASS"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        18,
-        30
-      ]
-    },
-    {
-      "slotId": "sp_04",
-      "tileX": 37,
-      "tileY": 20,
-      "allowedArchetypes": [
-        "RANGED_HARASS"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        33,
-        40
       ]
     }
   ],
   "trapSlots": [
     {
-      "slotId": "tr_4_a",
+      "slotId": "tr_arc_2",
       "trapType": "VOLTAIC_ARC_GATE",
-      "tileX": 16,
-      "tileY": 25,
+      "tileX": 29,
+      "tileY": 18,
       "widthTiles": 2,
-      "phaseOffsetMs": 1800,
-      "cyclePeriodMs": 2800
+      "phaseOffsetMs": 400,
+      "cyclePeriodMs": 2600
     }
   ],
   "teleporterTilePos": {
     "tileX": 6,
-    "tileY": 25
+    "tileY": 27
   },
   "rewardPedestalTilePos": null,
   "loreAnchor": null,
   "lightAnchors": [
     {
       "tileX": 9,
-      "tileY": 23,
+      "tileY": 25,
       "preset": "MERCURY_SILVER",
-      "radiusPx": 185,
-      "flickerAmplitude": 0.1
-    },
-    {
-      "tileX": 24,
-      "tileY": 14,
-      "preset": "FURNACE_CRIMSON",
       "radiusPx": 195,
       "flickerAmplitude": 0.08
     },
     {
-      "tileX": 39,
-      "tileY": 23,
-      "preset": "MERCURY_SILVER",
-      "radiusPx": 185,
+      "tileX": 24,
+      "tileY": 16,
+      "preset": "FURNACE_CRIMSON",
+      "radiusPx": 205,
       "flickerAmplitude": 0.1
-    }
-  ],
-  "conduitPairs": [
+    },
     {
-      "pairId": "apex_cnd_4",
-      "entryTileX": 6,
-      "entryTileY": 25,
-      "exitTileX": 40,
-      "exitTileY": 20
+      "tileX": 39,
+      "tileY": 19,
+      "preset": "VOLTAIC_CYAN",
+      "radiusPx": 195,
+      "flickerAmplitude": 0.08
     }
   ]
 }

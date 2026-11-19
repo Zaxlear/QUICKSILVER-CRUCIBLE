@@ -8,7 +8,7 @@
 
 import { BaseEnemy } from '../BaseEnemy';
 import type { EnemyStepContext } from '../EnemyTypes';
-import { clampGroundX, evaluateEnemyPerception } from '../PerceptionSensor';
+import { evaluateEnemyPerception } from '../PerceptionSensor';
 
 type WeaverPhase = 'HOVER' | 'AIM_CHARGE' | 'DISCHARGE' | 'COOLDOWN';
 
@@ -172,11 +172,7 @@ export class ClockworkTickEnemy extends BaseEnemy {
     }
 
     this.facing = sense.dirToPlayer;
-    this.x = clampGroundX(
-      this.x + this.facing * this.spec.chaseSpeedPxS * dtSec,
-      this.patrolMinX - 48,
-      this.patrolMaxX + 48
-    );
+    this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
 
     if (Math.abs(sense.dx) <= 48 && Math.abs(sense.dy) <= 42) {
       this.phase = 'OVERLOAD_WINDUP';

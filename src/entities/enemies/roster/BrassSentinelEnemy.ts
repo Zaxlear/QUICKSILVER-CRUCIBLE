@@ -51,10 +51,7 @@ export class BrassSentinelEnemy extends BaseEnemy {
     if (this.phase === 'MARCH') {
       this.telegraph = 'NONE';
       if (!sense.detected) {
-        const nx = this.x + this.facing * this.spec.patrolSpeedPxS * dtSec;
-        if (nx <= this.patrolMinX + 2) this.facing = 1;
-        else if (nx >= this.patrolMaxX - 2) this.facing = -1;
-        this.x = clampGroundX(nx, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.patrolSpeedPxS, dtSec, true);
         return;
       }
 
@@ -74,7 +71,7 @@ export class BrassSentinelEnemy extends BaseEnemy {
         this.bashHit = false;
         this.telegraph = 'YELLOW_PARRIABLE';
       } else {
-        this.x = clampGroundX(this.x + this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
       }
       return;
     }
@@ -150,10 +147,7 @@ export class FlailExecutorEnemy extends BaseEnemy {
     if (this.phase === 'STALK') {
       this.telegraph = 'NONE';
       if (!sense.detected) {
-        const nx = this.x + this.facing * this.spec.patrolSpeedPxS * dtSec;
-        if (nx <= this.patrolMinX + 2) this.facing = 1;
-        else if (nx >= this.patrolMaxX - 2) this.facing = -1;
-        this.x = clampGroundX(nx, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.patrolSpeedPxS, dtSec, true);
         return;
       }
       this.facing = sense.dirToPlayer;
@@ -169,7 +163,7 @@ export class FlailExecutorEnemy extends BaseEnemy {
         }
         this.useSlamNext = !this.useSlamNext;
       } else {
-        this.x = clampGroundX(this.x + this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
       }
       return;
     }

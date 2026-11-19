@@ -1,5 +1,5 @@
 /**
- * 独立封闭首领决战场景（src/scenes/BossArenaScene.ts）：
+ * 独立封闭首领决战场景（src/scenes/BossArenaScene.ts，严格 <= 250 行）：
  * 承载 Boss 1「大煅烧三号刑炉室（典狱长·萨尔弗）」与 Boss 2「衔尾蛇星界坩埚王座（帕拉塞尔苏斯）」。
  */
 
@@ -22,6 +22,7 @@ import { ParallaxComposer, type IWorldDisplayRegistrar } from '../world/Parallax
 import { WorldTileRenderer } from '../world/WorldTileRenderer';
 import { bindBiomeUiCommands, captureRunCarryover, type RunCarryoverSnapshot } from './BiomeUiCommandBridge';
 import { BossArenaRig } from './BossArenaRig';
+import { RunSettlementController } from './RunSettlementController';
 import {
   buildEnclosedHallDag, buildSingleHallMinimapSnapshot, publishEnclosedSceneTelemetry, SANCTUM_FLOOR_Y,
 } from './SanctumStageBuilder';
@@ -41,6 +42,7 @@ export class BossArenaScene extends Phaser.Scene {
   private ghostTrail!: GhostTrailRenderer;
   private locomotionVfx!: LocomotionVfxRenderer;
   private arenaRig!: BossArenaRig;
+  private settlement!: RunSettlementController;
   private heroSprite!: Phaser.GameObjects.Sprite;
   private unbindUi!: () => void;
   private mapKeyHandler!: (ev: KeyboardEvent) => void;
@@ -100,11 +102,11 @@ export class BossArenaScene extends Phaser.Scene {
       this.actionMap, this.heroSprite, this.ghostTrail, this.locomotionVfx, this.clock,
       this.cameraRig, this.lighting, this.postFx, this.shaderCtrl, data?.carryover,
       () => this.handleVictoryDeparture(),
-      () => {
-        NarrativeStore.recordPlayerDeath();
-        finalizeBossArenaRunInVault(this.arenaRig.player, this.bossId, 'DEAD');
-        this.scene.start('SanctumHubScene', { carryover: captureRunCarryover(this.arenaRig.player, NarrativeStore.unlockedRunes), skipPrologue: true });
-      }
+      () => this.settlement.triggerPermadeath(this.bossId)
+    );
+    const settleBiome = isSulfur ? 'biome_02_vitriol_sewers' : 'biome_04_crucible_apex';
+    this.settlement = new RunSettlementController(
+      this, this.clock, this.arenaRig.player, settleBiome, 0x51c0ffee, () => `arena_${this.bossId}`
     );
 
     this.cameraRig.setWorldBounds(baked.worldBoundsPx);
@@ -141,15 +143,17 @@ export class BossArenaScene extends Phaser.Scene {
 
   public override update(_time: number, deltaMs: number): void {
     const player = this.arenaRig.player;
+    this.settlement.stepRealDelta(deltaMs);
     this.clock.tick(
       deltaMs,
       (dtSec) => {
         this.actionMap.sampleFixedTick();
-        const interact = this.actionMap.wasJustPressed('interact');
+        const interact = !this.settlement.isDying && this.actionMap.wasJustPressed('interact');
         player.fixedUpdate(dtSec);
-        this.arenaRig.stepFixed(dtSec, interact);
+        if (!this.settlement.isDying) this.arenaRig.stepFixed(dtSec, interact);
+        if (player.stats.hp <= 0 && !this.settlement.isDying) this.settlement.triggerPermadeath(this.bossId);
 
-        const midX = (player.physics.x * 0.65 + this.arenaRig.boss.x * 0.35);
+        const midX = player.physics.x * 0.65 + this.arenaRig.boss.x * 0.35;
         this.cameraRig.setFocus(midX, player.physics.y - 34);
         this.cameraRig.stepSimulation(dtSec);
         this.shaderCtrl.step(dtSec);
@@ -177,6 +181,7 @@ export class BossArenaScene extends Phaser.Scene {
   }
 
   private handleVictoryDeparture(): void {
+    NarrativeStore.archiveCarriedBlueprints();
     const carry = captureRunCarryover(this.arenaRig.player, NarrativeStore.unlockedRunes);
     if (this.bossId === 'boss_01_furnace_warden') {
       this.scene.start('BiomeRunScene', { biomeId: 'biome_03_clockwork_ossuary', seed: 0x51c0ffee, carryover: carry });

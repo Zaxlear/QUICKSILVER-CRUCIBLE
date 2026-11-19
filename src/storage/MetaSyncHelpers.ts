@@ -42,22 +42,34 @@ export async function syncNarrativeIntoMetaRecord(
 
   const nextForge = {
     ...current.forgeTierProgress,
+    ...NarrativeStore.forgeTiers,
     plus_tier_ichor: Math.max(
       current.forgeTierProgress.plus_tier_ichor,
-      Math.round((NarrativeStore.forgePlusPct / 100) * 320) + (extraPatch?.forgeSpendIchor ?? 0)
+      NarrativeStore.forgeTiers.plus_tier_ichor
     ),
     s_tier_ichor: Math.max(
       current.forgeTierProgress.s_tier_ichor,
-      Math.round((NarrativeStore.forgeDoublePlusPct / 100) * 480)
+      NarrativeStore.forgeTiers.s_tier_ichor
+    ),
+    flask_charges: Math.max(
+      current.forgeTierProgress.flask_charges,
+      NarrativeStore.forgeTiers.flask_charges
+    ),
+    gold_reserve_lvl: Math.max(
+      current.forgeTierProgress.gold_reserve_lvl,
+      NarrativeStore.forgeTiers.gold_reserve_lvl
     ),
   };
 
   return bumpLocalMetaRevision(current, {
     unlockedRunes: NarrativeStore.unlockedRunes,
     unlockedWeapons: NarrativeStore.unlockedWeapons,
+    unlockedSkills: NarrativeStore.unlockedSkills,
+    unlockedMutations: NarrativeStore.unlockedMutations,
     discoveredLoreIds: NarrativeStore.discoveredLoreIds,
     seenNpcDialogueIds: NarrativeStore.seenNpcDialogueIds,
     trueEndingFlags: NarrativeStore.collectedSeals,
+    blueprintIchorMap: NarrativeStore.blueprintIchorRecord,
     bestiaryKillCounts: nextKills,
     forgeTierProgress: nextForge,
     maxCrucibleHeat: Math.max(current.maxCrucibleHeat, NarrativeStore.maxCrucibleHeat) as 0 | 1 | 2 | 3 | 4 | 5,

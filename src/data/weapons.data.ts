@@ -530,6 +530,7 @@ export interface RolledWeaponInstance {
   readonly forgeGrade: ForgeGrade;
   readonly bonusStatColor: StatColor | null;
   readonly affixIds: readonly string[];
+  readonly isColorlessLegendary?: boolean;
 }
 
 export interface CombatHudSlotSummary {
@@ -569,6 +570,8 @@ export interface PlayerCombatHudSnapshot {
   readonly predatorStealthActive?: boolean;
   readonly teslaTetherLinked?: boolean;
   readonly carapaceReady?: boolean;
+  readonly cursedKillsRemaining?: number;
+  readonly carriedBlueprintsCount?: number;
 }
 
 export interface WeaponCompareSlotView {
@@ -600,6 +603,7 @@ export interface WeaponCompareModalPayload {
   readonly currentSecondary: WeaponCompareSlotView;
   readonly dpsDeltaVsPrimaryPct: number;
   readonly dpsDeltaVsSecondaryPct: number;
+  readonly recycleGoldValue?: number;
 }
 
 export interface ScrollOptionPreview {

@@ -4,13 +4,13 @@
     "biome_02_vitriol_sewers"
   ],
   "role": "ENTRANCE",
-  "widthTiles": 42,
+  "widthTiles": 44,
   "heightTiles": 30,
   "solidRects": [
     {
       "tileX": 0,
       "tileY": 0,
-      "widthTiles": 42,
+      "widthTiles": 44,
       "heightTiles": 3
     },
     {
@@ -20,7 +20,7 @@
       "heightTiles": 23
     },
     {
-      "tileX": 39,
+      "tileX": 41,
       "tileY": 3,
       "widthTiles": 3,
       "heightTiles": 19
@@ -28,36 +28,59 @@
     {
       "tileX": 0,
       "tileY": 26,
-      "widthTiles": 42,
+      "widthTiles": 20,
       "heightTiles": 4
+    },
+    {
+      "tileX": 20,
+      "tileY": 28,
+      "widthTiles": 10,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 30,
+      "tileY": 26,
+      "widthTiles": 14,
+      "heightTiles": 4
+    },
+    {
+      "tileX": 14,
+      "tileY": 17,
+      "widthTiles": 12,
+      "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
-      "tileX": 12,
-      "tileY": 22,
-      "widthTiles": 8
+      "tileX": 20,
+      "tileY": 26,
+      "widthTiles": 10
     },
     {
-      "tileX": 24,
-      "tileY": 19,
-      "widthTiles": 8
+      "tileX": 8,
+      "tileY": 21,
+      "widthTiles": 7
+    },
+    {
+      "tileX": 28,
+      "tileY": 21,
+      "widthTiles": 7
     }
   ],
   "climbableWalls": [
     {
       "tileX": 3,
-      "topTileY": 8,
-      "heightTiles": 16,
+      "topTileY": 9,
+      "heightTiles": 14,
       "normalSide": "RIGHT"
     }
   ],
   "breakableSlagFloors": [],
   "doorSockets": [
     {
-      "socketId": "e_main",
+      "socketId": "e_out",
       "direction": "EAST",
-      "tileX": 41,
+      "tileX": 43,
       "tileY": 25,
       "apertureTiles": 4,
       "requiredRune": null
@@ -66,35 +89,35 @@
   "enemySpawns": [],
   "trapSlots": [],
   "teleporterTilePos": {
-    "tileX": 9,
+    "tileX": 8,
     "tileY": 25
   },
   "rewardPedestalTilePos": {
-    "tileX": 6,
+    "tileX": 15,
     "tileY": 25
   },
   "loreAnchor": null,
   "lightAnchors": [
     {
-      "tileX": 8,
-      "tileY": 22,
-      "preset": "MERCURY_SILVER",
-      "radiusPx": 190,
-      "flickerAmplitude": 0.06
-    },
-    {
-      "tileX": 22,
-      "tileY": 22,
+      "tileX": 12,
+      "tileY": 23,
       "preset": "VITRIOL_VAT_GREEN",
-      "radiusPx": 185,
-      "flickerAmplitude": 0.1
+      "radiusPx": 190,
+      "flickerAmplitude": 0.08
     },
     {
-      "tileX": 35,
-      "tileY": 22,
-      "preset": "TORCH_AMBER",
+      "tileX": 25,
+      "tileY": 27,
+      "preset": "VITRIOL_VAT_GREEN",
       "radiusPx": 175,
-      "flickerAmplitude": 0.09
+      "flickerAmplitude": 0.12
+    },
+    {
+      "tileX": 37,
+      "tileY": 23,
+      "preset": "TORCH_AMBER",
+      "radiusPx": 165,
+      "flickerAmplitude": 0.1
     }
   ]
 }

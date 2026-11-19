@@ -354,7 +354,7 @@ export const ENEMY_CATALOG: Readonly<Record<EnemyId, EnemySpeciesSpec>> = {
     primaryDamage: 22,
     secondaryWindupMs: 650,
     secondaryDamage: 38,
-    blueprintDropId: 'skl_vitriol_flask',
+    blueprintDropId: 'skl_crimson_transfusion',
   },
   mob_05_brass_sentinel: {
     id: 'mob_05_brass_sentinel',

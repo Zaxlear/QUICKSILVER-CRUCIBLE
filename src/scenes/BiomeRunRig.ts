@@ -1,6 +1,6 @@
 /**
- * 核心肉鸽探索与战斗跑图主控总成（src/scenes/BiomeRunRig.ts）：
- * 编排主角实体、12 武器战斗会话、12 怪 + 4 精英 AI 编队、环境叙事剧情房（LoreRoomSpawner）与跨群落/Boss 路由。
+ * 核心肉鸽探索与战斗跑图主控总成（src/scenes/BiomeRunRig.ts，严格 <= 250 行）：
+ * 编排主角实体、12 武器战斗会话、永久死亡结算（RunSettlementController）、精英守坛与环境叙事。
  */
 
 import Phaser from 'phaser';
@@ -8,6 +8,7 @@ import type { ClockController } from '../core/ClockController';
 import { TILE_SIZE_PX } from '../core/Constants';
 import type { DeterministicRng } from '../core/DeterministicRng';
 import { EventBus, type BiomeId, type CampaignStageTarget, type ViewportSnapshotPayload } from '../core/EventBus';
+import { NarrativeStore } from '../core/NarrativeSessionStore';
 import { BIOME_DAG_CONFIGS } from '../data/runes.data';
 import { PlayerEntity } from '../entities/player/PlayerEntity';
 import { PlayerInventory } from '../entities/player/PlayerInventory';
@@ -29,12 +30,10 @@ import type { WorldTileRenderer } from '../world/WorldTileRenderer';
 import { BiomeCombatSession } from './BiomeCombatSession';
 import { computeRoomBoundsPx, stepRoomAndCorridorFraming, stepTeleporterWarpFraming } from './BiomeRoomFraming';
 import {
-  bindBiomeUiCommands,
-  buildPlayerNpcGuardContext,
-  captureRunCarryover,
-  restorePlayerCarryover,
-  type RunCarryoverSnapshot,
+  bindBiomeUiCommands, buildPlayerNpcGuardContext, captureRunCarryover,
+  restorePlayerCarryover, type RunCarryoverSnapshot,
 } from './BiomeUiCommandBridge';
+import { RunSettlementController } from './RunSettlementController';
 import type { ShowcaseShaderController } from './ShowcaseShaderController';
 
 export class BiomeRunRig {
@@ -48,6 +47,7 @@ export class BiomeRunRig {
   public readonly runes: RuneInteractionController;
   public readonly loreRooms: LoreRoomSpawner;
   public readonly teleporters: TeleporterNetwork;
+  public readonly settlement: RunSettlementController;
 
   private safeCheckpoint: { x: number; y: number };
   private readonly crossedBridges = new Set<string>();
@@ -93,7 +93,12 @@ export class BiomeRunRig {
       },
       (notice) => { this.teleporters.showBanner(notice); this.emitMinimap(); },
       () => routeTo(BIOME_DAG_CONFIGS[dag.biomeId].nextDestinationId),
-      carryover?.unlockedRunes
+      carryover?.unlockedRunes ?? NarrativeStore.unlockedRunes,
+      (ichor, wx, wy) => {
+        this.player.stats.ichor += ichor;
+        this.combat.loot.spawnDynamicScrollDrop(`scroll_reliquary_${dag.biomeId}`, wx + 18, wy);
+        this.combat.particles.damageNumbers.spawnLabel(wx, wy - 36, `+${ichor} ✦ 圣物灵液`, 'PARRY');
+      }
     );
 
     const initInv = carryover ? new PlayerInventory(carryover.primaryWeapon, carryover.secondaryWeapon, carryover.loadout) : undefined;
@@ -104,10 +109,7 @@ export class BiomeRunRig {
       hooks: {
         playAnim: (k) => targets.heroSprite.play(k, true),
         setSpriteFrame: (f) => { targets.heroSprite.anims.stop(); targets.heroSprite.setFrame(f); },
-        spawnGhostTrail: () => {
-          const f = targets.heroSprite.frame.name || this.player.currentFrameKey;
-          this.ghostTrail.spawnGhost(this.player.physics.x, this.player.physics.y, f, this.player.physics.facing < 0, 1.15);
-        },
+        spawnGhostTrail: () => this.ghostTrail.spawnGhost(this.player.physics.x, this.player.physics.y, targets.heroSprite.frame.name || this.player.currentFrameKey, this.player.physics.facing < 0, 1.15),
         emitLocomotionVfx: (kind, dirX) => {
           this.locomotionVfx.emitCue(kind, this.player.physics.x, this.player.physics.y, dirX);
           if (kind === 'double_jump_ring' || kind === 'slam_shockwave') {
@@ -127,9 +129,10 @@ export class BiomeRunRig {
     });
     if (carryover) restorePlayerCarryover(this.player, carryover);
 
+    this.settlement = new RunSettlementController(scene, clock, this.player, dag.biomeId, dag.seed, () => this.teleporters.activeRoomId);
     this.combat = new BiomeCombatSession(
       scene, registrar, dag, baked, rootRng, this.player, clock, cameraRig, lighting, postFx,
-      targets.heroSprite, () => this.player.respawnAt(this.safeCheckpoint.x, this.safeCheckpoint.y)
+      targets.heroSprite, () => this.settlement.triggerPermadeath('biome_combat')
     );
 
     cameraRig.setWorldBounds(computeRoomBoundsPx(startNode));
@@ -146,8 +149,7 @@ export class BiomeRunRig {
     window.addEventListener('keydown', this.mapKeyHandler);
 
     this.unbindUi = bindBiomeUiCommands({
-      clock, player: this.player, cameraRig, lighting, postFx, shaderCtrl,
-      runes: this.runes, teleporters: this.teleporters,
+      clock, player: this.player, cameraRig, lighting, postFx, shaderCtrl, runes: this.runes, teleporters: this.teleporters,
       getSafeCheckpoint: () => this.safeCheckpoint,
       onEmitMinimap: () => this.emitMinimap(),
       onStateChanged,
@@ -164,10 +166,12 @@ export class BiomeRunRig {
     this.player.ctx.hasCalcinedRamRune = this.runes.hasRune('rune_calcined_ram');
     this.player.ctx.inClimbableVineZone = this.runes.isInsideVineZone(this.player.physics.x, this.player.physics.y);
 
-    const locked = this.teleporters.isWarping || this.runes.isInConduitTransit;
+    const locked = this.teleporters.isWarping || this.runes.isInConduitTransit || this.settlement.isDying;
     const interactPressed = !locked && this.actionMap.wasJustPressed('interact');
-    if (!locked) this.player.fixedUpdate(dtSec);
-    this.combat.stepFixed(dtSec, interactPressed, this.teleporters.activeRoomId);
+    const recycleHeld = !locked && (this.actionMap.isHeld('recycle') || (this.actionMap.activeDevice === 'GAMEPAD' && this.actionMap.isHeld('attack_secondary')));
+    if (!this.teleporters.isWarping && !this.runes.isInConduitTransit) this.player.fixedUpdate(dtSec);
+    this.combat.stepFixed(dtSec, interactPressed, this.teleporters.activeRoomId, recycleHeld);
+    if (this.player.stats.hp <= 0 && !this.settlement.isDying) this.settlement.triggerPermadeath('lethal_damage');
 
     const { x: px, y: py, colliderWidth: cw, colliderHeight: ch, vx } = this.player.physics;
     this.loreRooms.stepFixed({
@@ -190,7 +194,7 @@ export class BiomeRunRig {
       (kind, ratio, dirX) => {
         if (locked) return;
         const res = this.player.receiveIncomingHit(Math.max(12, Math.round(this.player.stats.maxHp * ratio)), dirX, false);
-        if (res === 'dead') this.player.respawnAt(this.safeCheckpoint.x, this.safeCheckpoint.y);
+        if (res === 'dead') this.settlement.triggerPermadeath(kind.toLowerCase());
         else if (kind === 'SPIKE_BED' && res === 'hurt') this.snapPlayerTo(this.safeCheckpoint.x, this.safeCheckpoint.y);
       },
       this.combat.targetViews,
@@ -198,7 +202,7 @@ export class BiomeRunRig {
       () => {
         if (!locked) {
           this.combat.particles.damageNumbers.spawnLabel(px, py - 34, 'PSN -5', 'REACTION');
-          if (this.player.receiveIncomingHit(5, 1, false) === 'dead') this.player.respawnAt(this.safeCheckpoint.x, this.safeCheckpoint.y);
+          if (this.player.receiveIncomingHit(5, 1, false) === 'dead') this.settlement.triggerPermadeath('acid_poison');
         }
       }
     );
@@ -206,7 +210,8 @@ export class BiomeRunRig {
     this.runes.stepFixed(
       dtSec, px, py, interactPressed && !this.combat.modals.isModalOpen,
       (nx, ny) => this.snapPlayerTo(nx, ny),
-      () => this.ghostTrail.spawnGhost(this.player.physics.x, this.player.physics.y, 'hero_dodge_roll_2', this.player.physics.facing < 0, 1.15)
+      () => this.ghostTrail.spawnGhost(this.player.physics.x, this.player.physics.y, 'hero_dodge_roll_2', this.player.physics.facing < 0, 1.15),
+      this.combat.agents
     );
 
     const teleDirty = stepTeleporterWarpFraming(

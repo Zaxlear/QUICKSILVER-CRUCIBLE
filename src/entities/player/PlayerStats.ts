@@ -31,8 +31,9 @@ export class PlayerStats {
 
   public flaskCharges = 1;
   public maxFlaskCharges = 1;
-  public gold = 150;
-  public ichor = 45;
+  public gold = 0;
+  public ichor = 0;
+  public cursedKillsRemaining = 0;
   public safeLoreFreezeActive = false;
 
   private rapierCritRemainingMs = 0;
@@ -46,27 +47,12 @@ export class PlayerStats {
     this.hp = this.maxHp;
   }
 
-  public get snapshotLevels(): Readonly<Record<StatColor, number>> {
-    return { ...this.levels };
-  }
-
-  public get isRallyFrozen(): boolean {
-    return this.rallyOrangeHp > 0 && this.rallyFreezeRemainingMs > 0;
-  }
-
-  public get rapierCritWindowMs(): number {
-    return this.rapierCritRemainingMs;
-  }
-
-  public get hasTwinbladesBleedHaste(): boolean {
-    return this.twinbladesHasteRemainingMs > 0;
-  }
-
+  public get snapshotLevels(): Readonly<Record<StatColor, number>> { return { ...this.levels }; }
+  public get isRallyFrozen(): boolean { return this.rallyOrangeHp > 0 && this.rallyFreezeRemainingMs > 0; }
+  public get rapierCritWindowMs(): number { return this.rapierCritRemainingMs; }
+  public get hasTwinbladesBleedHaste(): boolean { return this.twinbladesHasteRemainingMs > 0; }
   public get isCleaverRhythmWindowOpen(): boolean {
-    return (
-      this.cleaverS1ElapsedMs >= 0 &&
-      isWithinCleaverRhythmWindow(this.cleaverS1ElapsedMs, this.cleaverMashedEarly)
-    );
+    return this.cleaverS1ElapsedMs >= 0 && isWithinCleaverRhythmWindow(this.cleaverS1ElapsedMs, this.cleaverMashedEarly);
   }
 
   public applyScrollUpgrade(color: StatColor): void {
@@ -216,6 +202,18 @@ export class PlayerStats {
     this.rapierCritRemainingMs = 0;
     this.twinbladesHasteRemainingMs = 0;
     this.clearCleaverRhythm();
+  }
+
+  public resetForFreshSanctumRun(inheritedGold = 0, flaskCap = 1): void {
+    this.levels.rubedo = 1;
+    this.levels.citrinitas = 1;
+    this.levels.albedo = 1;
+    this.maxHp = COMBAT_CONSTANTS.BASE_PLAYER_HP;
+    this.maxFlaskCharges = Math.max(1, Math.min(4, Math.floor(flaskCap)));
+    this.gold = Math.max(0, Math.floor(inheritedGold));
+    this.ichor = 0;
+    this.cursedKillsRemaining = 0;
+    this.resetFullHealth();
   }
 
   public stepFixed(dtSec: number): void {

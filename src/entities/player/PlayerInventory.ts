@@ -4,7 +4,9 @@
  */
 
 import type { DeterministicRng } from '../../core/DeterministicRng';
+import { NarrativeStore } from '../../core/NarrativeSessionStore';
 import { AFFIX_CATALOG } from '../../data/affixes.data';
+import { computeGearRecycleGold } from '../../data/economy.data';
 import {
   ALL_STAT_COLORS,
   FORGE_GRADE_BONUS,
@@ -20,6 +22,7 @@ import {
   type WeaponId,
   type WeaponSlotId,
 } from '../../data/weapons.data';
+import { resolveHighestStatColor } from './ForgeGradeRoller';
 import { PlayerSkillAndMutationLoadout } from './PlayerSkillAndMutationLoadout';
 import {
   computeWeaponScaledDps,
@@ -106,14 +109,15 @@ export class PlayerInventory {
     lootRng: DeterministicRng,
     weaponId: WeaponId,
     level: QualityTier = 'II',
-    forgeGrade: ForgeGrade = 'PLUS'
+    forgeGrade: ForgeGrade = 'PLUS',
+    isColorlessLegendary = false
   ): RolledWeaponInstance {
     const def = WEAPON_CATALOG[weaponId];
     const eligible = AFFIX_CATALOG.filter((a) => isAffixEligibleForWeapon(a, def.category));
-    const chosenIds = rollDeterministicAffixIds(lootRng, eligible, forgeGrade);
-
+    const chosenIds = rollDeterministicAffixIds(lootRng, eligible, isColorlessLegendary ? 'S' : forgeGrade);
+    const effectiveGrade: ForgeGrade = isColorlessLegendary ? 'S' : forgeGrade;
     const bonusStatColor =
-      FORGE_GRADE_BONUS[forgeGrade].bonusScrollCount > 0
+      FORGE_GRADE_BONUS[effectiveGrade].bonusScrollCount > 0
         ? def.colors[0] ?? lootRng.pick(ALL_STAT_COLORS)
         : null;
 
@@ -122,9 +126,10 @@ export class PlayerInventory {
       instanceId: `wpn_inst_${this.instanceSeq}_${weaponId}`,
       weaponId,
       level,
-      forgeGrade,
+      forgeGrade: effectiveGrade,
       bonusStatColor,
       affixIds: chosenIds,
+      ...(isColorlessLegendary ? { isColorlessLegendary: true } : {}),
     };
   }
 
@@ -160,11 +165,11 @@ export class PlayerInventory {
     const inst = this.getSlotWeapon(slot);
     const def = WEAPON_CATALOG[inst.weaponId];
     const { baseDps } = computeWeaponScaledDps(inst, stats);
-    const leadColor = def.colors[0] ?? 'rubedo';
+    const leadColor = inst.isColorlessLegendary ? resolveHighestStatColor(stats) : (def.colors[0] ?? 'rubedo');
     return {
       slot,
       weaponId: inst.weaponId,
-      nameZh: def.nameZh,
+      nameZh: inst.isColorlessLegendary ? `★${def.nameZh}` : def.nameZh,
       iconSlot: def.iconSlot,
       qualityBadge: formatWeaponQualityBadge(inst.level, inst.forgeGrade),
       colorHex: STAT_COLOR_META[leadColor].accentHex,
@@ -200,6 +205,12 @@ export class PlayerInventory {
       ),
       dpsDeltaVsSecondaryPct: Math.round(
         ((candView.scaledDps - secView.scaledDps) / Math.max(1, secView.scaledDps)) * 100
+      ),
+      recycleGoldValue: computeGearRecycleGold(
+        'WEAPON',
+        candidate.level,
+        candidate.forgeGrade,
+        (NarrativeStore.forgeTiers.recycle_lvl ?? 0) > 0
       ),
     };
   }

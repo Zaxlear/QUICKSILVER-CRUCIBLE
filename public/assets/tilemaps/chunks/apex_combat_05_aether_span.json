@@ -1,103 +1,127 @@
 {
-  "chunkId": "apex_combat_03_cistern",
+  "chunkId": "apex_combat_05_aether_span",
   "biomePool": [
     "biome_04_crucible_apex"
   ],
   "role": "COMBAT",
   "widthTiles": 46,
-  "heightTiles": 30,
+  "heightTiles": 36,
   "solidRects": [
     {
       "tileX": 0,
       "tileY": 0,
-      "widthTiles": 21,
+      "widthTiles": 20,
       "heightTiles": 3
     },
     {
-      "tileX": 25,
+      "tileX": 24,
       "tileY": 0,
-      "widthTiles": 21,
+      "widthTiles": 22,
       "heightTiles": 3
     },
     {
       "tileX": 0,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 19
+      "heightTiles": 23
+    },
+    {
+      "tileX": 0,
+      "tileY": 30,
+      "widthTiles": 3,
+      "heightTiles": 2
     },
     {
       "tileX": 43,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 19
+      "heightTiles": 17
+    },
+    {
+      "tileX": 43,
+      "tileY": 24,
+      "widthTiles": 3,
+      "heightTiles": 8
     },
     {
       "tileX": 0,
-      "tileY": 26,
-      "widthTiles": 21,
-      "heightTiles": 4
-    },
-    {
-      "tileX": 25,
-      "tileY": 26,
-      "widthTiles": 21,
-      "heightTiles": 4
-    },
-    {
-      "tileX": 16,
-      "tileY": 16,
+      "tileY": 30,
       "widthTiles": 14,
+      "heightTiles": 6
+    },
+    {
+      "tileX": 18,
+      "tileY": 34,
+      "widthTiles": 14,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 32,
+      "tileY": 24,
+      "widthTiles": 14,
+      "heightTiles": 12
+    },
+    {
+      "tileX": 19,
+      "tileY": 26,
+      "widthTiles": 9,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 10,
+      "tileY": 19,
+      "widthTiles": 9,
       "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
+      "tileX": 14,
+      "tileY": 30,
+      "widthTiles": 4
+    },
+    {
+      "tileX": 21,
+      "tileY": 30,
+      "widthTiles": 9
+    },
+    {
+      "tileX": 25,
+      "tileY": 21,
+      "widthTiles": 6
+    },
+    {
       "tileX": 19,
       "tileY": 22,
-      "widthTiles": 10
+      "widthTiles": 6
     },
     {
       "tileX": 19,
       "tileY": 18,
-      "widthTiles": 10
+      "widthTiles": 6
     },
     {
       "tileX": 19,
       "tileY": 14,
-      "widthTiles": 8
+      "widthTiles": 6
     },
     {
       "tileX": 19,
       "tileY": 10,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 20,
-      "tileY": 6,
       "widthTiles": 6
     },
     {
-      "tileX": 7,
-      "tileY": 21,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 31,
-      "tileY": 21,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 21,
-      "tileY": 26,
-      "widthTiles": 4
+      "tileX": 19,
+      "tileY": 6,
+      "widthTiles": 6
     }
   ],
   "climbableWalls": [
     {
-      "tileX": 3,
+      "tileX": 42,
       "topTileY": 5,
-      "heightTiles": 18,
-      "normalSide": "RIGHT"
+      "heightTiles": 16,
+      "normalSide": "LEFT"
     }
   ],
   "breakableSlagFloors": [],
@@ -106,7 +130,7 @@
       "socketId": "w_main",
       "direction": "WEST",
       "tileX": 0,
-      "tileY": 25,
+      "tileY": 29,
       "apertureTiles": 4,
       "requiredRune": null
     },
@@ -114,14 +138,14 @@
       "socketId": "e_main",
       "direction": "EAST",
       "tileX": 45,
-      "tileY": 25,
+      "tileY": 23,
       "apertureTiles": 4,
       "requiredRune": null
     },
     {
       "socketId": "n_sock",
       "direction": "NORTH",
-      "tileX": 21,
+      "tileX": 20,
       "tileY": 0,
       "apertureTiles": 4,
       "requiredRune": null
@@ -129,30 +153,16 @@
     {
       "socketId": "s_sock",
       "direction": "SOUTH",
-      "tileX": 21,
-      "tileY": 29,
+      "tileX": 14,
+      "tileY": 35,
       "apertureTiles": 4,
       "requiredRune": null
     }
   ],
   "enemySpawns": [
     {
-      "slotId": "sp_01",
-      "tileX": 11,
-      "tileY": 25,
-      "allowedArchetypes": [
-        "MELEE_FODDER",
-        "SHIELD_TANK"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        5,
-        18
-      ]
-    },
-    {
-      "slotId": "sp_02",
-      "tileX": 34,
+      "slotId": "sp_1",
+      "tileX": 23,
       "tileY": 25,
       "allowedArchetypes": [
         "FLANKER",
@@ -160,76 +170,77 @@
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        27,
+        20,
+        27
+      ]
+    },
+    {
+      "slotId": "sp_2",
+      "tileX": 14,
+      "tileY": 18,
+      "allowedArchetypes": [
+        "RANGED_HARASS",
+        "SUPPORT_CASTER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        11,
+        18
+      ]
+    },
+    {
+      "slotId": "sp_3",
+      "tileX": 37,
+      "tileY": 23,
+      "allowedArchetypes": [
+        "SHIELD_TANK",
+        "MELEE_FODDER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        33,
         41
-      ]
-    },
-    {
-      "slotId": "sp_03",
-      "tileX": 23,
-      "tileY": 15,
-      "allowedArchetypes": [
-        "SUPPORT_CASTER",
-        "RANGED_HARASS"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        17,
-        29
-      ]
-    },
-    {
-      "slotId": "sp_04",
-      "tileX": 35,
-      "tileY": 20,
-      "allowedArchetypes": [
-        "RANGED_HARASS"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        31,
-        38
       ]
     }
   ],
   "trapSlots": [
     {
-      "slotId": "tr_2_a",
-      "trapType": "VOLTAIC_ARC_GATE",
-      "tileX": 16,
-      "tileY": 25,
-      "widthTiles": 2,
-      "phaseOffsetMs": 900,
-      "cyclePeriodMs": 2800
+      "slotId": "tr_spike_5",
+      "trapType": "SPIKE_BED",
+      "tileX": 20,
+      "tileY": 33,
+      "widthTiles": 10,
+      "phaseOffsetMs": 0,
+      "cyclePeriodMs": 2000
     }
   ],
   "teleporterTilePos": {
     "tileX": 6,
-    "tileY": 25
+    "tileY": 29
   },
   "rewardPedestalTilePos": null,
   "loreAnchor": null,
   "lightAnchors": [
     {
       "tileX": 9,
-      "tileY": 23,
+      "tileY": 27,
       "preset": "MERCURY_SILVER",
-      "radiusPx": 185,
-      "flickerAmplitude": 0.1
-    },
-    {
-      "tileX": 23,
-      "tileY": 14,
-      "preset": "FURNACE_CRIMSON",
       "radiusPx": 195,
       "flickerAmplitude": 0.08
     },
     {
-      "tileX": 37,
-      "tileY": 23,
-      "preset": "MERCURY_SILVER",
-      "radiusPx": 185,
+      "tileX": 23,
+      "tileY": 16,
+      "preset": "FURNACE_CRIMSON",
+      "radiusPx": 205,
       "flickerAmplitude": 0.1
+    },
+    {
+      "tileX": 37,
+      "tileY": 21,
+      "preset": "VOLTAIC_CYAN",
+      "radiusPx": 195,
+      "flickerAmplitude": 0.08
     }
   ]
 }

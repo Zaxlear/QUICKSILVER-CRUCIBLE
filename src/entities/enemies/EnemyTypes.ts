@@ -6,8 +6,22 @@ import type Phaser from 'phaser';
 import type { SolidWallRect } from '../../combat/CombatTypes';
 import { DepthLayer } from '../../core/Constants';
 import { ELITE_AFFIX_CATALOG, ELITE_SCALING, type EliteAffixId, type EnemyId } from '../../data/biomes.data';
+import type { TrapKind } from '../../data/runes.data';
 import type { IWorldDisplayRegistrar } from '../../world/ParallaxComposer';
 import type { BaseEnemy } from './BaseEnemy';
+
+export interface EnemyOneWayRect {
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+}
+
+export interface EnemyHazardRect {
+  readonly kind: TrapKind;
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+}
 
 export function spawnEnemyLitSprite(
   scene: Phaser.Scene | null,
@@ -121,8 +135,11 @@ export interface EnemyStepContext {
   readonly playerFacing: -1 | 1;
   readonly playerStealthed: boolean;
   readonly solidRects: readonly SolidWallRect[];
+  readonly oneWayPlatforms?: readonly EnemyOneWayRect[];
+  readonly hazardZones?: readonly EnemyHazardRect[];
   readonly roomAllies: readonly BaseEnemy[];
   readonly viewBounds?: EnemyViewBounds;
+  onFallDamageFeedback?: (victim: BaseEnemy, damage: number, killed: boolean) => void;
   onStrikePlayer: (
     damage: number,
     dirX: -1 | 1,

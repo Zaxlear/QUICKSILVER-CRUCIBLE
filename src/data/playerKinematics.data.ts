@@ -24,6 +24,7 @@ export type ActionId =
   | 'skill_2'
   | 'heal_flask'
   | 'interact'
+  | 'recycle'
   | 'pause';
 
 export type InputDeviceKind = 'KEYBOARD_MOUSE' | 'GAMEPAD' | 'TOUCH';
@@ -37,6 +38,7 @@ export const ALL_ACTION_IDS: readonly ActionId[] = [
   'skill_2',
   'heal_flask',
   'interact',
+  'recycle',
   'pause',
 ] as const;
 
@@ -228,6 +230,7 @@ export const DEFAULT_KEYBOARD_BINDINGS: Readonly<Record<ActionId, readonly strin
   skill_2: ['KeyC', 'KeyI'],
   heal_flask: ['KeyF', 'KeyH'],
   interact: ['KeyE'],
+  recycle: ['KeyR'],
   pause: ['Escape'],
 } as const;
 

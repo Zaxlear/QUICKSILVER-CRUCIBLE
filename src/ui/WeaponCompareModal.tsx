@@ -16,18 +16,10 @@ export interface WeaponCompareModalProps {
 }
 
 function DeltaBadge({ pct }: { readonly pct: number }) {
-  if (pct === 0) {
-    return <span class="text-[10px] font-bold text-[#9AA5B8]">±0% DPS</span>;
-  }
+  if (pct === 0) return <span class="text-[10px] font-bold text-[#9AA5B8]">±0% DPS</span>;
   const up = pct > 0;
   return (
-    <span
-      class={`px-1.5 py-0.5 text-[10px] font-bold border ${
-        up
-          ? 'bg-[#0B1F1D] border-[#3CE682] text-[#3CE682]'
-          : 'bg-[#240B12] border-[#E11D48] text-[#FB7185]'
-      }`}
-    >
+    <span class={`px-1.5 py-0.5 text-[10px] font-bold border ${up ? 'bg-[#0B1F1D] border-[#3CE682] text-[#3CE682]' : 'bg-[#240B12] border-[#E11D48] text-[#FB7185]'}`}>
       {up ? `▲ +${pct}% DPS` : `▼ ${pct}% DPS`}
     </span>
   );
@@ -123,15 +115,28 @@ export function WeaponCompareModal({ payload }: WeaponCompareModalProps) {
             </span>
             <h2 class="text-sm font-bold text-[#F8FAFC]">选择替换槽位以拾取新武器</h2>
           </div>
-          <button
-            type="button"
-            data-ui-interactive="true"
-            data-testid="btn-cancel-compare"
-            onClick={() => EventBus.emit('ui:command:resolve_weapon_compare', { action: 'cancel' })}
-            class="cursor-pointer px-2.5 py-1 bg-[#240B12] hover:bg-[#3B121E] border border-[#E11D48] text-[10px] font-bold text-[#FB7185]"
-          >
-            [留在地上 ESC]
-          </button>
+          <div class="flex items-center gap-2">
+            {(payload.recycleGoldValue ?? 0) > 0 && (
+              <button
+                type="button"
+                data-ui-interactive="true"
+                data-testid="btn-recycle-weapon-modal"
+                onClick={() => EventBus.emit('ui:command:recycle_floor_loot', { lootId: payload.floorLootId })}
+                class="cursor-pointer px-2.5 py-1 bg-[#291A0E] hover:bg-[#3D2817] border border-[#FBBF24] text-[10px] font-bold text-[#FBBF24]"
+              >
+                [♻ 回收 +{payload.recycleGoldValue}G]
+              </button>
+            )}
+            <button
+              type="button"
+              data-ui-interactive="true"
+              data-testid="btn-cancel-compare"
+              onClick={() => EventBus.emit('ui:command:resolve_weapon_compare', { action: 'cancel' })}
+              class="cursor-pointer px-2.5 py-1 bg-[#240B12] hover:bg-[#3B121E] border border-[#E11D48] text-[10px] font-bold text-[#FB7185]"
+            >
+              [留在地上 ESC]
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -218,24 +223,8 @@ export function WeaponCompareModal({ payload }: WeaponCompareModalProps) {
 
           {/* 右侧：当前主副手槽位对比与一键替换 */}
           <div class="md:col-span-6 flex flex-col gap-2.5 justify-between">
-            <CurrentEquippedCard
-              label="主手槽位 [J / 1]"
-              slotView={currentPrimary}
-              deltaPct={payload.dpsDeltaVsPrimaryPct}
-              testId="btn-equip-primary"
-              onReplace={() =>
-                EventBus.emit('ui:command:resolve_weapon_compare', { action: 'equip_primary' })
-              }
-            />
-            <CurrentEquippedCard
-              label="副手槽位 [K / 2]"
-              slotView={currentSecondary}
-              deltaPct={payload.dpsDeltaVsSecondaryPct}
-              testId="btn-equip-secondary"
-              onReplace={() =>
-                EventBus.emit('ui:command:resolve_weapon_compare', { action: 'equip_secondary' })
-              }
-            />
+            <CurrentEquippedCard label="主手槽位 [J / 1]" slotView={currentPrimary} deltaPct={payload.dpsDeltaVsPrimaryPct} testId="btn-equip-primary" onReplace={() => EventBus.emit('ui:command:resolve_weapon_compare', { action: 'equip_primary' })} />
+            <CurrentEquippedCard label="副手槽位 [K / 2]" slotView={currentSecondary} deltaPct={payload.dpsDeltaVsSecondaryPct} testId="btn-equip-secondary" onReplace={() => EventBus.emit('ui:command:resolve_weapon_compare', { action: 'equip_secondary' })} />
           </div>
         </div>
       </div>

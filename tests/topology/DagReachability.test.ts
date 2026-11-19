@@ -166,6 +166,62 @@ describe('Milestone 4 & 7 — 55-Chunk Multi-Biome Library, 2,000-Seed DAG Stitc
     }
   });
 
+  it('proves 100% zero-rune (unlockedRunes = []) deck-to-deck traversal (dy_up <= 96px, dx_gap <= 144px) across every main-spine chunk', () => {
+    const unlockedRunes: readonly string[] = [];
+    expect(unlockedRunes).toHaveLength(0);
+
+    const ungatedRoles = new Set(['ENTRANCE', 'COMBAT', 'TELEPORTER_HUB', 'ELITE', 'SHOP', 'LORE', 'CURSED_VAULT', 'EXIT']);
+    for (const chunk of allChunks) {
+      if (!ungatedRoles.has(chunk.role)) continue;
+      const decks: Array<{ x0: number; x1: number; y: number }> = [];
+      for (const r of chunk.solidRects) {
+        if (r.tileY >= 3) decks.push({ x0: r.tileX * 16, x1: (r.tileX + r.widthTiles) * 16, y: r.tileY * 16 });
+      }
+      for (const p of chunk.oneWayPlatforms) {
+        decks.push({ x0: p.tileX * 16, x1: (p.tileX + p.widthTiles) * 16, y: p.tileY * 16 });
+      }
+
+      const canHopWithoutRunes = (a: { x0: number; x1: number; y: number }, b: { x0: number; x1: number; y: number }): boolean => {
+        const horizGap = Math.max(0, a.x0 - b.x1, b.x0 - a.x1);
+        if (horizGap > 144) return false;
+        // Going UP from a to b means b.y < a.y -> a.y - b.y <= 96px (double jump envelope); going DOWN is gravity-assisted
+        const riseUpPx = a.y - b.y;
+        return riseUpPx <= 96;
+      };
+
+      const ungatedHorizSockets = chunk.doorSockets.filter(
+        (s) => s.requiredRune === null && (s.direction === 'WEST' || s.direction === 'EAST')
+      );
+      if (ungatedHorizSockets.length < 2) continue;
+
+      const findSocketDeckIdx = (sx: number, sy: number): number =>
+        decks.findIndex((d) => Math.abs(d.y - sy) <= 4 && sx + 48 >= d.x0 && sx <= d.x1 + 16);
+
+      const startSock = ungatedHorizSockets[0]!;
+      const startIdx = findSocketDeckIdx(startSock.tileX * 16, (startSock.tileY + 1) * 16);
+      expect(startIdx).toBeGreaterThanOrEqual(0);
+
+      // Zero-rune directed BFS over decks (no climbableWalls, no breakableSlagFloors!)
+      const visited = new Set<number>([startIdx]);
+      const q = [startIdx];
+      while (q.length > 0) {
+        const u = q.shift()!;
+        for (let v = 0; v < decks.length; v++) {
+          if (!visited.has(v) && canHopWithoutRunes(decks[u]!, decks[v]!)) {
+            visited.add(v);
+            q.push(v);
+          }
+        }
+      }
+
+      for (const targetSock of ungatedHorizSockets.slice(1)) {
+        const targetIdx = findSocketDeckIdx(targetSock.tileX * 16, (targetSock.tileY + 1) * 16);
+        expect(targetIdx, `Chunk ${chunk.chunkId} socket ${targetSock.socketId} missing deck`).toBeGreaterThanOrEqual(0);
+        expect(visited.has(targetIdx), `Chunk ${chunk.chunkId} cannot traverse ${startSock.socketId} -> ${targetSock.socketId} with unlockedRunes=[]`).toBe(true);
+      }
+    }
+  });
+
   it('guarantees bit-identical DAG replay and seamless 0px-snag sprint across stitched corridor bridges', () => {
     const dagA = generateBiomeDag(new DeterministicRng(0x51c0ffee), 'biome_03_clockwork_ossuary', allChunks);
     const dagB = generateBiomeDag(new DeterministicRng(0x51c0ffee), 'biome_03_clockwork_ossuary', allChunks);

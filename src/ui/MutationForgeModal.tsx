@@ -64,6 +64,18 @@ export function MutationForgeModal({ payload }: MutationForgeModalProps) {
             <button
               type="button"
               data-ui-interactive="true"
+              data-testid="btn-open-collector-from-forge"
+              onClick={() => {
+                EventBus.emit('ui:command:toggle_mutation_forge', { open: false });
+                EventBus.emit('ui:command:open_collector_modal', {});
+              }}
+              class="cursor-pointer px-2.5 py-1 bg-[#0B1F1D] hover:bg-[#12332F] border border-[#38BDF8] text-[10px] font-bold text-[#38BDF8]"
+            >
+              [📜 秘银蓝图圣柜]
+            </button>
+            <button
+              type="button"
+              data-ui-interactive="true"
               data-testid="btn-respec-mutations"
               disabled={equippedSet.size === 0 || payload.gold < payload.respecCostGold}
               onClick={() => EventBus.emit('ui:command:respec_mutations', {})}

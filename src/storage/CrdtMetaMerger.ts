@@ -53,17 +53,24 @@ export function maxNumericMapMerge(
   return merged;
 }
 
-/** 合并大熔炉与灵液瓶等阶进度（每项单调不减） */
+/** 合并大熔炉与灵液瓶等阶进度（每项单调不减，可选扩展字段按需保留确保幂等 SHA-256） */
 export function mergeForgeTierProgress(
   a: ForgeTierProgressMap,
   b: ForgeTierProgressMap
 ): ForgeTierProgressMap {
-  return {
+  const merged: Record<string, number> = {
     plus_tier_ichor: Math.max(0, Math.floor(a.plus_tier_ichor), Math.floor(b.plus_tier_ichor)),
     s_tier_ichor: Math.max(0, Math.floor(a.s_tier_ichor), Math.floor(b.s_tier_ichor)),
     flask_charges: Math.max(1, Math.floor(a.flask_charges), Math.floor(b.flask_charges)),
     gold_reserve_lvl: Math.max(0, Math.floor(a.gold_reserve_lvl), Math.floor(b.gold_reserve_lvl)),
   };
+  const optKeys = ['pp_tier_ichor', 'recycle_lvl', 'starter_tubes_lvl', 'shop_restock_lvl'] as const;
+  for (const key of optKeys) {
+    if (a[key] !== undefined || b[key] !== undefined) {
+      merged[key] = Math.max(0, Math.floor(a[key] ?? 0), Math.floor(b[key] ?? 0));
+    }
+  }
+  return merged as unknown as ForgeTierProgressMap;
 }
 
 function clampCrucibleHeat(a: number, b: number): 0 | 1 | 2 | 3 | 4 | 5 {

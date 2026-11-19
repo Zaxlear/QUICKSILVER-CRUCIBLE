@@ -23,7 +23,13 @@
       "tileX": 0,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 19
+      "heightTiles": 17
+    },
+    {
+      "tileX": 0,
+      "tileY": 24,
+      "widthTiles": 3,
+      "heightTiles": 2
     },
     {
       "tileX": 45,
@@ -33,60 +39,73 @@
     },
     {
       "tileX": 0,
+      "tileY": 24,
+      "widthTiles": 15,
+      "heightTiles": 6
+    },
+    {
+      "tileX": 15,
+      "tileY": 28,
+      "widthTiles": 16,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 31,
       "tileY": 26,
-      "widthTiles": 48,
+      "widthTiles": 17,
       "heightTiles": 4
     },
     {
-      "tileX": 17,
+      "tileX": 18,
       "tileY": 16,
-      "widthTiles": 14,
+      "widthTiles": 12,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 6,
+      "tileY": 13,
+      "widthTiles": 8,
       "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
-      "tileX": 20,
-      "tileY": 22,
-      "widthTiles": 10
+      "tileX": 16,
+      "tileY": 25,
+      "widthTiles": 6
     },
     {
-      "tileX": 20,
-      "tileY": 18,
-      "widthTiles": 10
+      "tileX": 24,
+      "tileY": 25,
+      "widthTiles": 6
     },
     {
-      "tileX": 20,
-      "tileY": 14,
+      "tileX": 11,
+      "tileY": 19,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 32,
+      "tileY": 20,
       "widthTiles": 8
     },
     {
       "tileX": 20,
-      "tileY": 10,
+      "tileY": 11,
       "widthTiles": 8
     },
     {
       "tileX": 21,
-      "tileY": 6,
+      "tileY": 7,
       "widthTiles": 6
-    },
-    {
-      "tileX": 7,
-      "tileY": 21,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 33,
-      "tileY": 21,
-      "widthTiles": 8
     }
   ],
   "climbableWalls": [
     {
-      "tileX": 3,
-      "topTileY": 5,
-      "heightTiles": 18,
-      "normalSide": "RIGHT"
+      "tileX": 44,
+      "topTileY": 7,
+      "heightTiles": 14,
+      "normalSide": "LEFT"
     }
   ],
   "breakableSlagFloors": [],
@@ -95,7 +114,7 @@
       "socketId": "w_main",
       "direction": "WEST",
       "tileX": 0,
-      "tileY": 25,
+      "tileY": 23,
       "apertureTiles": 4,
       "requiredRune": null
     },
@@ -118,99 +137,86 @@
   ],
   "enemySpawns": [
     {
-      "slotId": "sp_01",
-      "tileX": 11,
-      "tileY": 25,
+      "slotId": "sp_1",
+      "tileX": 9,
+      "tileY": 23,
       "allowedArchetypes": [
         "MELEE_FODDER",
         "SHIELD_TANK"
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        5,
-        18
+        4,
+        13
       ]
     },
     {
-      "slotId": "sp_02",
-      "tileX": 36,
+      "slotId": "sp_2",
+      "tileX": 37,
       "tileY": 25,
       "allowedArchetypes": [
-        "FLANKER",
+        "RANGED_HARASS",
         "MELEE_FODDER"
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        29,
+        32,
         43
       ]
     },
     {
-      "slotId": "sp_03",
-      "tileX": 24,
+      "slotId": "sp_3",
+      "tileX": 23,
       "tileY": 15,
       "allowedArchetypes": [
-        "SUPPORT_CASTER",
-        "RANGED_HARASS"
+        "RANGED_HARASS",
+        "SUPPORT_CASTER"
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        18,
-        30
-      ]
-    },
-    {
-      "slotId": "sp_04",
-      "tileX": 37,
-      "tileY": 20,
-      "allowedArchetypes": [
-        "RANGED_HARASS"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        33,
-        40
+        19,
+        29
       ]
     }
   ],
   "trapSlots": [
     {
-      "slotId": "tr_0_a",
+      "slotId": "tr_acid_1",
       "trapType": "ACID_GEYSER",
-      "tileX": 16,
-      "tileY": 25,
-      "widthTiles": 4,
+      "tileX": 17,
+      "tileY": 27,
+      "widthTiles": 12,
       "phaseOffsetMs": 0,
-      "cyclePeriodMs": 3200
+      "cyclePeriodMs": 3100
     }
   ],
   "teleporterTilePos": {
     "tileX": 6,
-    "tileY": 25
+    "tileY": 23
   },
   "rewardPedestalTilePos": null,
   "loreAnchor": null,
   "lightAnchors": [
     {
       "tileX": 9,
-      "tileY": 23,
+      "tileY": 21,
       "preset": "VITRIOL_VAT_GREEN",
       "radiusPx": 185,
-      "flickerAmplitude": 0.1
+      "flickerAmplitude": 0.09
     },
     {
       "tileX": 24,
-      "tileY": 14,
+      "tileY": 16,
       "preset": "TORCH_AMBER",
-      "radiusPx": 195,
-      "flickerAmplitude": 0.08
+      "radiusPx": 175,
+      "flickerAmplitude": 0.12
     },
     {
       "tileX": 39,
       "tileY": 23,
       "preset": "VITRIOL_VAT_GREEN",
       "radiusPx": 185,
-      "flickerAmplitude": 0.1
+      "flickerAmplitude": 0.09
     }
   ]
 }

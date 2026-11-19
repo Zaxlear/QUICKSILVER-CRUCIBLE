@@ -94,7 +94,8 @@ export function applyResolvedWeaponHits(ctx: CombatResolverContext, hits: readon
 
     const out = calculateFinalHitDamage({
       weaponId: h.weaponId, stageIndex: h.stageIndex, level: inst.level, forgeGrade: inst.forgeGrade,
-      bonusStatColor: inst.bonusStatColor, affixIds: inst.affixIds, playerStats: levels, targetStatuses,
+      bonusStatColor: inst.bonusStatColor, isColorlessLegendary: inst.isColorlessLegendary, affixIds: inst.affixIds,
+      playerStats: levels, targetStatuses,
       externalDamageMultiplier: elemMods.brittleMultiplier * elemMods.poisonVulnerabilityMultiplier * mutBonuses.damageMultiplier,
       flatBonusDamage: mutBonuses.flatHolyBonus,
       critInput: {
@@ -167,7 +168,7 @@ export function applyResolvedProjectileImpacts(
 
     const out = calculateFinalHitDamage({
       weaponId: imp.weaponId, stageIndex: 0, level: wpnInst.level, forgeGrade: wpnInst.forgeGrade,
-      bonusStatColor: wpnInst.bonusStatColor, affixIds: wpnInst.affixIds, playerStats: levels, targetStatuses,
+      bonusStatColor: wpnInst.bonusStatColor, isColorlessLegendary: wpnInst.isColorlessLegendary, affixIds: wpnInst.affixIds, playerStats: levels, targetStatuses,
       externalDamageMultiplier: imp.reflectedDamageScale * elemMods.brittleMultiplier * elemMods.poisonVulnerabilityMultiplier * mutBonuses.damageMultiplier,
       critInput: {
         rule: wpnDef.critRule, attackerX: imp.originX, targetX: agent.x, targetFacing: agent.facing,
@@ -240,7 +241,7 @@ function commitDamageAndSynergyFeedback(
     ctx.synergy.skillRuntime.extendCrimsonOnKill();
     ctx.onEnemySlain(agent);
     ctx.synergy.mutations.onEnemyKilled(mutIds, agent.id, agent.x, agent.y - 18, isMelee, controlledBefore, ctx.getTargets());
-    EventBus.emit('combat:enemy_killed', { enemyId: agent.id, archetypeId: agent.archetype, worldX: agent.x, worldY: agent.y - 18, killerAffixIds: affixIds, killedByMelee: isMelee });
+    EventBus.emit('combat:enemy_killed', { enemyId: agent.id, archetypeId: agent.archetype, worldX: agent.x, worldY: agent.y - 18, killerAffixIds: affixIds, killedByMelee: isMelee, isElite: agent.isElite, isBoss: agent.isBoss, speciesId: agent.speciesId });
     ctx.synergy.statusMachine.clearTarget(agent.id);
   }
 }

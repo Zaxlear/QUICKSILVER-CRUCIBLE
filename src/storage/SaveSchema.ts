@@ -126,7 +126,7 @@ export async function signActiveRunSnapshot(
 export function createDefaultUnsignedMetaProgression(): UnsignedMetaProgression {
   return {
     schemaVersion: 1,
-    unlockedRunes: ['rune_calcined_ram', 'rune_magnetic_claws'],
+    unlockedRunes: [],
     unlockedWeapons: [...DEFAULT_STARTER_WEAPONS],
     unlockedSkills: [...DEFAULT_STARTER_SKILLS],
     unlockedMutations: [...DEFAULT_STARTER_MUTATIONS],

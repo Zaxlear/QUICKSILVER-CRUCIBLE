@@ -1,0 +1,219 @@
+{
+  "chunkId": "ossuary_combat_04_pendulum_well",
+  "biomePool": [
+    "biome_03_clockwork_ossuary"
+  ],
+  "role": "COMBAT",
+  "widthTiles": 44,
+  "heightTiles": 38,
+  "solidRects": [
+    {
+      "tileX": 0,
+      "tileY": 0,
+      "widthTiles": 18,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 22,
+      "tileY": 0,
+      "widthTiles": 22,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 0,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 27
+    },
+    {
+      "tileX": 41,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 15
+    },
+    {
+      "tileX": 41,
+      "tileY": 22,
+      "widthTiles": 3,
+      "heightTiles": 12
+    },
+    {
+      "tileX": 0,
+      "tileY": 34,
+      "widthTiles": 44,
+      "heightTiles": 4
+    },
+    {
+      "tileX": 29,
+      "tileY": 22,
+      "widthTiles": 15,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 8,
+      "tileY": 26,
+      "widthTiles": 11,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 14,
+      "tileY": 16,
+      "widthTiles": 11,
+      "heightTiles": 2
+    }
+  ],
+  "oneWayPlatforms": [
+    {
+      "tileX": 18,
+      "tileY": 30,
+      "widthTiles": 8
+    },
+    {
+      "tileX": 22,
+      "tileY": 26,
+      "widthTiles": 7
+    },
+    {
+      "tileX": 9,
+      "tileY": 21,
+      "widthTiles": 7
+    },
+    {
+      "tileX": 17,
+      "tileY": 12,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 17,
+      "tileY": 8,
+      "widthTiles": 6
+    }
+  ],
+  "climbableWalls": [
+    {
+      "tileX": 3,
+      "topTileY": 6,
+      "heightTiles": 25,
+      "normalSide": "RIGHT"
+    }
+  ],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    {
+      "socketId": "w_main",
+      "direction": "WEST",
+      "tileX": 0,
+      "tileY": 33,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "e_main",
+      "direction": "EAST",
+      "tileX": 43,
+      "tileY": 21,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "n_sock",
+      "direction": "NORTH",
+      "tileX": 18,
+      "tileY": 0,
+      "apertureTiles": 4,
+      "requiredRune": null
+    }
+  ],
+  "enemySpawns": [
+    {
+      "slotId": "sp_1",
+      "tileX": 14,
+      "tileY": 33,
+      "allowedArchetypes": [
+        "MELEE_FODDER",
+        "FLANKER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        5,
+        38
+      ]
+    },
+    {
+      "slotId": "sp_2",
+      "tileX": 13,
+      "tileY": 25,
+      "allowedArchetypes": [
+        "RANGED_HARASS"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        9,
+        18
+      ]
+    },
+    {
+      "slotId": "sp_3",
+      "tileX": 34,
+      "tileY": 21,
+      "allowedArchetypes": [
+        "SHIELD_TANK",
+        "SUPPORT_CASTER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        30,
+        40
+      ]
+    }
+  ],
+  "trapSlots": [
+    {
+      "slotId": "tr_pend_4a",
+      "trapType": "PENDULUM_BLADE",
+      "tileX": 20,
+      "tileY": 27,
+      "widthTiles": 4,
+      "phaseOffsetMs": 0,
+      "cyclePeriodMs": 2400
+    },
+    {
+      "slotId": "tr_pend_4b",
+      "trapType": "PENDULUM_BLADE",
+      "tileX": 23,
+      "tileY": 19,
+      "widthTiles": 4,
+      "phaseOffsetMs": 1200,
+      "cyclePeriodMs": 2400
+    }
+  ],
+  "teleporterTilePos": {
+    "tileX": 6,
+    "tileY": 33
+  },
+  "rewardPedestalTilePos": null,
+  "loreAnchor": null,
+  "lightAnchors": [
+    {
+      "tileX": 9,
+      "tileY": 31,
+      "preset": "VOLTAIC_CYAN",
+      "radiusPx": 190,
+      "flickerAmplitude": 0.08
+    },
+    {
+      "tileX": 22,
+      "tileY": 18,
+      "preset": "TORCH_AMBER",
+      "radiusPx": 185,
+      "flickerAmplitude": 0.12
+    },
+    {
+      "tileX": 35,
+      "tileY": 19,
+      "preset": "VOLTAIC_CYAN",
+      "radiusPx": 190,
+      "flickerAmplitude": 0.08
+    }
+  ]
+}

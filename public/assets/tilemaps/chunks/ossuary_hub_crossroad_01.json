@@ -4,8 +4,8 @@
     "biome_03_clockwork_ossuary"
   ],
   "role": "TELEPORTER_HUB",
-  "widthTiles": 44,
-  "heightTiles": 32,
+  "widthTiles": 46,
+  "heightTiles": 34,
   "solidRects": [
     {
       "tileX": 0,
@@ -16,68 +16,75 @@
     {
       "tileX": 24,
       "tileY": 0,
-      "widthTiles": 20,
+      "widthTiles": 22,
       "heightTiles": 3
     },
     {
       "tileX": 0,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 21
+      "heightTiles": 23
     },
     {
-      "tileX": 41,
+      "tileX": 43,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 21
+      "heightTiles": 23
     },
     {
       "tileX": 0,
-      "tileY": 28,
-      "widthTiles": 20,
+      "tileY": 30,
+      "widthTiles": 18,
       "heightTiles": 4
     },
     {
-      "tileX": 24,
-      "tileY": 28,
-      "widthTiles": 20,
+      "tileX": 22,
+      "tileY": 30,
+      "widthTiles": 24,
       "heightTiles": 4
+    },
+    {
+      "tileX": 12,
+      "tileY": 21,
+      "widthTiles": 10,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 26,
+      "tileY": 21,
+      "widthTiles": 10,
+      "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
-      "tileX": 20,
-      "tileY": 28,
+      "tileX": 18,
+      "tileY": 30,
       "widthTiles": 4
     },
     {
-      "tileX": 14,
-      "tileY": 24,
-      "widthTiles": 16
+      "tileX": 7,
+      "tileY": 25,
+      "widthTiles": 6
     },
     {
-      "tileX": 16,
-      "tileY": 20,
-      "widthTiles": 12
-    },
-    {
-      "tileX": 17,
-      "tileY": 16,
-      "widthTiles": 10
-    },
-    {
-      "tileX": 18,
-      "tileY": 12,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 18,
-      "tileY": 8,
-      "widthTiles": 8
+      "tileX": 34,
+      "tileY": 25,
+      "widthTiles": 6
     },
     {
       "tileX": 19,
-      "tileY": 4,
+      "tileY": 17,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 19,
+      "tileY": 13,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 19,
+      "tileY": 9,
       "widthTiles": 6
     }
   ],
@@ -88,15 +95,15 @@
       "socketId": "w_main",
       "direction": "WEST",
       "tileX": 0,
-      "tileY": 27,
+      "tileY": 29,
       "apertureTiles": 4,
       "requiredRune": null
     },
     {
       "socketId": "e_main",
       "direction": "EAST",
-      "tileX": 43,
-      "tileY": 27,
+      "tileX": 45,
+      "tileY": 29,
       "apertureTiles": 4,
       "requiredRune": null
     },
@@ -111,8 +118,8 @@
     {
       "socketId": "s_branch",
       "direction": "SOUTH",
-      "tileX": 20,
-      "tileY": 31,
+      "tileX": 18,
+      "tileY": 33,
       "apertureTiles": 4,
       "requiredRune": null
     }
@@ -120,32 +127,25 @@
   "enemySpawns": [],
   "trapSlots": [],
   "teleporterTilePos": {
-    "tileX": 12,
-    "tileY": 27
+    "tileX": 10,
+    "tileY": 29
   },
   "rewardPedestalTilePos": null,
   "loreAnchor": null,
   "lightAnchors": [
     {
-      "tileX": 12,
-      "tileY": 24,
+      "tileX": 11,
+      "tileY": 27,
       "preset": "VOLTAIC_CYAN",
-      "radiusPx": 210,
+      "radiusPx": 200,
       "flickerAmplitude": 0.06
     },
     {
-      "tileX": 22,
-      "tileY": 18,
-      "preset": "VOLTAIC_CYAN",
-      "radiusPx": 195,
-      "flickerAmplitude": 0.07
-    },
-    {
       "tileX": 33,
-      "tileY": 24,
+      "tileY": 27,
       "preset": "TORCH_AMBER",
-      "radiusPx": 175,
-      "flickerAmplitude": 0.09
+      "radiusPx": 180,
+      "flickerAmplitude": 0.08
     }
   ]
 }

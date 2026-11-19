@@ -1,0 +1,261 @@
+{
+  "chunkId": "apex_combat_04_solar_nave",
+  "biomePool": [
+    "biome_04_crucible_apex"
+  ],
+  "role": "COMBAT",
+  "widthTiles": 54,
+  "heightTiles": 34,
+  "solidRects": [
+    {
+      "tileX": 0,
+      "tileY": 0,
+      "widthTiles": 24,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 28,
+      "tileY": 0,
+      "widthTiles": 26,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 0,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 21
+    },
+    {
+      "tileX": 0,
+      "tileY": 28,
+      "widthTiles": 3,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 51,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 21
+    },
+    {
+      "tileX": 51,
+      "tileY": 28,
+      "widthTiles": 3,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 0,
+      "tileY": 28,
+      "widthTiles": 14,
+      "heightTiles": 6
+    },
+    {
+      "tileX": 14,
+      "tileY": 32,
+      "widthTiles": 22,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 40,
+      "tileY": 28,
+      "widthTiles": 14,
+      "heightTiles": 6
+    },
+    {
+      "tileX": 21,
+      "tileY": 24,
+      "widthTiles": 12,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 11,
+      "tileY": 17,
+      "widthTiles": 9,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 34,
+      "tileY": 17,
+      "widthTiles": 9,
+      "heightTiles": 2
+    }
+  ],
+  "oneWayPlatforms": [
+    {
+      "tileX": 36,
+      "tileY": 28,
+      "widthTiles": 4
+    },
+    {
+      "tileX": 15,
+      "tileY": 27,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 33,
+      "tileY": 27,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 22,
+      "tileY": 20,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 24,
+      "tileY": 16,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 22,
+      "tileY": 12,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 24,
+      "tileY": 8,
+      "widthTiles": 6
+    }
+  ],
+  "climbableWalls": [],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    {
+      "socketId": "w_main",
+      "direction": "WEST",
+      "tileX": 0,
+      "tileY": 27,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "e_main",
+      "direction": "EAST",
+      "tileX": 53,
+      "tileY": 27,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "n_sock",
+      "direction": "NORTH",
+      "tileX": 24,
+      "tileY": 0,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "s_sock",
+      "direction": "SOUTH",
+      "tileX": 36,
+      "tileY": 33,
+      "apertureTiles": 4,
+      "requiredRune": null
+    }
+  ],
+  "enemySpawns": [
+    {
+      "slotId": "sp_1",
+      "tileX": 27,
+      "tileY": 23,
+      "allowedArchetypes": [
+        "SHIELD_TANK",
+        "FLANKER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        22,
+        32
+      ]
+    },
+    {
+      "slotId": "sp_2",
+      "tileX": 15,
+      "tileY": 16,
+      "allowedArchetypes": [
+        "RANGED_HARASS"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        12,
+        19
+      ]
+    },
+    {
+      "slotId": "sp_3",
+      "tileX": 38,
+      "tileY": 16,
+      "allowedArchetypes": [
+        "SUPPORT_CASTER",
+        "RANGED_HARASS"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        35,
+        42
+      ]
+    },
+    {
+      "slotId": "sp_4",
+      "tileX": 46,
+      "tileY": 27,
+      "allowedArchetypes": [
+        "MELEE_FODDER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        41,
+        49
+      ]
+    }
+  ],
+  "trapSlots": [
+    {
+      "slotId": "tr_arc_4a",
+      "trapType": "VOLTAIC_ARC_GATE",
+      "tileX": 20,
+      "tileY": 23,
+      "widthTiles": 2,
+      "phaseOffsetMs": 0,
+      "cyclePeriodMs": 2500
+    },
+    {
+      "slotId": "tr_arc_4b",
+      "trapType": "VOLTAIC_ARC_GATE",
+      "tileX": 32,
+      "tileY": 23,
+      "widthTiles": 2,
+      "phaseOffsetMs": 1250,
+      "cyclePeriodMs": 2500
+    }
+  ],
+  "teleporterTilePos": {
+    "tileX": 6,
+    "tileY": 27
+  },
+  "rewardPedestalTilePos": null,
+  "loreAnchor": null,
+  "lightAnchors": [
+    {
+      "tileX": 9,
+      "tileY": 25,
+      "preset": "MERCURY_SILVER",
+      "radiusPx": 195,
+      "flickerAmplitude": 0.08
+    },
+    {
+      "tileX": 27,
+      "tileY": 16,
+      "preset": "FURNACE_CRIMSON",
+      "radiusPx": 205,
+      "flickerAmplitude": 0.1
+    },
+    {
+      "tileX": 45,
+      "tileY": 25,
+      "preset": "VOLTAIC_CYAN",
+      "radiusPx": 195,
+      "flickerAmplitude": 0.08
+    }
+  ]
+}

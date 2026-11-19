@@ -15,7 +15,7 @@ import type { IWorldDisplayRegistrar } from '../../world/ParallaxComposer';
 import { BaseEnemy, type EnemySpawnInit } from './BaseEnemy';
 import { EliteAffixController } from './EliteAffixController';
 import { instantiateEnemySpecies } from './EnemyFactory';
-import type { EnemyStepContext, EnemyViewBounds } from './EnemyTypes';
+import type { EnemyHazardRect, EnemyOneWayRect, EnemyStepContext, EnemyViewBounds } from './EnemyTypes';
 import { TelegraphRenderer } from './TelegraphRenderer';
 
 export { instantiateEnemySpecies };
@@ -27,6 +27,7 @@ export class EnemyDirector {
   private readonly spawnRng: DeterministicRng;
   private readonly roomBuckets = new Map<string, BaseEnemy[]>();
   private readonly roomNeighborhoods = new Map<string, Set<string>>();
+  private readonly hazardZones: EnemyHazardRect[] = [];
   private readonly awakeElitesScratch: BaseEnemy[] = [];
   private lastAggroCount = -1;
 
@@ -84,9 +85,10 @@ export class EnemyDirector {
     playerStealthed: boolean,
     solidRects: readonly SolidWallRect[],
     getEmbeddedArrows: (enemyId: string) => number,
-    callbacks: Pick<EnemyStepContext, 'onStrikePlayer' | 'onSpawnProjectile' | 'onSpawnAcidOrFireHazard'>,
+    callbacks: Pick<EnemyStepContext, 'onStrikePlayer' | 'onSpawnProjectile' | 'onSpawnAcidOrFireHazard' | 'onFallDamageFeedback'>,
     viewBounds?: EnemyViewBounds,
-    activeRoomId?: string
+    activeRoomId?: string,
+    oneWayPlatforms?: readonly EnemyOneWayRect[]
   ): void {
     const dtMs = dtSec * 1000;
     const awakeRooms = activeRoomId ? this.roomNeighborhoods.get(activeRoomId) : undefined;
@@ -136,8 +138,10 @@ export class EnemyDirector {
       const roomAllies = this.roomBuckets.get(en.roomId) ?? [];
       const selfDestructed = en.stepFixed(
         {
-          dtSec, dtMs, playerX, playerY, playerFacing, playerStealthed, solidRects, roomAllies,
+          dtSec, dtMs, playerX, playerY, playerFacing, playerStealthed, solidRects,
+          oneWayPlatforms, hazardZones: this.hazardZones, roomAllies,
           viewBounds,
+          onFallDamageFeedback: callbacks.onFallDamageFeedback,
           onStrikePlayer: callbacks.onStrikePlayer,
           onSpawnProjectile: callbacks.onSpawnProjectile,
           onSpawnAcidOrFireHazard: callbacks.onSpawnAcidOrFireHazard,
@@ -177,6 +181,14 @@ export class EnemyDirector {
     const bSpec = BIOME_CATALOG[dag.biomeId];
     for (let n = 0; n < dag.nodes.length; n++) {
       const node = dag.nodes[n]!;
+      for (const tr of node.chunk.trapSlots) {
+        this.hazardZones.push({
+          kind: tr.trapType,
+          x: (node.worldTileX + tr.tileX) * TILE_SIZE_PX,
+          y: (node.worldTileY + tr.tileY + 1) * TILE_SIZE_PX,
+          w: tr.widthTiles * TILE_SIZE_PX,
+        });
+      }
       node.chunk.enemySpawns.forEach((sp, idx) => {
         if (sp.minCrucibleHeat > crucibleHeat) return;
         const tag = sp.allowedArchetypes[this.spawnRng.nextInt(0, sp.allowedArchetypes.length - 1)] ?? 'MELEE_FODDER';

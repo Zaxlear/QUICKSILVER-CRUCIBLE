@@ -85,10 +85,7 @@ export class AlembicThrowerEnemy extends BaseEnemy {
 
     this.telegraph = 'NONE';
     if (!sense.detected) {
-      const nextX = this.x + this.facing * this.spec.patrolSpeedPxS * dtSec;
-      if (nextX <= this.patrolMinX + 2) this.facing = 1;
-      else if (nextX >= this.patrolMaxX - 2) this.facing = -1;
-      this.x = clampGroundX(nextX, this.patrolMinX, this.patrolMaxX);
+      this.stepGroundMove(ctx, this.facing * this.spec.patrolSpeedPxS, dtSec, true);
       return;
     }
 
@@ -102,7 +99,7 @@ export class AlembicThrowerEnemy extends BaseEnemy {
     } else if (absDx < 140) {
       this.x = clampGroundX(this.x - this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
     } else if (absDx > 220) {
-      this.x = clampGroundX(this.x + this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
+      this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
     } else {
       this.phase = 'WINDUP';
       this.phaseMs = 0;
@@ -215,13 +212,10 @@ export class AcidSpitterEnemy extends BaseEnemy {
         this.phaseMs = 0;
         this.telegraph = 'YELLOW_PARRIABLE';
       } else {
-        this.x = clampGroundX(this.x + this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
       }
     } else {
-      const nx = this.x + this.facing * this.spec.patrolSpeedPxS * dtSec;
-      if (nx <= this.patrolMinX + 2) this.facing = 1;
-      else if (nx >= this.patrolMaxX - 2) this.facing = -1;
-      this.x = clampGroundX(nx, this.patrolMinX, this.patrolMaxX);
+      this.stepGroundMove(ctx, this.facing * this.spec.patrolSpeedPxS, dtSec, true);
     }
   }
 }

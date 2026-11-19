@@ -1,14 +1,15 @@
 /**
  * Phaser 场景与双轨云存档（ActiveRunSnapshot）无缝断点捕获、离线恢复与无刷新热切换桥接器
- * （src/scenes/SceneSaveBridge.ts）。
+ * （src/scenes/SceneSaveBridge.ts，严格 <= 250 行）。
  */
 
 import type Phaser from 'phaser';
 import { TILE_SIZE_PX } from '../core/Constants';
 import type { DeterministicRng } from '../core/DeterministicRng';
 import { EventBus, type BossId } from '../core/EventBus';
+import { NarrativeStore } from '../core/NarrativeSessionStore';
 import { ALL_MUTATION_IDS, type MutationId } from '../data/mutations.data';
-import type { ActiveRunSnapshot } from '../data/storage.data';
+import type { ActiveRunSnapshot, DroppedFloorLootEntry } from '../data/storage.data';
 import { ALL_STAT_COLORS, type RolledWeaponInstance } from '../data/weapons.data';
 import type { PlayerEntity } from '../entities/player/PlayerEntity';
 import { PlayerSkillAndMutationLoadout } from '../entities/player/PlayerSkillAndMutationLoadout';
@@ -19,33 +20,19 @@ import { computeRoomBoundsPx } from './BiomeRoomFraming';
 import type { BiomeRunRig } from './BiomeRunRig';
 import type { RunCarryoverSnapshot } from './BiomeUiCommandBridge';
 
-/** 将 ActiveRunSnapshot 转换为跨场景继承的 RunCarryoverSnapshot（用于初始构造 PlayerEntity） */
+/** 将 ActiveRunSnapshot 转换为跨场景继承的 RunCarryoverSnapshot（含血咒计数、无色传奇与暂存蓝图） */
 export function snapshotToCarryover(
   snap: ActiveRunSnapshot,
   unlockedRunes: RunCarryoverSnapshot['unlockedRunes']
 ): RunCarryoverSnapshot {
   const ps = snap.playerSnapshot;
+  NarrativeStore.restoreCarriedBlueprints(ps.carriedBlueprints);
   const primaryWeapon: RolledWeaponInstance = ps.primaryWeapon
-    ? {
-        instanceId: ps.primaryWeapon.instanceId, weaponId: ps.primaryWeapon.weaponId,
-        level: ps.primaryWeapon.level, forgeGrade: ps.primaryWeapon.forgeGrade,
-        bonusStatColor: ps.primaryWeapon.bonusStatColor, affixIds: [...ps.primaryWeapon.affixIds],
-      }
-    : {
-        instanceId: 'wpn_resume_p', weaponId: 'wpn_rust_scalpel',
-        level: 'I', forgeGrade: 'BASE', bonusStatColor: null, affixIds: ['afx_dmg_on_bleed'],
-      };
-
+    ? { ...ps.primaryWeapon, affixIds: [...ps.primaryWeapon.affixIds] }
+    : { instanceId: 'wpn_resume_p', weaponId: 'wpn_rust_scalpel', level: 'I', forgeGrade: 'BASE', bonusStatColor: null, affixIds: ['afx_dmg_on_bleed'] };
   const secondaryWeapon: RolledWeaponInstance = ps.secondaryWeapon
-    ? {
-        instanceId: ps.secondaryWeapon.instanceId, weaponId: ps.secondaryWeapon.weaponId,
-        level: ps.secondaryWeapon.level, forgeGrade: ps.secondaryWeapon.forgeGrade,
-        bonusStatColor: ps.secondaryWeapon.bonusStatColor, affixIds: [...ps.secondaryWeapon.affixIds],
-      }
-    : {
-        instanceId: 'wpn_resume_s', weaponId: 'wpn_slag_buckler',
-        level: 'I', forgeGrade: 'BASE', bonusStatColor: null, affixIds: ['afx_shield_parry_poison'],
-      };
+    ? { ...ps.secondaryWeapon, affixIds: [...ps.secondaryWeapon.affixIds] }
+    : { instanceId: 'wpn_resume_s', weaponId: 'wpn_slag_buckler', level: 'I', forgeGrade: 'BASE', bonusStatColor: null, affixIds: ['afx_shield_parry_poison'] };
 
   const s1 = ps.skillSlotOne;
   const s2 = ps.skillSlotTwo;
@@ -63,6 +50,7 @@ export function snapshotToCarryover(
     primaryWeapon, secondaryWeapon, loadout,
     statLevels: { ...ps.stats }, hp: ps.currentHp, gold: ps.carriedGold, ichor: ps.unbankedIchor,
     flaskCharges: ps.flaskChargesLeft, maxFlaskCharges: ps.maxFlaskCharges, unlockedRunes,
+    cursedKillsRemaining: ps.cursedKillsRemaining ?? 0,
   };
 }
 
@@ -75,14 +63,36 @@ export async function captureLiveBiomeRunSnapshot(
   const { player, teleporters, combat } = rig;
   const rngSnap = rng.serialize();
   const { deviceId, deviceLabel } = CloudSync.deviceIdentity;
-  const consumedScrolls = combat.loot.scrollDrops.filter((s) => s.consumed).map((s) => s.id);
+  const openedIds = [
+    ...combat.loot.scrollDrops.filter((s) => s.consumed).map((s) => s.id),
+    ...combat.loot.cursedChests.filter((c) => c.opened).map((c) => c.id),
+  ];
+
+  const droppedFloorLoot: DroppedFloorLootEntry[] = [
+    ...combat.loot.weaponDrops.map((w) => ({
+      roomId: teleporters.activeRoomId, x: w.x, y: w.baseY,
+      item: {
+        instanceId: w.weapon.instanceId, weaponId: w.weapon.weaponId, level: w.weapon.level,
+        forgeGrade: w.weapon.forgeGrade, bonusStatColor: w.weapon.bonusStatColor,
+        affixIds: [...w.weapon.affixIds],
+        ...(w.weapon.isColorlessLegendary ? { isColorlessLegendary: true } : {}),
+      },
+    })),
+    ...combat.economy.skillLoot.skillDrops
+      .filter((s) => !s.id.startsWith('skl_secret_'))
+      .map((s) => ({
+        roomId: teleporters.activeRoomId, x: s.x, y: s.baseY,
+        item: {
+          instanceId: s.skill.instanceId, skillId: s.skill.skillId, level: s.skill.level,
+          forgeGrade: s.skill.forgeGrade, affixIds: [...s.skill.affixIds], cooldownRemainingMs: 0,
+        },
+      })),
+  ];
 
   const clearedRoomIds: string[] = [];
   for (const node of dag.nodes) {
     const b = computeRoomBoundsPx(node);
-    const hasAlive = combat.agents.some(
-      (e) => e.isAlive && e.x >= b.minX && e.x <= b.maxX && e.y >= b.minY && e.y <= b.maxY
-    );
+    const hasAlive = combat.agents.some((e) => e.isAlive && e.x >= b.minX && e.x <= b.maxX && e.y >= b.minY && e.y <= b.maxY);
     if (!hasAlive && node.chunk.enemySpawns.length > 0) clearedRoomIds.push(node.nodeId);
   }
 
@@ -94,22 +104,23 @@ export async function captureLiveBiomeRunSnapshot(
     currentHp: player.stats.hp, maxHp: player.stats.maxHp, rallyOrangeHp: player.stats.rallyOrangeHp,
     flaskChargesLeft: player.stats.flaskCharges, maxFlaskCharges: player.stats.maxFlaskCharges,
     carriedGold: player.stats.gold, unbankedIchor: player.stats.ichor,
-    stats: ALL_STAT_COLORS.reduce(
-      (acc, c) => ({ ...acc, [c]: player.stats.snapshotLevels[c] }),
-      { rubedo: 1, citrinitas: 1, albedo: 1 }
-    ),
+    stats: ALL_STAT_COLORS.reduce((acc, c) => ({ ...acc, [c]: player.stats.snapshotLevels[c] }), { rubedo: 1, citrinitas: 1, albedo: 1 }),
     primaryWeapon: player.inventory.primaryWeapon, secondaryWeapon: player.inventory.secondaryWeapon,
     skillSlotOne: player.inventory.loadout.skillOne, skillSlotTwo: player.inventory.loadout.skillTwo,
     activeMutationIds: player.inventory.loadout.activeMutationIds, killStreakCount: 0,
+    cursedKillsRemaining: player.stats.cursedKillsRemaining,
+    carriedBlueprints: NarrativeStore.carriedBlueprints,
     worldDelta: {
-      clearedRoomIds, openedChestIds: consumedScrolls,
-      activatedTeleporterIds: teleporters.activatedSteleIds, purchasedShopSlotIds: [], droppedFloorLoot: [],
+      clearedRoomIds, openedChestIds: openedIds,
+      activatedTeleporterIds: teleporters.activatedSteleIds,
+      purchasedShopSlotIds: combat.economy.shop.purchasedSlotIds,
+      droppedFloorLoot,
     },
     revision: CloudSync.currentRevision, baseRevision: CloudSync.currentBaseRevision,
   });
 }
 
-/** 将快照中的房间位置、石碑激活态、已拾取卷轴与已清怪房间精准还原至 BiomeRunRig */
+/** 将快照中的房间位置、石碑激活态、已购买商店槽位、地面换装掉落物与已清怪房间精准还原至 BiomeRunRig */
 export function applyResumeSnapshotToBiomeRig(
   dag: GeneratedBiomeDag,
   rig: BiomeRunRig,
@@ -117,7 +128,15 @@ export function applyResumeSnapshotToBiomeRig(
   cameraSetBoundsAndFocus: (node: GeneratedBiomeDag['nodes'][number], x: number, y: number) => void
 ): void {
   rig.player.stats.rallyOrangeHp = snap.playerSnapshot.rallyOrangeHp;
+  rig.player.stats.cursedKillsRemaining = snap.playerSnapshot.cursedKillsRemaining ?? 0;
   for (const scrollId of snap.worldDelta.openedChestIds) rig.combat.loot.consumeScrollDrop(scrollId);
+  rig.combat.economy.shop.restorePurchasedSlotIds(snap.worldDelta.purchasedShopSlotIds);
+
+  for (let i = 0; i < snap.worldDelta.droppedFloorLoot.length; i++) {
+    const { x, y, item } = snap.worldDelta.droppedFloorLoot[i]!;
+    if ('weaponId' in item) rig.combat.loot.spawnDynamicWeaponDrop(`wpn_restore_${i}`, x, y, { ...item, affixIds: [...item.affixIds] });
+    else rig.combat.economy.skillLoot.spawnSkillDrop(`skl_restore_${i}`, x, y, { instanceId: item.instanceId, skillId: item.skillId, level: item.level, forgeGrade: item.forgeGrade, affixIds: [...item.affixIds], cooldownRemainingSec: 0 });
+  }
 
   const clearedSet = new Set(snap.worldDelta.clearedRoomIds);
   if (clearedSet.size > 0) {
@@ -163,9 +182,7 @@ export function attachSceneSaveHotReload(
   autoCheckpointHooks?: { readonly dag: GeneratedBiomeDag; readonly rng: DeterministicRng; readonly rig: BiomeRunRig }
 ): () => void {
   const unbinds: Array<() => void> = [
-    EventBus.on('save:hot_reload_snapshot', ({ snapshot }) => {
-      scene.scene.start('BiomeRunScene', { resumeSnapshot: snapshot });
-    }),
+    EventBus.on('save:hot_reload_snapshot', ({ snapshot }) => { scene.scene.start('BiomeRunScene', { resumeSnapshot: snapshot }); }),
   ];
 
   if (autoCheckpointHooks) {
@@ -186,20 +203,16 @@ export function attachSceneSaveHotReload(
       EventBus.on('world:checkpoint_reached', scheduleCheckpoint),
       EventBus.on('world:teleporter_activated', scheduleCheckpoint),
       () => {
-        if (checkpointTimer !== null) {
-          clearTimeout(checkpointTimer);
-          checkpointTimer = null;
-        }
+        if (checkpointTimer !== null) { clearTimeout(checkpointTimer); checkpointTimer = null; }
         CloudSync.registerLiveRunCapturer(null);
       }
     );
     scheduleCheckpoint();
   }
-
   return () => { for (const off of unbinds) off(); };
 }
 
-/** 首领决战结算（击败最终 Boss 或阵亡）时归档战绩并结算灵液回流至圣所永久金库 */
+/** 首领决战胜利归档并结算灵液回流至圣所永久金库 */
 export function finalizeBossArenaRunInVault(
   player: PlayerEntity,
   bossId: BossId,
@@ -219,6 +232,7 @@ export function finalizeBossArenaRunInVault(
     primaryWeapon: player.inventory.primaryWeapon, secondaryWeapon: player.inventory.secondaryWeapon,
     skillSlotOne: player.inventory.loadout.skillOne, skillSlotTwo: player.inventory.loadout.skillTwo,
     activeMutationIds: player.inventory.loadout.activeMutationIds, killStreakCount: 0,
+    cursedKillsRemaining: player.stats.cursedKillsRemaining, carriedBlueprints: NarrativeStore.carriedBlueprints,
     worldDelta: { clearedRoomIds: [], openedChestIds: [], activatedTeleporterIds: [], purchasedShopSlotIds: [], droppedFloorLoot: [] },
     revision: CloudSync.currentRevision, baseRevision: CloudSync.currentBaseRevision,
   }).then((snap) => CloudSync.finalizeRunOutcome(outcome, snap, outcome === 'DEAD' ? bossId : null));

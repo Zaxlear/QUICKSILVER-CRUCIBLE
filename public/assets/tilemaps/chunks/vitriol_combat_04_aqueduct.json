@@ -1,7 +1,7 @@
 {
-  "chunkId": "apex_combat_04_nave",
+  "chunkId": "vitriol_combat_04_aqueduct",
   "biomePool": [
-    "biome_04_crucible_apex"
+    "biome_02_vitriol_sewers"
   ],
   "role": "COMBAT",
   "widthTiles": 52,
@@ -34,78 +34,67 @@
     {
       "tileX": 0,
       "tileY": 26,
-      "widthTiles": 24,
+      "widthTiles": 13,
       "heightTiles": 4
     },
     {
-      "tileX": 28,
+      "tileX": 13,
+      "tileY": 28,
+      "widthTiles": 9,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 22,
+      "tileY": 25,
+      "widthTiles": 12,
+      "heightTiles": 5
+    },
+    {
+      "tileX": 38,
       "tileY": 26,
-      "widthTiles": 24,
+      "widthTiles": 14,
       "heightTiles": 4
     },
     {
-      "tileX": 19,
+      "tileX": 15,
       "tileY": 16,
-      "widthTiles": 14,
+      "widthTiles": 20,
       "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
-      "tileX": 22,
-      "tileY": 22,
-      "widthTiles": 10
+      "tileX": 34,
+      "tileY": 26,
+      "widthTiles": 4
     },
     {
-      "tileX": 22,
-      "tileY": 18,
-      "widthTiles": 10
+      "tileX": 13,
+      "tileY": 25,
+      "widthTiles": 9
     },
     {
-      "tileX": 22,
-      "tileY": 14,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 22,
-      "tileY": 10,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 23,
-      "tileY": 6,
-      "widthTiles": 6
-    },
-    {
-      "tileX": 7,
-      "tileY": 21,
-      "widthTiles": 8
+      "tileX": 8,
+      "tileY": 20,
+      "widthTiles": 7
     },
     {
       "tileX": 37,
-      "tileY": 21,
-      "widthTiles": 8
+      "tileY": 20,
+      "widthTiles": 7
     },
     {
-      "tileX": 24,
-      "tileY": 26,
-      "widthTiles": 4
-    }
-  ],
-  "climbableWalls": [
-    {
-      "tileX": 3,
-      "topTileY": 5,
-      "heightTiles": 18,
-      "normalSide": "RIGHT"
+      "tileX": 23,
+      "tileY": 12,
+      "widthTiles": 6
     },
     {
-      "tileX": 48,
-      "topTileY": 4,
-      "heightTiles": 19,
-      "normalSide": "LEFT"
+      "tileX": 23,
+      "tileY": 8,
+      "widthTiles": 6
     }
   ],
+  "climbableWalls": [],
   "breakableSlagFloors": [],
   "doorSockets": [
     {
@@ -130,12 +119,12 @@
       "tileX": 24,
       "tileY": 0,
       "apertureTiles": 4,
-      "requiredRune": "rune_magnetic_claws"
+      "requiredRune": null
     },
     {
       "socketId": "s_sock",
       "direction": "SOUTH",
-      "tileX": 24,
+      "tileX": 34,
       "tileY": 29,
       "apertureTiles": 4,
       "requiredRune": null
@@ -143,22 +132,36 @@
   ],
   "enemySpawns": [
     {
-      "slotId": "sp_01",
-      "tileX": 11,
-      "tileY": 25,
+      "slotId": "sp_1",
+      "tileX": 27,
+      "tileY": 24,
       "allowedArchetypes": [
-        "MELEE_FODDER",
-        "SHIELD_TANK"
+        "SHIELD_TANK",
+        "MELEE_FODDER"
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        5,
-        18
+        23,
+        33
       ]
     },
     {
-      "slotId": "sp_02",
-      "tileX": 40,
+      "slotId": "sp_2",
+      "tileX": 24,
+      "tileY": 15,
+      "allowedArchetypes": [
+        "RANGED_HARASS",
+        "SUPPORT_CASTER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        16,
+        33
+      ]
+    },
+    {
+      "slotId": "sp_3",
+      "tileX": 43,
       "tileY": 25,
       "allowedArchetypes": [
         "FLANKER",
@@ -166,73 +169,58 @@
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        33,
+        39,
         47
-      ]
-    },
-    {
-      "slotId": "sp_03",
-      "tileX": 26,
-      "tileY": 15,
-      "allowedArchetypes": [
-        "SUPPORT_CASTER",
-        "RANGED_HARASS"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        20,
-        32
-      ]
-    },
-    {
-      "slotId": "sp_04",
-      "tileX": 41,
-      "tileY": 20,
-      "allowedArchetypes": [
-        "RANGED_HARASS"
-      ],
-      "minCrucibleHeat": 0,
-      "patrolSpanTiles": [
-        37,
-        44
       ]
     }
   ],
   "trapSlots": [
     {
-      "slotId": "tr_3_a",
+      "slotId": "tr_acid_4a",
+      "trapType": "ACID_GEYSER",
+      "tileX": 14,
+      "tileY": 27,
+      "widthTiles": 7,
+      "phaseOffsetMs": 0,
+      "cyclePeriodMs": 2900
+    },
+    {
+      "slotId": "tr_flame_4b",
       "trapType": "FLAME_NOZZLE",
-      "tileX": 16,
-      "tileY": 25,
-      "widthTiles": 2,
-      "phaseOffsetMs": 1350,
-      "cyclePeriodMs": 2800
+      "tileX": 27,
+      "tileY": 24,
+      "widthTiles": 4,
+      "phaseOffsetMs": 900,
+      "cyclePeriodMs": 2900
     }
   ],
-  "teleporterTilePos": null,
+  "teleporterTilePos": {
+    "tileX": 6,
+    "tileY": 25
+  },
   "rewardPedestalTilePos": null,
   "loreAnchor": null,
   "lightAnchors": [
     {
       "tileX": 9,
       "tileY": 23,
-      "preset": "MERCURY_SILVER",
+      "preset": "VITRIOL_VAT_GREEN",
       "radiusPx": 185,
-      "flickerAmplitude": 0.1
+      "flickerAmplitude": 0.09
     },
     {
       "tileX": 26,
-      "tileY": 14,
-      "preset": "FURNACE_CRIMSON",
-      "radiusPx": 195,
-      "flickerAmplitude": 0.08
+      "tileY": 16,
+      "preset": "TORCH_AMBER",
+      "radiusPx": 175,
+      "flickerAmplitude": 0.12
     },
     {
       "tileX": 43,
       "tileY": 23,
-      "preset": "MERCURY_SILVER",
+      "preset": "VITRIOL_VAT_GREEN",
       "radiusPx": 185,
-      "flickerAmplitude": 0.1
+      "flickerAmplitude": 0.09
     }
   ]
 }

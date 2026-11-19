@@ -6,6 +6,7 @@
  */
 
 import {
+  ALL_STAT_COLORS,
   COMBAT_CONSTANTS,
   FORGE_GRADE_BONUS,
   QUALITY_TIERS,
@@ -54,6 +55,7 @@ export interface HitDamageInput {
   readonly level: QualityTier;
   readonly forgeGrade: ForgeGrade;
   readonly bonusStatColor: StatColor | null;
+  readonly isColorlessLegendary?: boolean;
   readonly affixIds: readonly string[];
   readonly playerStats: Readonly<Record<StatColor, number>>;
   readonly critInput: CritEvaluationInput;
@@ -195,7 +197,8 @@ export function calculateFinalHitDamage(input: HitDamageInput): HitDamageOutput 
     effectiveStats[input.bonusStatColor] += FORGE_GRADE_BONUS[input.forgeGrade].bonusScrollCount;
   }
 
-  const statMult = computeStatDamageMultiplier(def.colors, effectiveStats);
+  const scalingColors = input.isColorlessLegendary ? ALL_STAT_COLORS : def.colors;
+  const statMult = computeStatDamageMultiplier(scalingColors, effectiveStats);
   const gearMult = computeGearTierMultiplier(input.level, input.forgeGrade);
   const affixMult = computeAffixDamageMultiplier(
     input.affixIds,

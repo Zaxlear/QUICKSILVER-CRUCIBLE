@@ -224,7 +224,7 @@ export class AudioDirector {
     if (this.subModalMask & 1) { this.bus.emit('ui:command:resolve_weapon_compare', { action: 'cancel' }); return; }
     if (this.subModalMask & 4) { this.bus.emit('ui:command:toggle_mutation_forge', { open: false }); return; }
     if (this.subModalMask & 8) { this.bus.emit('ui:command:toggle_minimap', { expanded: false }); return; }
-    if (this.subModalMask & 2) return;
+    if (this.subModalMask & 0xf2) return;
     this.setPauseMenuOpen(!this.pauseMenuOpen);
   }
 

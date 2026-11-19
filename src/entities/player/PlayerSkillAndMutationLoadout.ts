@@ -4,7 +4,9 @@
  */
 
 import type { DeterministicRng } from '../../core/DeterministicRng';
+import { NarrativeStore } from '../../core/NarrativeSessionStore';
 import { AFFIX_CATALOG, type SynergySemanticTag } from '../../data/affixes.data';
+import { computeGearRecycleGold, type SkillCompareModalPayload } from '../../data/economy.data';
 import {
   ETERNAL_FORGE_UPGRADES,
   MAX_EQUIPPED_MUTATIONS,
@@ -23,11 +25,13 @@ import {
   STAT_COLOR_META,
   type ForgeGrade,
   type QualityTier,
+  type StatColor,
 } from '../../data/weapons.data';
 import type { PlayerStats } from './PlayerStats';
 import {
   formatWeaponQualityBadge,
   isAffixEligibleForSkill,
+  projectSkillSlotView,
   rollDeterministicAffixIds,
 } from './WeaponCompareProjection';
 
@@ -40,7 +44,11 @@ export class PlayerSkillAndMutationLoadout {
 
   public readonly forgeProgress: Record<ForgeUpgradeId, number> = {
     upg_flask_tier: 0,
-    upg_legendary_forge_plus: 160,
+    upg_gold_reserve: 0,
+    upg_starting_recycle: 0,
+    upg_starter_tubes: 0,
+    upg_shop_restock: 0,
+    upg_legendary_forge_plus: 0,
     upg_legendary_forge_pp: 0,
     upg_legendary_forge_s: 0,
   };
@@ -49,35 +57,42 @@ export class PlayerSkillAndMutationLoadout {
     this.slotOne = initOne ?? {
       instanceId: 'skl_init_1',
       skillId: 'skl_vitriol_flask',
-      level: 'II',
-      forgeGrade: 'PLUS',
-      affixIds: ['afx_dmg_on_oil_burn'],
+      level: 'I',
+      forgeGrade: 'BASE',
+      affixIds: [],
       cooldownRemainingSec: 0,
     };
     this.slotTwo = initTwo ?? {
       instanceId: 'skl_init_2',
-      skillId: 'skl_tesla_coil_turret',
-      level: 'II',
-      forgeGrade: 'PLUS',
-      affixIds: ['afx_grenade_voltaic_net'],
+      skillId: 'skl_clockwork_saw_trap',
+      level: 'I',
+      forgeGrade: 'BASE',
+      affixIds: [],
       cooldownRemainingSec: 0,
     };
+    this.syncForgeProgressFromStore();
   }
 
-  public get skillOne(): RolledSkillInstance {
-    return this.slotOne;
+  public get skillOne(): RolledSkillInstance { return this.slotOne; }
+  public get skillTwo(): RolledSkillInstance { return this.slotTwo; }
+  public get activeMutationIds(): readonly MutationId[] { return this.equippedMutations; }
+  public get respecCostGold(): number { return 60 + this.respecTimes * 40; }
+
+  public syncForgeProgressFromStore(): void {
+    const ft = NarrativeStore.forgeTiers;
+    this.forgeProgress.upg_flask_tier = Math.max(this.forgeProgress.upg_flask_tier, (ft.flask_charges - 1) * 35);
+    this.forgeProgress.upg_gold_reserve = Math.max(this.forgeProgress.upg_gold_reserve, ft.gold_reserve_lvl * 50);
+    this.forgeProgress.upg_starting_recycle = Math.max(this.forgeProgress.upg_starting_recycle, (ft.recycle_lvl ?? 0) * 50);
+    this.forgeProgress.upg_starter_tubes = Math.max(this.forgeProgress.upg_starter_tubes, (ft.starter_tubes_lvl ?? 0) * 120);
+    this.forgeProgress.upg_shop_restock = Math.max(this.forgeProgress.upg_shop_restock, (ft.shop_restock_lvl ?? 0) * 60);
+    this.forgeProgress.upg_legendary_forge_plus = Math.max(this.forgeProgress.upg_legendary_forge_plus, ft.plus_tier_ichor);
+    this.forgeProgress.upg_legendary_forge_pp = Math.max(this.forgeProgress.upg_legendary_forge_pp, ft.pp_tier_ichor ?? 0);
+    this.forgeProgress.upg_legendary_forge_s = Math.max(this.forgeProgress.upg_legendary_forge_s, ft.s_tier_ichor);
   }
 
-  public get skillTwo(): RolledSkillInstance {
-    return this.slotTwo;
-  }
-
-  public get activeMutationIds(): readonly MutationId[] {
-    return this.equippedMutations;
-  }
-
-  public get respecCostGold(): number {
-    return 60 + this.respecTimes * 40;
+  public clearAllMutations(): void {
+    this.equippedMutations.length = 0;
+    this.respecTimes = 0;
   }
 
   public getSlotSkill(slot: SkillSlotId): RolledSkillInstance {
@@ -119,12 +134,8 @@ export class PlayerSkillAndMutationLoadout {
   }
 
   public stepCooldowns(dtSec: number): void {
-    if (this.slotOne.cooldownRemainingSec > 0) {
-      this.slotOne.cooldownRemainingSec = Math.max(0, this.slotOne.cooldownRemainingSec - dtSec);
-    }
-    if (this.slotTwo.cooldownRemainingSec > 0) {
-      this.slotTwo.cooldownRemainingSec = Math.max(0, this.slotTwo.cooldownRemainingSec - dtSec);
-    }
+    if (this.slotOne.cooldownRemainingSec > 0) this.slotOne.cooldownRemainingSec = Math.max(0, this.slotOne.cooldownRemainingSec - dtSec);
+    if (this.slotTwo.cooldownRemainingSec > 0) this.slotTwo.cooldownRemainingSec = Math.max(0, this.slotTwo.cooldownRemainingSec - dtSec);
   }
 
   public reduceAllCooldowns(deltaSec: number): void {
@@ -140,10 +151,7 @@ export class PlayerSkillAndMutationLoadout {
 
   public toggleMutationChoice(id: MutationId): boolean {
     const idx = this.equippedMutations.indexOf(id);
-    if (idx >= 0) {
-      this.equippedMutations.splice(idx, 1);
-      return true;
-    }
+    if (idx >= 0) { this.equippedMutations.splice(idx, 1); return true; }
     if (this.equippedMutations.length >= MAX_EQUIPPED_MUTATIONS) return false;
     this.equippedMutations.push(id);
     return true;
@@ -159,6 +167,7 @@ export class PlayerSkillAndMutationLoadout {
   }
 
   public investForgeIchor(upgradeId: ForgeUpgradeId, stats: PlayerStats, customAmount?: number): number {
+    this.syncForgeProgressFromStore();
     const spec = ETERNAL_FORGE_UPGRADES.find((u) => u.id === upgradeId);
     if (!spec || stats.ichor <= 0) return 0;
     const cur = this.forgeProgress[upgradeId];
@@ -168,7 +177,8 @@ export class PlayerSkillAndMutationLoadout {
 
     stats.ichor -= spend;
     this.forgeProgress[upgradeId] = cur + spend;
-    if (upgradeId === 'upg_flask_tier' && this.forgeProgress.upg_flask_tier >= 35 && stats.maxFlaskCharges < 4) {
+    NarrativeStore.applyForgeUpgradeSpend(upgradeId, spend);
+    if (upgradeId === 'upg_flask_tier' && stats.maxFlaskCharges < 4) {
       stats.maxFlaskCharges += 1;
       stats.flaskCharges += 1;
     }
@@ -187,10 +197,7 @@ export class PlayerSkillAndMutationLoadout {
     const def = SKILL_CATALOG[inst.skillId];
     const leadColor = def.colors[0] ?? 'citrinitas';
     return {
-      slot,
-      skillId: inst.skillId,
-      nameZh: def.nameZh,
-      iconSlot: def.iconSlot,
+      slot, skillId: inst.skillId, nameZh: def.nameZh, iconSlot: def.iconSlot,
       qualityBadge: formatWeaponQualityBadge(inst.level, inst.forgeGrade),
       colorHex: STAT_COLOR_META[leadColor].accentHex,
       cooldownLeftSec: Number(inst.cooldownRemainingSec.toFixed(1)),
@@ -199,14 +206,33 @@ export class PlayerSkillAndMutationLoadout {
     };
   }
 
-  public buildMutationForgeModalPayload(stats: PlayerStats, open: boolean): MutationForgeModalPayload {
+  public buildSkillComparePayload(
+    floorLootId: string,
+    candidate: RolledSkillInstance,
+    stats: Readonly<Record<StatColor, number>>,
+    equippedWeaponAffixIds: readonly string[]
+  ): SkillCompareModalPayload {
     return {
-      open,
-      stats: stats.snapshotLevels,
-      gold: stats.gold,
-      respecCostGold: this.respecCostGold,
-      carriedIchor: stats.ichor,
-      equippedMutationIds: [...this.equippedMutations],
+      open: true,
+      floorLootId,
+      candidate: projectSkillSlotView(candidate, stats, equippedWeaponAffixIds),
+      currentSkillOne: projectSkillSlotView(this.slotOne, stats, equippedWeaponAffixIds),
+      currentSkillTwo: projectSkillSlotView(this.slotTwo, stats, equippedWeaponAffixIds),
+      recycleGoldValue: computeGearRecycleGold(
+        'SKILL',
+        candidate.level,
+        candidate.forgeGrade,
+        (NarrativeStore.forgeTiers.recycle_lvl ?? 0) > 0
+      ),
+    };
+  }
+
+  public buildMutationForgeModalPayload(stats: PlayerStats, open: boolean): MutationForgeModalPayload {
+    this.syncForgeProgressFromStore();
+    return {
+      open, stats: stats.snapshotLevels, gold: stats.gold, respecCostGold: this.respecCostGold,
+      carriedIchor: stats.ichor, equippedMutationIds: [...this.equippedMutations],
+      unlockedMutationIds: [...NarrativeStore.unlockedMutations],
       forgeProgress: { ...this.forgeProgress },
     };
   }

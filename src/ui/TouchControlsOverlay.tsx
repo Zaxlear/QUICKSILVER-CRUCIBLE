@@ -40,12 +40,15 @@ function resolveButtonRingClasses(btn: TouchButtonHudItem): string {
  */
 export function TouchControlsOverlay({ touchHud: externalHud }: TouchControlsOverlayProps) {
   const [liveHud, setLiveHud] = useState<TouchHudSnapshot | null>(() => externalHud ?? readInitialTouchSnapshot());
+  const [recycleHint, setRecycleHint] = useState<{ readonly lootId: string; readonly goldValue: number } | null>(null);
 
   useEffect(() => {
-    if (externalHud !== undefined) return;
+    const offHint = EventBus.on('world:floor_recycle_hint', setRecycleHint);
+    if (externalHud !== undefined) return offHint;
     const seed = readInitialTouchSnapshot();
     if (seed) setLiveHud(seed);
-    return EventBus.on('input:touch_hud_updated', setLiveHud);
+    const offHud = EventBus.on('input:touch_hud_updated', setLiveHud);
+    return () => { offHint(); offHud(); };
   }, [externalHud]);
 
   const activeHud = externalHud !== undefined ? externalHud : liveHud;
@@ -148,6 +151,23 @@ export function TouchControlsOverlay({ touchHud: externalHud }: TouchControlsOve
           </div>
         );
       })}
+      {recycleHint && (() => {
+        const actBtn = buttons.find((b) => b.action === 'interact');
+        const cx = actBtn ? actBtn.centerX - 88 : 520;
+        const cy = actBtn ? actBtn.centerY - 12 : 240;
+        return (
+          <button
+            type="button"
+            data-ui-interactive="true"
+            data-testid="touch-btn-recycle-capsule"
+            onClick={() => EventBus.emit('ui:command:recycle_floor_loot', { lootId: recycleHint.lootId })}
+            class="pointer-events-auto absolute left-0 top-0 px-2.5 py-1 rounded-full bg-[#291A0E]/92 border border-[#FBBF24] text-[10px] font-bold text-[#FBBF24] shadow-lg"
+            style={{ transform: `translate3d(${cx}px, ${cy}px, 0)` }}
+          >
+            [♻ 回收 +{recycleHint.goldValue}G]
+          </button>
+        );
+      })()}
     </div>
   );
 }

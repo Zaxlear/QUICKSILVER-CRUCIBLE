@@ -4,15 +4,12 @@ import { EventBus } from '../core/EventBus';
 import { NarrativeStore } from '../core/NarrativeSessionStore';
 import type { ActiveRunSnapshot, AuthPromoteMethod, CloudSyncStatusSnapshot, MetaProgressionRecord, SaveConflictChoice } from '../data/storage.data';
 import {
-  bindCloudSyncListeners, detectInitialOnlineState, emitSaveConflictModalEvents,
-  executeConflictResolutionStep, executeMetaCrdtSyncStep, executeSnapshotArbitrationStep,
-  stageSimulatedDivergentRun,
+  bindCloudSyncListeners, detectInitialOnlineState, emitSaveConflictModalEvents, executeConflictResolutionStep,
+  executeMetaCrdtSyncStep, executeSnapshotArbitrationStep, stageSimulatedDivergentRun,
 } from './CloudSyncBindings';
 import { KillMutationBatcher } from './KillMutationBatcher';
 import { LocalVault } from './LocalVault';
-import {
-  buildCloudSyncStatusSnapshot, buildRunHistoryArchiveEntry, syncNarrativeIntoMetaRecord,
-} from './MetaSyncHelpers';
+import { buildCloudSyncStatusSnapshot, buildRunHistoryArchiveEntry, syncNarrativeIntoMetaRecord } from './MetaSyncHelpers';
 import { createDefaultMetaProgression, createSecureUuid } from './SaveSchema';
 import { SnapshotConflictMachine } from './SnapshotConflictMachine';
 import { createCloudSaveGateway, type AuthSessionSummary, type ICloudSaveGateway } from './SupabaseClient';
@@ -50,26 +47,28 @@ export class CloudSyncCoordinator {
   public get currentPlaytimeMs(): number { return Math.max(0, Date.now() - this.runStartedAtMs); }
   public get currentRevision(): number { return this.activeRun?.revision ?? 1; }
   public get currentBaseRevision(): number { return this.activeRun?.baseRevision ?? 0; }
+  public get bankedIchor(): number { return this.meta?.bankedIchor ?? 0; }
   public get deviceIdentity() { return { deviceId: this.deviceId, deviceLabel: this.deviceLabel }; }
+
+  public spendBankedIchor(amount: number): number {
+    if (!this.meta || amount <= 0) return 0;
+    const spent = Math.min(this.meta.bankedIchor, Math.floor(amount));
+    if (spent <= 0) return 0;
+    this.meta = { ...this.meta, bankedIchor: this.meta.bankedIchor - spent };
+    void this.mutateMeta();
+    return spent;
+  }
 
   public setPwaSwReady(ready: boolean): void {
     this.pwaSwReady = ready;
     this.emitStatus(ready ? 'PWA Service Worker 全量离线预缓存已就绪' : undefined);
   }
-
-  public registerLiveRunCapturer(fn: (() => Promise<ActiveRunSnapshot | null>) | null): void {
-    this.liveRunCapturer = fn;
-  }
-
-  public bootstrap(win?: Window): Promise<void> {
-    return (this.bootPromise ??= this.runBootstrap(win));
-  }
-
+  public registerLiveRunCapturer(fn: (() => Promise<ActiveRunSnapshot | null>) | null): void { this.liveRunCapturer = fn; }
+  public bootstrap(win?: Window): Promise<void> { return (this.bootPromise ??= this.runBootstrap(win)); }
   public async waitUntilBootReady(): Promise<ActiveRunSnapshot | null> {
     if (this.bootPromise) await this.bootPromise;
     return this.activeRun?.lifecycleState === 'ACTIVE' ? this.activeRun : null;
   }
-
   public beginNewRunSession(initialCarryPlaytimeMs = 0): string {
     this.currentRunId = createSecureUuid();
     this.runStartedAtMs = Date.now() - initialCarryPlaytimeMs;
@@ -77,7 +76,6 @@ export class CloudSyncCoordinator {
     void this.mutateMeta({ startedNewRun: true });
     return this.currentRunId;
   }
-
   public adoptLoadedRunTiming(snap: ActiveRunSnapshot): void {
     this.currentRunId = snap.runId;
     this.runStartedAtMs = Date.now() - snap.playtimeMs;

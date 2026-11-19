@@ -1,6 +1,6 @@
 /**
- * 出生基地「永恒锻炉圣所（Athanor Sanctum）」主场景（src/scenes/SanctumHubScene.ts）：
- * 承载开场三段序章唤醒、12 支武器图鉴悬吊玻璃瓶、科尔维斯 & 伊索尔德动态折叠对话、大熔炉淬火与出发管口。
+ * 出生基地「永恒锻炉圣所（Athanor Sanctum）」主场景（src/scenes/SanctumHubScene.ts，严格 <= 250 行）：
+ * 承载三段序章唤醒、开局悬吊蒸馏管抽样、12 支武器图鉴悬吊玻璃瓶、科尔维斯蓝图归档、伊索尔德大熔炉与出发管口。
  */
 
 import Phaser from 'phaser';
@@ -11,6 +11,7 @@ import { EventBus, type BiomeId, type CampaignStageTarget } from '../core/EventB
 import { NarrativeStore } from '../core/NarrativeSessionStore';
 import { BIOME_CATALOG } from '../data/biomes.data';
 import { PLAYER_KINEMATICS } from '../data/playerKinematics.data';
+import { RNG_CHANNEL_HASH } from '../data/runes.data';
 import { PlayerEntity } from '../entities/player/PlayerEntity';
 import { PlayerInventory } from '../entities/player/PlayerInventory';
 import { ActionMap } from '../input/ActionMap';
@@ -25,6 +26,7 @@ import { CloudSync } from '../storage/CloudSyncCoordinator';
 import { BiomeAtmosphereEmitter } from '../world/BiomeAtmosphereEmitter';
 import { DialogueBannerController } from '../world/DialogueBannerController';
 import { ParallaxComposer, type IWorldDisplayRegistrar } from '../world/ParallaxComposer';
+import { equipFreshSanctumStarterKit, StarterTubeSpawner } from '../world/StarterTubeSpawner';
 import { WorldTileRenderer } from '../world/WorldTileRenderer';
 import { bindBiomeUiCommands, captureRunCarryover, restorePlayerCarryover, type RunCarryoverSnapshot } from './BiomeUiCommandBridge';
 import { CombatModalController } from './CombatModalAndRosterBridge';
@@ -54,9 +56,11 @@ export class SanctumHubScene extends Phaser.Scene {
   private player!: PlayerEntity;
   private heroSprite!: Phaser.GameObjects.Sprite;
   private sanctumProps!: SanctumStageObjects;
+  private starterTubes!: StarterTubeSpawner;
   private bannerCtrl!: DialogueBannerController;
   private unbindUi!: () => void;
   private mapKeyHandler!: (ev: KeyboardEvent) => void;
+  private runSeed = 0x51c0ffee;
   private mapExpanded = false;
   private activePrompt: string | null = null;
   private animMs = 0;
@@ -64,8 +68,9 @@ export class SanctumHubScene extends Phaser.Scene {
 
   public constructor() { super({ key: 'SanctumHubScene' }); }
 
-  public create(data?: { readonly carryover?: RunCarryoverSnapshot; readonly skipPrologue?: boolean }): void {
+  public create(data?: { readonly carryover?: RunCarryoverSnapshot; readonly inheritedGold?: number; readonly freshRunSeed?: number; readonly skipPrologue?: boolean }): void {
     EventBus.emit('boss:hud_updated', null);
+    this.runSeed = (data?.freshRunSeed ?? 0x51c0ffee) >>> 0;
     const bSpec = BIOME_CATALOG.biome_01_slag_retort;
     this.clock = new ClockController();
     this.cameraRig = new CameraRig(this);
@@ -109,7 +114,8 @@ export class SanctumHubScene extends Phaser.Scene {
     const initInv = data?.carryover ? new PlayerInventory(data.carryover.primaryWeapon, data.carryover.secondaryWeapon, data.carryover.loadout) : undefined;
     this.player = new PlayerEntity({
       spawnX, spawnY: SANCTUM_FLOOR_Y, world: baked, input: this.actionMap, inventory: initInv,
-      hasMagneticClawsRune: true, hasCalcinedRamRune: true,
+      hasMagneticClawsRune: NarrativeStore.unlockedRunes.includes('rune_magnetic_claws'),
+      hasCalcinedRamRune: NarrativeStore.unlockedRunes.includes('rune_calcined_ram'),
       hooks: {
         playAnim: (k) => this.heroSprite.play(k, true),
         setSpriteFrame: (f) => { this.heroSprite.anims.stop(); this.heroSprite.setFrame(f); },
@@ -119,44 +125,43 @@ export class SanctumHubScene extends Phaser.Scene {
         triggerHitFlash: (ms) => this.shaderCtrl.triggerHeroHitFlash(ms),
       },
     });
-    if (data?.carryover) restorePlayerCarryover(this.player, data.carryover);
-    this.player.stats.resetFullHealth();
+    const starterRng = data?.carryover
+      ? (restorePlayerCarryover(this.player, data.carryover), this.player.stats.resetFullHealth(), new DeterministicRng(this.runSeed).fork(RNG_CHANNEL_HASH.LOOT_AND_AFFIX))
+      : equipFreshSanctumStarterKit(this.player, this.runSeed, data?.inheritedGold ?? 0);
 
-    const rng = new DeterministicRng(0x51c0ffee);
-    this.modals = new CombatModalController(this.player, null, rng, this.clock, this.cameraRig, () => this.syncTelemetry());
+    this.starterTubes = new StarterTubeSpawner(this, registrar, this.player, starterRng, SANCTUM_FLOOR_Y);
+    this.modals = new CombatModalController(this.player, null, starterRng, this.clock, this.cameraRig, () => this.syncTelemetry(), {
+      onSwapTubeWeapon: (id, disp) => this.starterTubes.swapTubeWeapon(id, disp),
+      onSwapTubeSkill: (id, disp) => this.starterTubes.swapTubeSkill(id, disp),
+      onBlueprintNewlyUnlocked: (bpId) => {
+        this.sanctumProps.refreshFlaskLitStates();
+        this.starterTubes.spawnTrialDrop(this.player.physics.x + 24, SANCTUM_FLOOR_Y, starterRng, bpId);
+        this.particles.damageNumbers.spawnLabel(this.player.physics.x, SANCTUM_FLOOR_Y - 46, '✦ 新图纸已点亮悬吊瓶并投放试用!', 'PARRY');
+      },
+    });
     this.cameraRig.setWorldBounds(baked.worldBoundsPx);
     this.cameraRig.setFocus(spawnX, SANCTUM_FLOOR_Y - 26);
-
-    if (!NarrativeStore.prologueCompleted && !data?.skipPrologue) {
-      NarrativeStore.prologueCompleted = true;
-      this.bannerCtrl.startPrologueSequence(spawnX);
-    }
+    if (!NarrativeStore.prologueCompleted && !data?.skipPrologue) { NarrativeStore.prologueCompleted = true; this.bannerCtrl.startPrologueSequence(spawnX); }
 
     this.mapKeyHandler = (ev: KeyboardEvent): void => {
       if (ev.repeat) return;
       if (ev.code === 'KeyV') { this.modals.setMutationForgeOpen(!this.modals.isModalOpen); return; }
-      if (ev.code === 'KeyM' || ev.code === 'Tab') {
-        if (ev.code === 'Tab') ev.preventDefault();
-        this.mapExpanded = !this.mapExpanded;
-        this.emitMinimap();
-      }
+      if (ev.code === 'KeyM' || ev.code === 'Tab') { if (ev.code === 'Tab') ev.preventDefault(); this.mapExpanded = !this.mapExpanded; this.emitMinimap(); }
     };
     window.addEventListener('keydown', this.mapKeyHandler);
 
     const unbindSave = attachSceneSaveHotReload(this);
     const unbindCmd = bindBiomeUiCommands({
-      clock: this.clock, player: this.player, cameraRig: this.cameraRig, lighting: this.lighting,
-      postFx: this.postFx, shaderCtrl: this.shaderCtrl,
+      clock: this.clock, player: this.player, cameraRig: this.cameraRig, lighting: this.lighting, postFx: this.postFx, shaderCtrl: this.shaderCtrl,
       getSafeCheckpoint: () => ({ x: spawnX, y: SANCTUM_FLOOR_Y }),
       onEmitMinimap: () => this.emitMinimap(),
       onSetMinimapExpanded: (exp) => { this.mapExpanded = exp !== undefined ? exp : !this.mapExpanded; },
       onStateChanged: () => this.syncTelemetry(),
-      onRequestTransition: (bid, seed) => this.departToBiome(bid ?? 'biome_01_slag_retort', seed ?? 0x51c0ffee),
+      onRequestTransition: (bid, seed) => this.departToBiome(bid ?? 'biome_01_slag_retort', seed ?? this.runSeed),
       onWarpStage: (target) => this.warpStage(target),
       onSealToggled: () => this.emitMinimap(),
     });
     this.unbindUi = () => { unbindCmd(); unbindSave(); };
-
     window.__QC_ACTION_MAP__ = this.actionMap;
     this.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
@@ -171,25 +176,21 @@ export class SanctumHubScene extends Phaser.Scene {
         const dtMs = dtSec * 1000;
         this.animMs += dtMs;
         this.actionMap.sampleFixedTick();
+        this.player.ctx.hasMagneticClawsRune = NarrativeStore.unlockedRunes.includes('rune_magnetic_claws');
+        this.player.ctx.hasCalcinedRamRune = NarrativeStore.unlockedRunes.includes('rune_calcined_ram');
         const interact = !this.modals.isModalOpen && this.actionMap.wasJustPressed('interact');
         this.player.fixedUpdate(dtSec);
+        this.starterTubes.stepFixed(dtSec, this.player.physics.x, this.player.physics.y, interact, (id, wpn) => this.modals.openWeaponCompare({ id, weapon: wpn, fromTube: true }), (id, skl) => this.modals.openSkillCompare({ id, skill: skl, fromTube: true }));
         stepSanctumInteractionTick({
-          dtMs, animMs: this.animMs, interactPressed: interact, player: this.player,
-          props: this.sanctumProps, bannerCtrl: this.bannerCtrl, particles: this.particles,
-          lighting: this.lighting, prevPrompt: this.activePrompt,
-          onPromptChanged: (nx) => { this.activePrompt = nx; this.emitMinimap(); },
-          onDepart: () => this.departToBiome('biome_01_slag_retort', 0x51c0ffee),
+          dtMs, animMs: this.animMs, interactPressed: interact, player: this.player, props: this.sanctumProps, bannerCtrl: this.bannerCtrl, particles: this.particles,
+          lighting: this.lighting, prevPrompt: this.activePrompt, onPromptChanged: (nx) => { this.activePrompt = nx; this.emitMinimap(); },
+          onDepart: () => this.departToBiome('biome_01_slag_retort', this.runSeed), onOpenCorvusArchive: (newlyArchived) => this.modals.openCollectorModal(newlyArchived),
         });
-
         this.cameraRig.setFocus(this.player.physics.x, this.player.physics.y - 26);
         this.cameraRig.setLookahead(this.player.physics.facing * PLAYER_KINEMATICS.CAMERA_LOOKAHEAD_X_PX, -6);
-        this.cameraRig.stepSimulation(dtSec);
-        this.shaderCtrl.step(dtSec);
-        this.postFx.shieldRefract.stepTime(dtSec);
-        this.postFx.chromaticImpact.stepDecay(dtSec);
-        this.ghostTrail.step(dtSec);
-        this.locomotionVfx.step(dtSec);
-        this.particles.stepFixed(dtSec);
+        this.cameraRig.stepSimulation(dtSec); this.shaderCtrl.step(dtSec);
+        this.postFx.shieldRefract.stepTime(dtSec); this.postFx.chromaticImpact.stepDecay(dtSec);
+        this.ghostTrail.step(dtSec); this.locomotionVfx.step(dtSec); this.particles.stepFixed(dtSec);
       },
       (alpha) => {
         const interp = this.player.computeInterpolatedTransform(alpha);
@@ -210,32 +211,24 @@ export class SanctumHubScene extends Phaser.Scene {
   }
 
   private departToBiome(biomeId: BiomeId, seed: number): void {
-    this.mapExpanded = false;
-    CloudSync.beginNewRunSession();
+    this.mapExpanded = false; CloudSync.beginNewRunSession();
     this.scene.start('BiomeRunScene', { biomeId, seed, carryover: captureRunCarryover(this.player, NarrativeStore.unlockedRunes) });
   }
-
   private warpStage(target: CampaignStageTarget): void {
     this.mapExpanded = false;
     if (target !== 'sanctum') this.scene.start('BossArenaScene', { bossId: target, carryover: captureRunCarryover(this.player, NarrativeStore.unlockedRunes) });
   }
-
   private emitMinimap(): void {
     EventBus.emit('world:minimap_updated', buildSingleHallMinimapSnapshot('biome_01_slag_retort', '永恒锻炉圣所 · Athanor Sanctum', 'sanctum_athanor_01', WIDTH_TILES, this.mapExpanded, this.activePrompt));
   }
-
   private syncTelemetry(): void {
-    publishEnclosedSceneTelemetry({
-      sceneKey: 'SanctumHubScene', game: this.game, clock: this.clock, cameraRig: this.cameraRig,
-      lighting: this.lighting, shaderCtrl: this.shaderCtrl, heroSprite: this.heroSprite, player: this.player,
-    });
+    publishEnclosedSceneTelemetry({ sceneKey: 'SanctumHubScene', game: this.game, clock: this.clock, cameraRig: this.cameraRig, lighting: this.lighting, shaderCtrl: this.shaderCtrl, heroSprite: this.heroSprite, player: this.player });
   }
-
   private handleResize(gs: Phaser.Structs.Size): void { this.cameraRig.resize(gs.width, gs.height); this.parallax.resize(gs.width, gs.height); }
   private cleanup(): void {
     this.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
     window.removeEventListener('keydown', this.mapKeyHandler);
-    this.unbindUi(); this.modals.destroy(); this.bannerCtrl.destroy();
+    this.unbindUi(); this.modals.destroy(); this.bannerCtrl.destroy(); this.starterTubes.destroy();
     this.sanctumProps.destroy(); this.particles.destroy(); this.atmosphere.destroy();
     this.tileRenderer.destroy(); this.parallax.destroy(); this.actionMap.destroy(); this.ghostTrail.clearAll();
   }

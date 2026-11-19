@@ -52,12 +52,9 @@ export class SlagHuskEnemy extends BaseEnemy {
           this.telegraph = 'YELLOW_PARRIABLE';
           return;
         }
-        this.x = clampGroundX(this.x + this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
       } else {
-        const nextX = this.x + this.facing * this.spec.patrolSpeedPxS * dtSec;
-        if (nextX <= this.patrolMinX + 2) this.facing = 1;
-        else if (nextX >= this.patrolMaxX - 2) this.facing = -1;
-        this.x = clampGroundX(nextX, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.patrolSpeedPxS, dtSec, true);
       }
       return;
     }
@@ -152,12 +149,9 @@ export class FrenziedMinerEnemy extends BaseEnemy {
           return;
         }
         const chaseV = this.isEnraged ? 195 : this.spec.chaseSpeedPxS;
-        this.x = clampGroundX(this.x + this.facing * chaseV * dtSec, minBound, maxBound);
+        this.stepGroundMove(ctx, this.facing * chaseV, dtSec, false);
       } else {
-        const nextX = this.x + this.facing * this.spec.patrolSpeedPxS * dtSec;
-        if (nextX <= this.patrolMinX + 2) this.facing = 1;
-        else if (nextX >= this.patrolMaxX - 2) this.facing = -1;
-        this.x = clampGroundX(nextX, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.patrolSpeedPxS, dtSec, true);
       }
       return;
     }

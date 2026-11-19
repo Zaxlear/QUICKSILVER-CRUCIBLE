@@ -8,6 +8,7 @@
     { "tileX": 0, "tileY": 0, "widthTiles": 40, "heightTiles": 3 },
     { "tileX": 0, "tileY": 3, "widthTiles": 3, "heightTiles": 19 },
     { "tileX": 0, "tileY": 26, "widthTiles": 40, "heightTiles": 4 },
+    { "tileX": 25, "tileY": 24, "widthTiles": 8, "heightTiles": 2 },
     { "tileX": 37, "tileY": 3, "widthTiles": 3, "heightTiles": 19 }
   ],
   "oneWayPlatforms": [
@@ -29,7 +30,7 @@
   "trapSlots": [],
   "teleporterTilePos": { "tileX": 9, "tileY": 25 },
   "rewardPedestalTilePos": null,
-  "loreAnchor": { "tileX": 28, "tileY": 25, "lorePoolTag": "lore_01_quarantine_notice" },
+  "loreAnchor": { "tileX": 28, "tileY": 23, "lorePoolTag": "lore_01_quarantine_notice" },
   "lightAnchors": [
     { "tileX": 9, "tileY": 23, "preset": "MERCURY_SILVER", "radiusPx": 175, "flickerAmplitude": 0.05 },
     { "tileX": 28, "tileY": 22, "preset": "TORCH_AMBER", "radiusPx": 215, "flickerAmplitude": 0.13 }

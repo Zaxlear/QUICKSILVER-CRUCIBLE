@@ -334,6 +334,7 @@ export const RNG_CHANNEL_HASH = {
   BIOME_TOPOLOGY: 0x42494f4d,
   LOOT_AND_AFFIX: 0x4c4f4f54,
   ENEMY_SPAWN: 0x454e4d59,
+  GOLD_AND_BLUEPRINT: 0x474f4c44,
 } as const;
 
 export interface MinimapNodeSnapshot {

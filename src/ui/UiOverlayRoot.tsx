@@ -6,6 +6,8 @@ import {
   type BootTelemetryPayload,
   type BossHudSnapshot,
   type CloudSyncStatusSnapshot,
+  type CollectorBlueprintModalPayload,
+  type CursedChestModalPayload,
   type DialogueBannerSnapshot,
   type MinimapSnapshotPayload,
   type MutationForgeModalPayload,
@@ -13,7 +15,9 @@ import {
   type PlayerCombatHudSnapshot,
   type SaveConflictModalPayload,
   type ScrollPickModalPayload,
+  type ShopPurchaseModalPayload,
   type ShowcaseStatePayload,
+  type SkillCompareModalPayload,
   type ViewportSnapshotPayload,
   type WeaponCompareModalPayload,
 } from '../core/EventBus';
@@ -21,6 +25,8 @@ import { DEFAULT_AUDIO_TELEMETRY } from '../data/audio.data';
 import { AuthSyncDrawer } from './AuthSyncDrawer';
 import { BiomeMinimapWidget, WorldLoreBannerToast } from './BiomeMinimapOverlay';
 import { BossHealthBar } from './BossHealthBar';
+import { CollectorBlueprintModal } from './CollectorBlueprintModal';
+import { CursedChestModal } from './CursedChestModal';
 import { DialogueBanner } from './DialogueBanner';
 import { DesktopWeaponLoadoutDock, HudBar } from './HudBar';
 import { MinimapTacticalModal } from './MinimapTacticalModal';
@@ -29,6 +35,8 @@ import { PauseAudioMenu } from './PauseAudioMenu';
 import { SaveConflictModal } from './SaveConflictModal';
 import { ScrollPickModal } from './ScrollPickModal';
 import { ShaderQaDock } from './ShaderQaDock';
+import { ShopPurchaseModal } from './ShopPurchaseModal';
+import { SkillCompareModal } from './SkillCompareModal';
 import { TouchControlsOverlay } from './TouchControlsOverlay';
 import { WeaponCompareModal } from './WeaponCompareModal';
 
@@ -40,7 +48,7 @@ export interface UiOverlayInitialState {
 const DEFAULT_COMBAT_HUD: PlayerCombatHudSnapshot = {
   hp: 120, maxHp: 120, rallyOrangeHp: 0, rallyFrozen: false,
   stats: { rubedo: 1, citrinitas: 1, albedo: 1 },
-  flaskCharges: 1, maxFlaskCharges: 1, gold: 150, ichor: 45,
+  flaskCharges: 1, maxFlaskCharges: 1, gold: 0, ichor: 0,
   rapierCritReady: false, cleaverRhythmWindowOpen: false, isInvulnerable: false, isParryWindowActive: false,
   primarySlot: { slot: 'primary', weaponId: 'wpn_rust_scalpel', nameZh: '锈蚀解剖刃', iconSlot: 0, qualityBadge: 'I', colorHex: '#E11D48', scaledDps: 150, ammoLeft: null, maxAmmo: null, isReady: true },
   secondarySlot: { slot: 'secondary', weaponId: 'wpn_slag_buckler', nameZh: '矿渣反冲圆盾', iconSlot: 5, qualityBadge: 'I', colorHex: '#3CE682', scaledDps: 173, ammoLeft: null, maxAmmo: null, isReady: true },
@@ -57,9 +65,6 @@ function isSameShowcase(a: ShowcaseStatePayload, b: ShowcaseStatePayload): boole
   );
 }
 
-/**
- * 顶层独立 Preact DOM 覆盖层（挂载于 #ui-root，100% 免疫 WebGL 全屏后处理与镜头震动）。
- */
 export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOverlayInitialState) {
   const [viewport, setViewport] = useState<ViewportSnapshotPayload>(initialViewport);
   const [isPortraitLocked, setIsPortraitLocked] = useState<boolean>(initialPortraitLocked);
@@ -67,6 +72,10 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
   const [bossHud, setBossHud] = useState<BossHudSnapshot | null>(null);
   const [dialogueBanner, setDialogueBanner] = useState<DialogueBannerSnapshot | null>(null);
   const [compareModal, setCompareModal] = useState<WeaponCompareModalPayload | null>(null);
+  const [skillModal, setSkillModal] = useState<SkillCompareModalPayload | null>(null);
+  const [shopModal, setShopModal] = useState<ShopPurchaseModalPayload | null>(null);
+  const [collectorModal, setCollectorModal] = useState<CollectorBlueprintModalPayload | null>(null);
+  const [cursedModal, setCursedModal] = useState<CursedChestModalPayload | null>(null);
   const [scrollModal, setScrollModal] = useState<ScrollPickModalPayload | null>(null);
   const [mutationModal, setMutationModal] = useState<MutationForgeModalPayload | null>(null);
   const [pauseMenu, setPauseMenu] = useState<PauseAudioMenuPayload>({ open: false, activeSceneKey: 'SanctumHubScene' });
@@ -87,9 +96,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
   useEffect(() => {
     const syncClockState = (next: BootTelemetryPayload): void => {
       setTelemetry((prev) =>
-        prev.fixedSimHz === next.fixedSimHz && prev.isPaused === next.isPaused
-          ? prev
-          : { fixedSimHz: next.fixedSimHz, isPaused: next.isPaused }
+        prev.fixedSimHz === next.fixedSimHz && prev.isPaused === next.isPaused ? prev : { fixedSimHz: next.fixedSimHz, isPaused: next.isPaused }
       );
     };
     const unbinds = [
@@ -100,22 +107,22 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
       }),
       EventBus.on('system:boot_ready', syncClockState),
       EventBus.on('system:telemetry_updated', syncClockState),
-      EventBus.on('system:showcase_state_changed', (next) => {
-        setShowcase((prev) => (isSameShowcase(prev, next) ? prev : next));
-      }),
+      EventBus.on('system:showcase_state_changed', (next) => setShowcase((prev) => (isSameShowcase(prev, next) ? prev : next))),
       EventBus.on('player:combat_hud_updated', setCombatHud),
       EventBus.on('boss:hud_updated', setBossHud),
       EventBus.on('narrative:dialogue_updated', setDialogueBanner),
       EventBus.on('combat:weapon_compare_opened', setCompareModal),
+      EventBus.on('combat:skill_compare_opened', setSkillModal),
+      EventBus.on('world:shop_modal_opened', setShopModal),
+      EventBus.on('narrative:collector_modal_opened', setCollectorModal),
+      EventBus.on('world:cursed_chest_modal_opened', setCursedModal),
       EventBus.on('combat:scroll_pick_opened', setScrollModal),
       EventBus.on('combat:mutation_forge_opened', setMutationModal),
       EventBus.on('ui:pause_menu_updated', setPauseMenu),
       EventBus.on('audio:state_updated', setAudioState),
       EventBus.on('save:sync_status_updated', setSyncStatus),
       EventBus.on('save:conflict_modal_updated', setConflictModal),
-      EventBus.on('input:touch_hud_updated', (snap) => {
-        setTouchVisible((prev) => (prev === snap.visible ? prev : snap.visible));
-      }),
+      EventBus.on('input:touch_hud_updated', (snap) => setTouchVisible((prev) => (prev === snap.visible ? prev : snap.visible))),
       EventBus.on('world:minimap_updated', setMinimap),
     ];
     const onUiClick = (ev: MouseEvent): void => {
@@ -125,10 +132,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
       }
     };
     const onDevHotkey = (ev: KeyboardEvent): void => {
-      if (import.meta.env.DEV && !ev.repeat && ev.code === 'F9') {
-        ev.preventDefault();
-        setDevModeOpen((prev) => !prev);
-      }
+      if (import.meta.env.DEV && !ev.repeat && ev.code === 'F9') { ev.preventDefault(); setDevModeOpen((prev) => !prev); }
     };
     window.addEventListener('click', onUiClick, true);
     window.addEventListener('keydown', onDevHotkey);
@@ -144,7 +148,8 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
   const showDevQaTools = Boolean(import.meta.env.DEV && devModeOpen);
   const anyModalBlockingTouch =
     Boolean(
-      pauseMenu.open || compareModal?.open || scrollModal?.open ||
+      pauseMenu.open || compareModal?.open || skillModal?.open || shopModal?.open ||
+      collectorModal?.open || cursedModal?.open || scrollModal?.open ||
       mutationModal?.open || conflictModal?.open || syncStatus?.drawerOpen
     ) || bossHud?.endingState === 'AWAITING_ALKAHEST_CHOICE';
 
@@ -178,7 +183,7 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
                   </span>
                 </div>
                 <div class="text-[9px] text-[#9AA5B8] mt-0.5">
-                  [J/K] WEAPONS · [Q/C] SKILLS · [SHIFT] ROLL · [E] ACT/TALK · [V] FORGE · [M] MAP · [ESC] AUDIO
+                  [J/K] WEAPONS · [Q/C] SKILLS · [SHIFT] ROLL · [E] ACT · [HOLD R] RECYCLE · [V] FORGE · [M] MAP
                 </div>
               </div>
             </div>
@@ -192,6 +197,10 @@ export function UiOverlayRoot({ initialViewport, initialPortraitLocked }: UiOver
       <WorldLoreBannerToast minimap={minimap} />
       {minimap && <MinimapTacticalModal minimap={minimap} devModeEnabled={showDevQaTools} />}
       <WeaponCompareModal payload={compareModal} />
+      <SkillCompareModal payload={skillModal} />
+      <ShopPurchaseModal payload={shopModal} />
+      <CollectorBlueprintModal payload={collectorModal} />
+      <CursedChestModal payload={cursedModal} />
       <ScrollPickModal payload={scrollModal} />
       <MutationForgeModal payload={mutationModal} />
       <PauseAudioMenu pauseMenu={pauseMenu} audio={audioState} compactMobileMode={isTouchModeVisible} />

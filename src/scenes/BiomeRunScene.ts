@@ -151,6 +151,7 @@ export class BiomeRunScene extends Phaser.Scene {
 
   public override update(_time: number, deltaMs: number): void {
     const player = this.rig.player;
+    this.rig.settlement.stepRealDelta(deltaMs);
     this.clock.tick(
       deltaMs,
       (dtSec) => {

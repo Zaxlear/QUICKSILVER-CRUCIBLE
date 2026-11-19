@@ -44,6 +44,8 @@ export function actionBit(action: ActionId): number {
       return 1 << 7;
     case 'pause':
       return 1 << 8;
+    case 'recycle':
+      return 1 << 9;
   }
 }
 

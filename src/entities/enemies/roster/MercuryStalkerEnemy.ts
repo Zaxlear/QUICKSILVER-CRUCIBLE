@@ -129,7 +129,7 @@ export class MercuryStalkerEnemy extends BaseEnemy {
     }
 
     this.facing = sense.dirToPlayer;
-    if (this.useSpikeNext && sense.distPx <= 220) {
+    if (this.useSpikeNext && sense.distPx <= 220 && Math.abs(sense.dy) <= 28) {
       this.useSpikeNext = false;
       this.spikeTargetX = ctx.playerX;
       this.spikeTargetY = ctx.playerY;
@@ -142,7 +142,7 @@ export class MercuryStalkerEnemy extends BaseEnemy {
       this.phaseMs = 0;
       this.telegraph = 'YELLOW_PARRIABLE';
     } else {
-      this.x = clampGroundX(this.x + this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
+      this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
     }
   }
 }

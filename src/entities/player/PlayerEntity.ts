@@ -51,6 +51,7 @@ export class PlayerEntity {
   public renderX: number;
   public renderY: number;
   public currentFrameKey = 'hero_idle_0';
+  public lastKilledByReason: string | null = null;
 
   public constructor(opts: PlayerEntityOptions) {
     this.physics = new PlayerPhysics(opts.spawnX, opts.spawnY);
@@ -144,12 +145,17 @@ export class PlayerEntity {
     }
     if (this.ctx.isInvulnerable) {
       EventBus.emit('combat:dodge_evaded', {
-        entityId: 'player_vessel_09',
-        worldX: this.physics.x,
-        worldY: this.physics.y - 16,
+        entityId: 'player_vessel_09', worldX: this.physics.x, worldY: this.physics.y - 16,
         activeAffixIds: this.inventory.collectAllEquippedAffixIds(),
       });
       return 'evaded';
+    }
+    if (this.stats.cursedKillsRemaining > 0 && damage > 0) {
+      this.stats.hp = 0;
+      this.stats.rallyOrangeHp = 0;
+      this.lastKilledByReason = 'cursed_shatter';
+      this.fsm.requestInterrupt('Dead', this.ctx);
+      return 'dead';
     }
 
     const hpBefore = this.stats.hp;

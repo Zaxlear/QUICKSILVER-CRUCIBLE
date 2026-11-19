@@ -1,6 +1,6 @@
 /**
- * Milestone 7 关卡战斗总编排器（src/scenes/BiomeCombatSession.ts）：
- * 衔接 EnemyDirector（12 种普通怪 + 4 精英词缀）、12 把武器、6 主动技能、6 元素反应、20 词条引擎与 12 变异。
+ * 关卡战斗与局内经济总编排器（src/scenes/BiomeCombatSession.ts，严格 <= 250 行）：
+ * 衔接 EnemyDirector（12 普通怪 + 4 精英词缀）、12 武器、6 主动技能、6 元素反应、20 词条、12 变异与局内经济闭环。
  */
 
 import Phaser from 'phaser';
@@ -31,12 +31,11 @@ import { CombatLootSpawner } from '../world/CombatLootSpawner';
 import type { GeneratedBiomeDag } from '../world/DagBiomeGenerator';
 import type { BakedStitchedWorld } from '../world/DoorSocketStitcher';
 import type { IWorldDisplayRegistrar } from '../world/ParallaxComposer';
+import { BiomeEconomyCoordinator } from './BiomeEconomyCoordinator';
 import { applyResolvedProjectileImpacts, applyResolvedWeaponHits } from './CombatHitResolver';
 import {
-  buildPlayerCombatHudSnapshot,
-  CombatModalController,
-  resolvePlayerShieldAndCarapaceHooks,
-  stepEnemyDirectorRoster,
+  buildPlayerCombatHudSnapshot, CombatModalController, executePlayerWeaponStageSpawn,
+  resolvePlayerShieldAndCarapaceHooks, stepEnemyDirectorRoster,
 } from './CombatModalAndRosterBridge';
 import { SkillAndSynergyCoordinator } from './SkillAndSynergyCoordinator';
 
@@ -49,6 +48,7 @@ export class BiomeCombatSession {
   public readonly director: EnemyDirector;
   public readonly synergy: SkillAndSynergyCoordinator;
   public readonly modals: CombatModalController;
+  public readonly economy: BiomeEconomyCoordinator;
   public readonly defenseHooks: ReturnType<typeof resolvePlayerShieldAndCarapaceHooks>;
 
   private readonly dag: GeneratedBiomeDag;
@@ -90,6 +90,11 @@ export class BiomeCombatSession {
     this.modals = new CombatModalController(player, this.loot, lootRng, clock, cameraRig, () => {
       this.emitHudSnapshot();
     });
+    this.economy = new BiomeEconomyCoordinator(
+      scene, registrar, dag, rootRng, lootRng, player, this.loot,
+      this.particles, cameraRig, postFx, this.modals
+    );
+    this.modals.attachEconomyHooks(this.economy.buildModalHooks());
     this.refreshTargetViews();
     this.emitHudSnapshot();
   }
@@ -109,39 +114,13 @@ export class BiomeCombatSession {
   }
 
   public handlePlayerWeaponStageActive(weaponId: WeaponId, stageIndex: number, slot: WeaponSlotId): void {
-    const def = WEAPON_CATALOG[weaponId];
-    const stage = def.stages[stageIndex % def.stages.length]!;
-    const { x: px, y: py, facing } = this.player.physics;
-    const pierces = this.player.inventory.getSlotWeapon(slot).affixIds.includes('afx_pierce_first');
-
-    if (def.category === 'RANGED_BOW') {
-      this.projectiles.spawnPlayerMercuryArrow(px + facing * 14, py - 17, facing, pierces);
-      this.lighting.spawnTransientFlash(px + facing * 16, py - 17, 0x38bdf8, 125, 1.8, 80);
-      return;
-    }
-    if (def.category === 'RANGED_CROSSBOW') {
-      this.projectiles.spawnPlayerRepeaterBolt(px + facing * 16, py - 17, facing, (stageIndex - 1) * 14, pierces);
-      this.lighting.spawnTransientFlash(px + facing * 18, py - 17, 0xfbbf24, 120, 1.7, 70);
-      return;
-    }
-    if (def.category === 'THROWN_FLASK') {
-      this.projectiles.spawnPlayerLobbedFlask('VITRIOL_FLASK', px + facing * 12, py - 20, facing);
-      return;
-    }
-    if (def.category === 'MAGIC_STAFF') {
-      this.refreshTargetViews();
-      const hits = this.hitboxes.resolveVoltaicArcPulse(px + facing * 10, py - 18, facing, this.targetViewsScratch, this.chainSegScratch);
-      this.particles.emitVoltaicChainBolts(this.chainSegScratch);
-      this.lighting.spawnTransientFlash(px + facing * 24, py - 18, 0x38bdf8, 185, 2.3, 120);
-      const stopMs = applyResolvedWeaponHits(this.resolverCtx(), hits);
-      if (stopMs > 0) this.lastRecordedHitStopMs = stopMs;
-      return;
-    }
-
-    const cx = px + facing * stage.hitboxOffsetX;
-    const cy = py + stage.hitboxOffsetY;
-    this.hitboxes.beginPlayerSwingBox(weaponId, stageIndex, cx, cy, stage.hitboxWidthPx, stage.hitboxHeightPx, stage.activeTicks);
-    this.particles.emitWeaponSmear(stage.smearFrame, cx, cy, facing, def.category === 'MELEE_HEAVY' ? 0.22 : 0.14, stage.smearAtlas ?? 'weapons_fx_atlas');
+    const stopMs = executePlayerWeaponStageSpawn({
+      weaponId, stageIndex, slot, player: this.player, projectiles: this.projectiles,
+      hitboxes: this.hitboxes, particles: this.particles, lighting: this.lighting,
+      chainScratch: this.chainSegScratch, refreshTargets: () => this.refreshTargetViews(),
+      resolverCtx: this.resolverCtx(),
+    });
+    if (stopMs > 0) this.lastRecordedHitStopMs = stopMs;
   }
 
   public handlePlayerParrySucceeded(): void {
@@ -158,11 +137,9 @@ export class BiomeCombatSession {
     this.lighting.spawnTransientFlash(px + facing * 14, py - 18, shieldId === 'wpn_mirror_aegis' ? 0x38bdf8 : 0xfbbf24, 240, 2.7, 190);
   }
 
-  public handleSkillActivated(slot: SkillSlotId): void {
-    this.synergy.activateSkillSlot(slot);
-  }
+  public handleSkillActivated(slot: SkillSlotId): void { this.synergy.activateSkillSlot(slot); }
 
-  public stepFixed(dtSec: number, interactPressed: boolean, activeRoomId?: string): void {
+  public stepFixed(dtSec: number, interactPressed: boolean, activeRoomId?: string, recycleHeld = false): void {
     const { x: px, y: py, facing } = this.player.physics;
     if (this.shieldRefractPulseSec > 0) this.shieldRefractPulseSec = Math.max(0, this.shieldRefractPulseSec - dtSec);
 
@@ -170,9 +147,7 @@ export class BiomeCombatSession {
       const def = this.player.inventory.getSlotDefinition(this.player.ctx.activeWeaponSlot);
       const st = def.stages[this.player.ctx.comboIndex % def.stages.length]!;
       this.hitboxes.syncPlayerSwingPosition(px + facing * st.hitboxOffsetX, py + st.hitboxOffsetY);
-    } else if (this.player.state !== 'Parry') {
-      this.hitboxes.cancelPlayerSwingBox();
-    }
+    } else if (this.player.state !== 'Parry') this.hitboxes.cancelPlayerSwingBox();
 
     this.refreshTargetViews();
     const meleeHits = this.hitboxes.stepFixed(px, this.targetViewsScratch, (wid, sIdx) => WEAPON_CATALOG[wid].stages[sIdx % WEAPON_CATALOG[wid].stages.length]!.breach);
@@ -192,9 +167,17 @@ export class BiomeCombatSession {
     );
     if (projImpacts.length > 0) applyResolvedProjectileImpacts(this.resolverCtx(), projImpacts, this.onRespawnPlayer);
 
-    stepEnemyDirectorRoster(dtSec, this.director, this.baked.solidRects, this.player, this.projectiles, this.particles, this.lighting, this.synergy, this.onRespawnPlayer, this.cameraRig, activeRoomId);
+    stepEnemyDirectorRoster(dtSec, this.director, this.baked.solidRects, this.player, this.projectiles, this.particles, this.lighting, this.synergy, this.onRespawnPlayer, this.cameraRig, activeRoomId, this.baked.oneWayPlatforms, this.dag.biomeId);
     this.synergy.stepFixed(dtSec, this.heroSprite);
-    this.loot.stepFixed(dtSec, px, py, interactPressed && !this.modals.isModalOpen, (drop) => this.modals.openWeaponCompare(drop), (scr) => this.modals.openScrollPick(scr.id), () => this.modals.setMutationForgeOpen(true));
+    const interactReady = interactPressed && !this.modals.isModalOpen;
+    this.loot.stepFixed(
+      dtSec, px, py, interactReady,
+      (drop) => this.modals.openWeaponCompare(drop),
+      (scr) => this.modals.openScrollPick(scr.id),
+      () => this.modals.setMutationForgeOpen(true),
+      (chest) => this.modals.openCursedChestModal(chest.id)
+    );
+    this.economy.stepFixed(dtSec, px, py, interactReady, recycleHeld && !this.modals.isModalOpen, this.baked, this.modals);
     this.particles.syncProjectileSprites(this.projectiles);
     this.particles.syncPlayerWeaponCues(px, py, facing, this.player.stats.isCleaverRhythmWindowOpen, this.player.stats.rapierCritWindowMs > 0, (this.clock.totalFixedTicks >> 2) & 1 ? 1 : 0);
     this.particles.stepFixed(dtSec);
@@ -216,6 +199,7 @@ export class BiomeCombatSession {
   }
 
   public destroy(): void {
+    this.economy.destroy();
     this.modals.destroy();
     this.synergy.destroy();
     this.director.destroy();

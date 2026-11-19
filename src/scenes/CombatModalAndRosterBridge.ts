@@ -3,59 +3,87 @@
  * （src/scenes/CombatModalAndRosterBridge.ts）。
  */
 
+import type { HitboxManager } from '../combat/HitboxManager';
 import type { ProjectilePool } from '../combat/ProjectilePool';
-import type { SolidWallRect } from '../combat/CombatTypes';
-import { COMBAT_CONSTANTS, type PlayerCombatHudSnapshot } from '../data/weapons.data';
+import type { SolidWallRect, VoltaicChainSegment } from '../combat/CombatTypes';
+import { EventBus } from '../core/EventBus';
+import { NarrativeStore } from '../core/NarrativeSessionStore';
+import { BIOME_CATALOG } from '../data/biomes.data';
+import { COMBAT_CONSTANTS, WEAPON_CATALOG, type PlayerCombatHudSnapshot, type WeaponId, type WeaponSlotId } from '../data/weapons.data';
 import type { BaseEnemy } from '../entities/enemies/BaseEnemy';
 import type { EnemyDirector } from '../entities/enemies/EnemyDirector';
-import type { EnemyViewBounds } from '../entities/enemies/EnemyTypes';
+import type { EnemyOneWayRect, EnemyViewBounds } from '../entities/enemies/EnemyTypes';
 import type { PlayerEntity } from '../entities/player/PlayerEntity';
 import type { CameraRig } from '../render/CameraRig';
 import type { LightingDirector } from '../render/LightingDirector';
 import type { ParticleDirector } from '../render/vfx/ParticleDirector';
+import { applyResolvedWeaponHits, type CombatResolverContext } from './CombatHitResolver';
 import { CombatModalController } from './CombatModalController';
 import type { SkillAndSynergyCoordinator } from './SkillAndSynergyCoordinator';
 
 export { CombatModalController };
+
+export function executePlayerWeaponStageSpawn(params: {
+  readonly weaponId: WeaponId; readonly stageIndex: number; readonly slot: WeaponSlotId;
+  readonly player: PlayerEntity; readonly projectiles: ProjectilePool; readonly hitboxes: HitboxManager;
+  readonly particles: ParticleDirector; readonly lighting: LightingDirector;
+  readonly chainScratch: VoltaicChainSegment[]; readonly refreshTargets: () => void; readonly resolverCtx: CombatResolverContext;
+}): number {
+  const { weaponId, stageIndex, slot, player, projectiles, hitboxes, particles, lighting, chainScratch, refreshTargets, resolverCtx } = params;
+  const def = WEAPON_CATALOG[weaponId];
+  const stage = def.stages[stageIndex % def.stages.length]!;
+  const { x: px, y: py, facing } = player.physics;
+  const pierces = player.inventory.getSlotWeapon(slot).affixIds.includes('afx_pierce_first');
+  if (def.category === 'RANGED_BOW') {
+    projectiles.spawnPlayerMercuryArrow(px + facing * 14, py - 17, facing, pierces);
+    lighting.spawnTransientFlash(px + facing * 16, py - 17, 0x38bdf8, 125, 1.8, 80);
+    return 0;
+  }
+  if (def.category === 'RANGED_CROSSBOW') {
+    projectiles.spawnPlayerRepeaterBolt(px + facing * 16, py - 17, facing, (stageIndex - 1) * 14, pierces);
+    lighting.spawnTransientFlash(px + facing * 18, py - 17, 0xfbbf24, 120, 1.7, 70);
+    return 0;
+  }
+  if (def.category === 'THROWN_FLASK') {
+    projectiles.spawnPlayerLobbedFlask('VITRIOL_FLASK', px + facing * 12, py - 20, facing);
+    return 0;
+  }
+  if (def.category === 'MAGIC_STAFF') {
+    refreshTargets();
+    const hits = hitboxes.resolveVoltaicArcPulse(px + facing * 10, py - 18, facing, resolverCtx.getTargets(), chainScratch);
+    particles.emitVoltaicChainBolts(chainScratch);
+    lighting.spawnTransientFlash(px + facing * 24, py - 18, 0x38bdf8, 185, 2.3, 120);
+    return applyResolvedWeaponHits(resolverCtx, hits);
+  }
+  const cx = px + facing * stage.hitboxOffsetX;
+  const cy = py + stage.hitboxOffsetY;
+  hitboxes.beginPlayerSwingBox(weaponId, stageIndex, cx, cy, stage.hitboxWidthPx, stage.hitboxHeightPx, stage.activeTicks);
+  particles.emitWeaponSmear(stage.smearFrame, cx, cy, facing, def.category === 'MELEE_HEAVY' ? 0.22 : 0.14, stage.smearAtlas ?? 'weapons_fx_atlas');
+  return 0;
+}
 
 const viewBoundsScratch: { minX: number; minY: number; maxX: number; maxY: number } = {
   minX: 0, minY: 0, maxX: 0, maxY: 0,
 };
 
 export function stepEnemyDirectorRoster(
-  dtSec: number,
-  director: EnemyDirector,
-  solidRects: readonly SolidWallRect[],
-  player: PlayerEntity,
-  projectiles: ProjectilePool,
-  particles: ParticleDirector,
-  lighting: LightingDirector,
-  synergy: SkillAndSynergyCoordinator,
-  onRespawnPlayer: () => void,
-  cameraRig?: CameraRig,
-  activeRoomId?: string
+  dtSec: number, director: EnemyDirector, solidRects: readonly SolidWallRect[],
+  player: PlayerEntity, projectiles: ProjectilePool, particles: ParticleDirector,
+  lighting: LightingDirector, synergy: SkillAndSynergyCoordinator, onRespawnPlayer: () => void,
+  cameraRig?: CameraRig, activeRoomId?: string, oneWayPlatforms?: readonly EnemyOneWayRect[], biomeId?: keyof typeof BIOME_CATALOG
 ): void {
   let vb: EnemyViewBounds | undefined;
   if (cameraRig) {
     const cam = cameraRig.worldMainCam;
-    viewBoundsScratch.minX = cam.scrollX;
-    viewBoundsScratch.minY = cam.scrollY;
-    viewBoundsScratch.maxX = cam.scrollX + cam.width;
-    viewBoundsScratch.maxY = cam.scrollY + cam.height;
+    viewBoundsScratch.minX = cam.scrollX; viewBoundsScratch.minY = cam.scrollY;
+    viewBoundsScratch.maxX = cam.scrollX + cam.width; viewBoundsScratch.maxY = cam.scrollY + cam.height;
     vb = viewBoundsScratch;
   }
-  const px = player.physics.x;
-  const py = player.physics.y;
-  const facing = player.physics.facing;
+  const { x: px, y: py, facing } = player.physics;
   const stealthed = synergy.mutations.stealthRemainingSec > 0;
 
   director.stepFixed(
-    dtSec,
-    px,
-    py,
-    facing,
-    stealthed,
-    solidRects,
+    dtSec, px, py, facing, stealthed, solidRects,
     (eid) => projectiles.getEmbeddedArrowCount(eid),
     {
       onStrikePlayer: (dmg, dirX, parriable, source, rootSec) => {
@@ -107,9 +135,17 @@ export function stepEnemyDirectorRoster(
         particles.emitWeaponSmear('react_burst_ring_0', wx, wy - 10, 1, 0.28, 'synergy_fx_atlas');
         lighting.spawnTransientFlash(wx, wy - 14, isPoison ? 0x3ce682 : 0xff5e2b, rad * 2.2, 2.3, 240);
       },
+      onFallDamageFeedback: (victim, dmg, killed) => {
+        particles.damageNumbers.spawnLabel(victim.x, victim.y - 26, `✦高坠-${dmg}`, 'REACTION');
+        if (killed) {
+          if (biomeId) player.stats.ichor += BIOME_CATALOG[biomeId].ichorPerKill;
+          EventBus.emit('combat:enemy_killed', { enemyId: victim.id, archetypeId: victim.archetype, worldX: victim.x, worldY: victim.y - 18, killedByMelee: false, isElite: victim.isElite, isBoss: victim.isBoss, speciesId: victim.speciesId });
+        }
+      },
     },
     vb,
-    activeRoomId
+    activeRoomId,
+    oneWayPlatforms
   );
 }
 
@@ -192,5 +228,7 @@ export function buildPlayerCombatHudSnapshot(
     predatorStealthActive: (synergy?.mutations.stealthRemainingSec ?? 0) > 0,
     teslaTetherLinked: Boolean(synergy?.skillRuntime.turret.active && synergy.skillRuntime.turret.tetherLinkedToPlayer),
     carapaceReady: Boolean(loadout.activeMutationIds.includes('mut_emergency_carapace') && synergy?.mutations.carapaceReady),
+    cursedKillsRemaining: player.stats.cursedKillsRemaining,
+    carriedBlueprintsCount: NarrativeStore.carriedBlueprints.length,
   };
 }

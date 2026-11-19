@@ -229,6 +229,10 @@ export function formatMutationLiveEffectZh(
 
 export type ForgeUpgradeId =
   | 'upg_flask_tier'
+  | 'upg_gold_reserve'
+  | 'upg_starting_recycle'
+  | 'upg_starter_tubes'
+  | 'upg_shop_restock'
   | 'upg_legendary_forge_plus'
   | 'upg_legendary_forge_pp'
   | 'upg_legendary_forge_s';
@@ -241,7 +245,7 @@ export interface ForgeUpgradeSpec {
   readonly stepIchor: number;
 }
 
-/** 永恒锻炉圣所灵液灌注项目表（docs/02 §3.6.2） */
+/** 永恒锻炉圣所灵液灌注项目表（docs/02 §3.6.2 & docs/06 §2.1~§2.6） */
 export const ETERNAL_FORGE_UPGRADES: readonly ForgeUpgradeSpec[] = [
   {
     id: 'upg_flask_tier',
@@ -251,9 +255,37 @@ export const ETERNAL_FORGE_UPGRADES: readonly ForgeUpgradeSpec[] = [
     stepIchor: 35,
   },
   {
+    id: 'upg_gold_reserve',
+    nameZh: '秘银金库袋（阵亡保金）',
+    descZh: '永久死亡重返圣所时，按阶梯最高保留 800 / 2,000 / 4,000 / 7,500 G。',
+    maxIchor: 200,
+    stepIchor: 50,
+  },
+  {
+    id: 'upg_starting_recycle',
+    nameZh: '高阶炼金回收熔解术',
+    descZh: '地面无用装备长按 [R] 熔解回收折算率由基础 45% 永久提升至 75%。',
+    maxIchor: 100,
+    stepIchor: 50,
+  },
+  {
+    id: 'upg_starter_tubes',
+    nameZh: '圣所多管悬吊槽',
+    descZh: '圣所出发管前额外降下多套开局 I 阶武器与技能供挑选换装。',
+    maxIchor: 120,
+    stepIchor: 60,
+  },
+  {
+    id: 'upg_shop_restock',
+    nameZh: '军械商付费刷新许可',
+    descZh: '解锁每间商店最多 3 次付费刷新货架特权（120G -> 240G -> 420G）。',
+    maxIchor: 120,
+    stepIchor: 60,
+  },
+  {
     id: 'upg_legendary_forge_plus',
     nameZh: '大熔炉：+ 级淬火池',
-    descZh: '提高全局掉落与商店装备直接升阶为 + 级（等效等级 +2、多 1 条词条）的概率。',
+    descZh: '提高全局掉落与商店装备直接升阶为 + 级（满 800 灵液 100% 保底 + 级）的概率。',
     maxIchor: 800,
     stepIchor: 40,
   },
@@ -280,5 +312,6 @@ export interface MutationForgeModalPayload {
   readonly respecCostGold: number;
   readonly carriedIchor: number;
   readonly equippedMutationIds: readonly MutationId[];
+  readonly unlockedMutationIds?: readonly MutationId[];
   readonly forgeProgress: Readonly<Record<ForgeUpgradeId, number>>;
 }

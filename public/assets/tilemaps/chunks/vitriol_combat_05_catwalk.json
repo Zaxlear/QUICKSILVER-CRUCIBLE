@@ -1,0 +1,225 @@
+{
+  "chunkId": "vitriol_combat_05_catwalk",
+  "biomePool": [
+    "biome_02_vitriol_sewers"
+  ],
+  "role": "COMBAT",
+  "widthTiles": 48,
+  "heightTiles": 32,
+  "solidRects": [
+    {
+      "tileX": 0,
+      "tileY": 0,
+      "widthTiles": 16,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 20,
+      "tileY": 0,
+      "widthTiles": 28,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 0,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 17
+    },
+    {
+      "tileX": 0,
+      "tileY": 24,
+      "widthTiles": 3,
+      "heightTiles": 4
+    },
+    {
+      "tileX": 45,
+      "tileY": 3,
+      "widthTiles": 3,
+      "heightTiles": 21
+    },
+    {
+      "tileX": 0,
+      "tileY": 24,
+      "widthTiles": 14,
+      "heightTiles": 8
+    },
+    {
+      "tileX": 14,
+      "tileY": 29,
+      "widthTiles": 18,
+      "heightTiles": 3
+    },
+    {
+      "tileX": 32,
+      "tileY": 28,
+      "widthTiles": 16,
+      "heightTiles": 4
+    },
+    {
+      "tileX": 20,
+      "tileY": 19,
+      "widthTiles": 14,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 8,
+      "tileY": 14,
+      "widthTiles": 10,
+      "heightTiles": 2
+    }
+  ],
+  "oneWayPlatforms": [
+    {
+      "tileX": 15,
+      "tileY": 24,
+      "widthTiles": 8
+    },
+    {
+      "tileX": 25,
+      "tileY": 25,
+      "widthTiles": 7
+    },
+    {
+      "tileX": 35,
+      "tileY": 23,
+      "widthTiles": 7
+    },
+    {
+      "tileX": 15,
+      "tileY": 10,
+      "widthTiles": 6
+    },
+    {
+      "tileX": 15,
+      "tileY": 6,
+      "widthTiles": 6
+    }
+  ],
+  "climbableWalls": [
+    {
+      "tileX": 3,
+      "topTileY": 6,
+      "heightTiles": 14,
+      "normalSide": "RIGHT"
+    }
+  ],
+  "breakableSlagFloors": [],
+  "doorSockets": [
+    {
+      "socketId": "w_main",
+      "direction": "WEST",
+      "tileX": 0,
+      "tileY": 23,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "e_main",
+      "direction": "EAST",
+      "tileX": 47,
+      "tileY": 27,
+      "apertureTiles": 4,
+      "requiredRune": null
+    },
+    {
+      "socketId": "n_sock",
+      "direction": "NORTH",
+      "tileX": 16,
+      "tileY": 0,
+      "apertureTiles": 4,
+      "requiredRune": null
+    }
+  ],
+  "enemySpawns": [
+    {
+      "slotId": "sp_1",
+      "tileX": 9,
+      "tileY": 23,
+      "allowedArchetypes": [
+        "MELEE_FODDER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        4,
+        13
+      ]
+    },
+    {
+      "slotId": "sp_2",
+      "tileX": 26,
+      "tileY": 18,
+      "allowedArchetypes": [
+        "RANGED_HARASS",
+        "FLANKER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        21,
+        33
+      ]
+    },
+    {
+      "slotId": "sp_3",
+      "tileX": 39,
+      "tileY": 27,
+      "allowedArchetypes": [
+        "SHIELD_TANK",
+        "MELEE_FODDER"
+      ],
+      "minCrucibleHeat": 0,
+      "patrolSpanTiles": [
+        33,
+        43
+      ]
+    }
+  ],
+  "trapSlots": [
+    {
+      "slotId": "tr_acid_5",
+      "trapType": "ACID_GEYSER",
+      "tileX": 16,
+      "tileY": 28,
+      "widthTiles": 14,
+      "phaseOffsetMs": 450,
+      "cyclePeriodMs": 3200
+    }
+  ],
+  "teleporterTilePos": {
+    "tileX": 6,
+    "tileY": 23
+  },
+  "rewardPedestalTilePos": null,
+  "loreAnchor": null,
+  "conduitPairs": [
+    {
+      "pairId": "vit_catwalk_pipe",
+      "entryTileX": 10,
+      "entryTileY": 23,
+      "exitTileX": 12,
+      "exitTileY": 13
+    }
+  ],
+  "lightAnchors": [
+    {
+      "tileX": 9,
+      "tileY": 21,
+      "preset": "VITRIOL_VAT_GREEN",
+      "radiusPx": 185,
+      "flickerAmplitude": 0.09
+    },
+    {
+      "tileX": 24,
+      "tileY": 16,
+      "preset": "TORCH_AMBER",
+      "radiusPx": 175,
+      "flickerAmplitude": 0.12
+    },
+    {
+      "tileX": 39,
+      "tileY": 25,
+      "preset": "VITRIOL_VAT_GREEN",
+      "radiusPx": 185,
+      "flickerAmplitude": 0.09
+    }
+  ]
+}

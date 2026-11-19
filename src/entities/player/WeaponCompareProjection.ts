@@ -1,5 +1,5 @@
 /**
- * 武器面板缩放 DPS 计算、20 词条确定性互斥抽签与跨槽化学联动对比投影纯函数
+ * 武器与主动技能面板缩放 DPS 计算、20 词条确定性互斥抽签与跨槽化学联动对比投影纯函数
  * （src/entities/player/WeaponCompareProjection.ts）。
  */
 
@@ -17,8 +17,10 @@ import {
   type AffixId,
   type SynergySemanticTag,
 } from '../../data/affixes.data';
-import type { SkillArchetype } from '../../data/skills.data';
+import type { SkillCompareSlotView } from '../../data/economy.data';
+import { SKILL_CATALOG, type RolledSkillInstance, type SkillArchetype } from '../../data/skills.data';
 import {
+  ALL_STAT_COLORS,
   FORGE_GRADE_BONUS,
   WEAPON_CATALOG,
   type ForgeGrade,
@@ -28,44 +30,30 @@ import {
   type WeaponCategory,
   type WeaponCompareSlotView,
 } from '../../data/weapons.data';
+import { resolveHighestStatColor } from './ForgeGradeRoller';
 
 export function isAffixEligibleForWeapon(affix: AffixDefinition, cat: WeaponCategory): boolean {
   const isMelee =
-    cat === 'MELEE_LIGHT' ||
-    cat === 'MELEE_THRUST' ||
-    cat === 'MELEE_TWINBLADES' ||
-    cat === 'MELEE_HEAVY' ||
-    cat === 'MELEE_HALBERD';
+    cat === 'MELEE_LIGHT' || cat === 'MELEE_THRUST' || cat === 'MELEE_TWINBLADES' ||
+    cat === 'MELEE_HEAVY' || cat === 'MELEE_HALBERD';
   switch (affix.slotFilter) {
     case 'ALL_GEAR':
-    case 'ALL_WEAPONS':
-      return true;
-    case 'HEAVY_OR_CROSSBOW':
-      return cat === 'MELEE_HEAVY' || cat === 'MELEE_HALBERD' || cat === 'RANGED_CROSSBOW';
-    case 'MELEE_OR_RANGED_BOW':
-      return isMelee || cat === 'RANGED_BOW' || cat === 'RANGED_CROSSBOW';
-    case 'MELEE_OR_THROWN':
-      return isMelee || cat === 'THROWN_FLASK';
-    case 'DEPLOY_OR_THROWN':
-      return cat === 'THROWN_FLASK';
-    case 'MELEE_OR_SHIELD':
-      return isMelee || cat === 'SHIELD';
-    case 'SKILL_OR_SHIELD':
-      return cat === 'SHIELD';
-    case 'RANGED_BOW_OR_CROSSBOW':
-      return cat === 'RANGED_BOW' || cat === 'RANGED_CROSSBOW';
-    case 'SHIELD_ONLY':
-      return cat === 'SHIELD';
-    case 'MELEE_ONLY':
-      return isMelee;
-    case 'HEAVY_ONLY':
-      return cat === 'MELEE_HEAVY' || cat === 'MELEE_HALBERD';
+    case 'ALL_WEAPONS': return true;
+    case 'HEAVY_OR_CROSSBOW': return cat === 'MELEE_HEAVY' || cat === 'MELEE_HALBERD' || cat === 'RANGED_CROSSBOW';
+    case 'MELEE_OR_RANGED_BOW': return isMelee || cat === 'RANGED_BOW' || cat === 'RANGED_CROSSBOW';
+    case 'MELEE_OR_THROWN': return isMelee || cat === 'THROWN_FLASK';
+    case 'DEPLOY_OR_THROWN': return cat === 'THROWN_FLASK';
+    case 'MELEE_OR_SHIELD': return isMelee || cat === 'SHIELD';
+    case 'SKILL_OR_SHIELD': return cat === 'SHIELD';
+    case 'RANGED_BOW_OR_CROSSBOW': return cat === 'RANGED_BOW' || cat === 'RANGED_CROSSBOW';
+    case 'SHIELD_ONLY': return cat === 'SHIELD';
+    case 'MELEE_ONLY': return isMelee;
+    case 'HEAVY_ONLY': return cat === 'MELEE_HEAVY' || cat === 'MELEE_HALBERD';
   }
 }
 
 export function isAffixEligibleForSkill(affix: AffixDefinition, arch: SkillArchetype): boolean {
-  const isDeployOrThrown =
-    arch === 'THROWN_CATALYST' || arch === 'FLOOR_TRAP' || arch === 'DEPLOY_TURRET';
+  const isDeployOrThrown = arch === 'THROWN_CATALYST' || arch === 'FLOOR_TRAP' || arch === 'DEPLOY_TURRET';
   return (
     affix.slotFilter === 'ALL_GEAR' ||
     affix.slotFilter === 'SKILL_OR_SHIELD' ||
@@ -73,11 +61,6 @@ export function isAffixEligibleForSkill(affix: AffixDefinition, arch: SkillArche
   );
 }
 
-/**
- * 基于 Mulberry32 子流抽取不冲突词条列表：
- * - 严格遵守 mutexGroup 互斥去重；
- * - S 级品质强制保底至少携带 1 条 RARE (★) 词条（docs/02 §3.5.2）。
- */
 export function rollDeterministicAffixIds(
   lootRng: DeterministicRng,
   eligiblePool: readonly AffixDefinition[],
@@ -85,7 +68,6 @@ export function rollDeterministicAffixIds(
 ): readonly string[] {
   const slotBudget = FORGE_GRADE_BONUS[forgeGrade].affixSlots;
   if (eligiblePool.length === 0 || slotBudget <= 0) return [];
-
   const chosen: string[] = [];
   const usedMutex = new Set<string>();
 
@@ -127,12 +109,14 @@ export function computeWeaponScaledDps(
   }
 
   const effectiveStats: Record<StatColor, number> = { ...stats };
-  if (weapon.bonusStatColor) {
-    effectiveStats[weapon.bonusStatColor] += FORGE_GRADE_BONUS[weapon.forgeGrade].bonusScrollCount;
+  const bonusCol = weapon.isColorlessLegendary ? resolveHighestStatColor(stats) : weapon.bonusStatColor;
+  if (bonusCol) {
+    effectiveStats[bonusCol] += FORGE_GRADE_BONUS[weapon.forgeGrade].bonusScrollCount;
   }
 
+  const scalingColors = weapon.isColorlessLegendary ? ALL_STAT_COLORS : def.colors;
   const mult =
-    computeStatDamageMultiplier(def.colors, effectiveStats) *
+    computeStatDamageMultiplier(scalingColors, effectiveStats) *
     computeGearTierMultiplier(weapon.level, weapon.forgeGrade) *
     computeAffixDamageMultiplier(weapon.affixIds, false);
 
@@ -165,32 +149,63 @@ export function projectWeaponSlotView(
     spec.consumesTags.forEach((t) => partnerConsumes.add(t));
   }
 
+  const dynamicColors = inst.isColorlessLegendary ? [resolveHighestStatColor(stats)] : def.colors;
   return {
     weapon: inst,
+    nameZh: inst.isColorlessLegendary ? `★无色·${def.nameZh}` : def.nameZh,
+    nameEn: def.nameEn,
+    iconSlot: def.iconSlot,
+    qualityBadge: formatWeaponQualityBadge(inst.level, inst.forgeGrade),
+    colors: dynamicColors,
+    scaledDps: baseDps,
+    critDps,
+    avgBreach,
+    critSummaryZh: def.critSummaryZh,
+    mechanicSummaryZh: inst.isColorlessLegendary ? `【无色传奇】动态绑定当前最高属性系 · ${def.mechanicSummaryZh}` : def.mechanicSummaryZh,
+    flavorInscriptionZh: def.flavorInscriptionZh,
+    affixes: inst.affixIds.map((id) => {
+      const spec = AFFIX_BY_ID[id as AffixId];
+      const matchesPartner = Boolean(
+        spec && (spec.consumesTags.some((t) => partnerProvides.has(t)) || spec.providesTags.some((t) => partnerConsumes.has(t)))
+      );
+      return { id, rarity: spec?.rarity ?? 'COMMON', labelZh: spec?.labelZh ?? id, hasSynergyWithOtherSlot: matchesPartner };
+    }),
+  };
+}
+
+export function projectSkillSlotView(
+  inst: RolledSkillInstance,
+  stats: Readonly<Record<StatColor, number>>,
+  equippedWeaponAffixIds: readonly string[]
+): SkillCompareSlotView {
+  const def = SKILL_CATALOG[inst.skillId];
+  const weaponConsumes = new Set<SynergySemanticTag>();
+  for (const wid of equippedWeaponAffixIds) {
+    AFFIX_BY_ID[wid as AffixId]?.consumesTags.forEach((t) => weaponConsumes.add(t));
+  }
+  const scaledDamage = Math.max(
+    1,
+    Math.round(
+      def.baseDamage *
+        computeStatDamageMultiplier(def.colors, stats) *
+        computeGearTierMultiplier(inst.level, inst.forgeGrade)
+    )
+  );
+  return {
+    skill: inst,
     nameZh: def.nameZh,
     nameEn: def.nameEn,
     iconSlot: def.iconSlot,
     qualityBadge: formatWeaponQualityBadge(inst.level, inst.forgeGrade),
     colors: def.colors,
-    scaledDps: baseDps,
-    critDps,
-    avgBreach,
-    critSummaryZh: def.critSummaryZh,
+    baseCooldownSec: def.baseCooldownSec,
+    scaledDamage,
     mechanicSummaryZh: def.mechanicSummaryZh,
-    flavorInscriptionZh: def.flavorInscriptionZh,
+    synergySummaryZh: def.synergySummaryZh,
+    hasWeaponChemicalSynergy: def.providesTags.some((t) => weaponConsumes.has(t)),
     affixes: inst.affixIds.map((id) => {
       const spec = AFFIX_BY_ID[id as AffixId];
-      const matchesPartner = Boolean(
-        spec &&
-          (spec.consumesTags.some((t) => partnerProvides.has(t)) ||
-            spec.providesTags.some((t) => partnerConsumes.has(t)))
-      );
-      return {
-        id,
-        rarity: spec?.rarity ?? 'COMMON',
-        labelZh: spec?.labelZh ?? id,
-        hasSynergyWithOtherSlot: matchesPartner,
-      };
+      return { id, rarity: spec?.rarity ?? 'COMMON', labelZh: spec?.labelZh ?? id };
     }),
   };
 }

@@ -45,6 +45,8 @@ export interface LiveRunCaptureInput {
   readonly skillSlotTwo: RolledSkillInstance;
   readonly activeMutationIds: readonly string[];
   readonly killStreakCount: number;
+  readonly cursedKillsRemaining?: number;
+  readonly carriedBlueprints?: readonly string[];
   readonly worldDelta: WorldDeltaSnapshot;
   readonly revision: number;
   readonly baseRevision: number;
@@ -58,6 +60,7 @@ export function serializeWeaponInstance(w: RolledWeaponInstance): SerializedWeap
     forgeGrade: w.forgeGrade,
     bonusStatColor: w.bonusStatColor,
     affixIds: [...w.affixIds],
+    ...(w.isColorlessLegendary ? { isColorlessLegendary: true } : {}),
   };
 }
 
@@ -95,6 +98,12 @@ export async function buildSignedActiveRunSnapshot(
     skillSlotTwo: s2,
     activeMutationIds: [...input.activeMutationIds],
     killStreakCount: input.killStreakCount,
+    ...(input.cursedKillsRemaining && input.cursedKillsRemaining > 0
+      ? { cursedKillsRemaining: Math.floor(input.cursedKillsRemaining) }
+      : {}),
+    ...(input.carriedBlueprints && input.carriedBlueprints.length > 0
+      ? { carriedBlueprints: [...input.carriedBlueprints] }
+      : {}),
   };
 
   const loadoutSummary: LoadoutVisualSummary = {

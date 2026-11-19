@@ -14,7 +14,6 @@ export type StationKind =
   | 'TENDRIL_GRATE'
   | 'CONDUIT_COFFIN'
   | 'ELITE_ALTAR'
-  | 'SHOP_RACK'
   | 'EXIT_LIFT';
 
 export interface InteractiveStation {
@@ -84,18 +83,6 @@ export function spawnWorldInteractiveStations(
         activated: false,
         sprite: mk(ax, ay, 'rune_altar_pedestal'),
         badgeSprite: mk(ax, ay - 30, EXPLORATION_RUNES[dropRune].sigilFrame),
-      });
-    } else if ((node.chunk.role === 'SHOP' || node.chunk.role === 'RUNE_SECRET' || node.chunk.role === 'CURSED_VAULT' || node.chunk.role === 'TREASURE') && ped) {
-      const sx = (rx + ped.tileX) * 16 + 8;
-      const sy = (ry + ped.tileY + 1) * 16;
-      stations.push({
-        id: `${node.nodeId}_shop`,
-        kind: 'SHOP_RACK',
-        x: sx,
-        y: sy,
-        activated: false,
-        sprite: mk(sx, sy, 'shop_armory_rack'),
-        badgeSprite: mk(sx, sy - 38, 'rune_sigil_1'),
       });
     } else if (node.chunk.role === 'EXIT' && ped) {
       const ex = (rx + ped.tileX) * 16 + 8;

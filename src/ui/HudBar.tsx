@@ -26,11 +26,21 @@ export const HudBar = memo(function HudBar({ combat, compactMobileMode, syncStat
   );
   const activeMuts = combat.activeMutationIds ?? [];
   const isCriticalLowHp = combat.hp > 0 && combat.hp < maxHp * 0.25;
+  const cursedKills = combat.cursedKillsRemaining ?? 0;
+  const carriedBps = combat.carriedBlueprintsCount ?? 0;
   const isConflict = syncStatus?.fsmState === 'CONFLICT_MODAL_OPEN';
   const isOffline = syncStatus ? !syncStatus.isNetworkOnline : false;
 
   return (
     <div data-testid="hud-combat-bar" class="flex flex-col gap-1.5 pointer-events-none">
+      {cursedKills > 0 && (
+        <div
+          data-testid="hud-curse-warning-bar"
+          class="bg-[#3B0764]/95 border-2 border-[#A855F7] px-2.5 py-1 text-[10px] font-bold text-[#F8FAFC] tracking-wide animate-pulse shadow-lg"
+        >
+          [☠ 血咒剩余 {cursedKills} 杀 · 触之即死]
+        </div>
+      )}
       <div
         data-testid="hud-badge-renderer"
         class="bg-[#11131C]/94 border border-[#7A5128] px-2.5 py-1.5 shadow-lg flex flex-col gap-1"
@@ -122,6 +132,9 @@ export const HudBar = memo(function HudBar({ combat, compactMobileMode, syncStat
             <span class="text-[#FB7185]">[F] {combat.flaskCharges}/{combat.maxFlaskCharges}</span>
             <span class="text-[#FBBF24]">{combat.gold}G</span>
             <span class="text-[#38BDF8]">✦{combat.ichor}</span>
+            {carriedBps > 0 && (
+              <span data-testid="hud-blueprint-badge" class="text-[#3CE682]">📜×{carriedBps}</span>
+            )}
             <button
               type="button"
               data-ui-interactive="true"

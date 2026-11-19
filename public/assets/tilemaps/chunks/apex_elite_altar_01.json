@@ -4,8 +4,8 @@
     "biome_04_crucible_apex"
   ],
   "role": "ELITE",
-  "widthTiles": 52,
-  "heightTiles": 30,
+  "widthTiles": 50,
+  "heightTiles": 32,
   "solidRects": [
     {
       "tileX": 0,
@@ -16,80 +16,76 @@
     {
       "tileX": 28,
       "tileY": 0,
-      "widthTiles": 24,
+      "widthTiles": 22,
       "heightTiles": 3
     },
     {
       "tileX": 0,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 19
+      "heightTiles": 21
     },
     {
-      "tileX": 49,
+      "tileX": 47,
       "tileY": 3,
       "widthTiles": 3,
-      "heightTiles": 19
+      "heightTiles": 21
     },
     {
       "tileX": 0,
-      "tileY": 26,
-      "widthTiles": 24,
+      "tileY": 28,
+      "widthTiles": 50,
       "heightTiles": 4
     },
     {
-      "tileX": 28,
-      "tileY": 26,
-      "widthTiles": 24,
-      "heightTiles": 4
-    },
-    {
-      "tileX": 21,
-      "tileY": 24,
+      "tileX": 20,
+      "tileY": 23,
       "widthTiles": 10,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 8,
+      "tileY": 18,
+      "widthTiles": 8,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 34,
+      "tileY": 18,
+      "widthTiles": 8,
       "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
-      "tileX": 22,
-      "tileY": 22,
-      "widthTiles": 10
+      "tileX": 14,
+      "tileY": 25,
+      "widthTiles": 5
     },
     {
-      "tileX": 22,
-      "tileY": 18,
-      "widthTiles": 10
-    },
-    {
-      "tileX": 22,
-      "tileY": 14,
-      "widthTiles": 8
-    },
-    {
-      "tileX": 22,
-      "tileY": 10,
-      "widthTiles": 8
+      "tileX": 31,
+      "tileY": 25,
+      "widthTiles": 5
     },
     {
       "tileX": 23,
-      "tileY": 6,
+      "tileY": 19,
       "widthTiles": 6
     },
     {
-      "tileX": 24,
-      "tileY": 26,
-      "widthTiles": 4
+      "tileX": 23,
+      "tileY": 15,
+      "widthTiles": 6
     },
     {
-      "tileX": 9,
-      "tileY": 21,
-      "widthTiles": 8
+      "tileX": 23,
+      "tileY": 11,
+      "widthTiles": 6
     },
     {
-      "tileX": 35,
-      "tileY": 21,
-      "widthTiles": 8
+      "tileX": 23,
+      "tileY": 7,
+      "widthTiles": 6
     }
   ],
   "climbableWalls": [],
@@ -99,15 +95,15 @@
       "socketId": "w_main",
       "direction": "WEST",
       "tileX": 0,
-      "tileY": 25,
+      "tileY": 27,
       "apertureTiles": 4,
       "requiredRune": null
     },
     {
       "socketId": "e_main",
       "direction": "EAST",
-      "tileX": 51,
-      "tileY": 25,
+      "tileX": 49,
+      "tileY": 27,
       "apertureTiles": 4,
       "requiredRune": null
     },
@@ -118,94 +114,70 @@
       "tileY": 0,
       "apertureTiles": 4,
       "requiredRune": null
-    },
-    {
-      "socketId": "s_branch",
-      "direction": "SOUTH",
-      "tileX": 24,
-      "tileY": 29,
-      "apertureTiles": 4,
-      "requiredRune": null
     }
   ],
   "enemySpawns": [
     {
-      "slotId": "sp_elite_01",
-      "tileX": 26,
-      "tileY": 23,
+      "slotId": "sp_elite_apex",
+      "tileX": 25,
+      "tileY": 22,
       "allowedArchetypes": [
-        "ELITE_GUARD"
+        "ELITE_GUARD",
+        "FLANKER",
+        "SHIELD_TANK"
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        10,
-        42
+        20,
+        29
       ]
     },
     {
-      "slotId": "sp_support_02",
+      "slotId": "sp_inquisitor",
       "tileX": 38,
-      "tileY": 20,
+      "tileY": 17,
       "allowedArchetypes": [
+        "RANGED_HARASS",
         "SUPPORT_CASTER"
       ],
       "minCrucibleHeat": 0,
       "patrolSpanTiles": [
-        35,
-        42
+        34,
+        41
       ]
     }
   ],
-  "trapSlots": [
-    {
-      "slotId": "tr_elite_l",
-      "trapType": "VOLTAIC_ARC_GATE",
-      "tileX": 14,
-      "tileY": 25,
-      "widthTiles": 2,
-      "phaseOffsetMs": 0,
-      "cyclePeriodMs": 2800
-    },
-    {
-      "slotId": "tr_elite_r",
-      "trapType": "VOLTAIC_ARC_GATE",
-      "tileX": 36,
-      "tileY": 25,
-      "widthTiles": 2,
-      "phaseOffsetMs": 1400,
-      "cyclePeriodMs": 2800
-    }
-  ],
+  "trapSlots": [],
   "teleporterTilePos": {
     "tileX": 7,
-    "tileY": 25
+    "tileY": 27
   },
   "rewardPedestalTilePos": {
-    "tileX": 26,
-    "tileY": 23
+    "tileX": 25,
+    "tileY": 22
   },
   "loreAnchor": null,
   "lightAnchors": [
     {
-      "tileX": 7,
-      "tileY": 23,
-      "preset": "VOLTAIC_CYAN",
-      "radiusPx": 185,
-      "flickerAmplitude": 0.06
-    },
-    {
-      "tileX": 26,
+      "tileX": 25,
       "tileY": 20,
       "preset": "MERCURY_SILVER",
       "radiusPx": 230,
-      "flickerAmplitude": 0.08
+      "flickerAmplitude": 0.06
     },
     {
-      "tileX": 40,
-      "tileY": 23,
+      "tileX": 12,
+      "tileY": 25,
       "preset": "FURNACE_CRIMSON",
       "radiusPx": 185,
-      "flickerAmplitude": 0.11
+      "flickerAmplitude": 0.09
+    },
+    {
+      "tileX": 38,
+      "tileY": 25,
+      "preset": "FURNACE_CRIMSON",
+      "radiusPx": 185,
+      "flickerAmplitude": 0.09
     }
   ]
 }

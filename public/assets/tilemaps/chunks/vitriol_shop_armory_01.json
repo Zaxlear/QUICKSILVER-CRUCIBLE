@@ -4,7 +4,7 @@
     "biome_02_vitriol_sewers"
   ],
   "role": "SHOP",
-  "widthTiles": 40,
+  "widthTiles": 42,
   "heightTiles": 30,
   "solidRects": [
     {
@@ -16,7 +16,7 @@
     {
       "tileX": 22,
       "tileY": 0,
-      "widthTiles": 18,
+      "widthTiles": 20,
       "heightTiles": 3
     },
     {
@@ -26,7 +26,7 @@
       "heightTiles": 19
     },
     {
-      "tileX": 37,
+      "tileX": 39,
       "tileY": 3,
       "widthTiles": 3,
       "heightTiles": 19
@@ -34,46 +34,58 @@
     {
       "tileX": 0,
       "tileY": 26,
-      "widthTiles": 18,
+      "widthTiles": 16,
       "heightTiles": 4
     },
     {
-      "tileX": 22,
+      "tileX": 20,
       "tileY": 26,
-      "widthTiles": 18,
+      "widthTiles": 22,
       "heightTiles": 4
+    },
+    {
+      "tileX": 24,
+      "tileY": 24,
+      "widthTiles": 10,
+      "heightTiles": 2
+    },
+    {
+      "tileX": 10,
+      "tileY": 17,
+      "widthTiles": 9,
+      "heightTiles": 2
     }
   ],
   "oneWayPlatforms": [
     {
       "tileX": 16,
+      "tileY": 26,
+      "widthTiles": 4
+    },
+    {
+      "tileX": 17,
       "tileY": 22,
-      "widthTiles": 10
+      "widthTiles": 6
     },
     {
-      "tileX": 16,
+      "tileX": 17,
       "tileY": 18,
-      "widthTiles": 10
+      "widthTiles": 6
     },
     {
-      "tileX": 16,
+      "tileX": 17,
       "tileY": 14,
-      "widthTiles": 8
+      "widthTiles": 6
     },
     {
-      "tileX": 16,
+      "tileX": 17,
       "tileY": 10,
-      "widthTiles": 8
+      "widthTiles": 6
     },
     {
       "tileX": 17,
       "tileY": 6,
       "widthTiles": 6
-    },
-    {
-      "tileX": 18,
-      "tileY": 26,
-      "widthTiles": 4
     }
   ],
   "climbableWalls": [],
@@ -90,7 +102,7 @@
     {
       "socketId": "e_in",
       "direction": "EAST",
-      "tileX": 39,
+      "tileX": 41,
       "tileY": 25,
       "apertureTiles": 4,
       "requiredRune": null
@@ -106,7 +118,7 @@
     {
       "socketId": "s_in",
       "direction": "SOUTH",
-      "tileX": 18,
+      "tileX": 16,
       "tileY": 29,
       "apertureTiles": 4,
       "requiredRune": null
@@ -115,28 +127,28 @@
   "enemySpawns": [],
   "trapSlots": [],
   "teleporterTilePos": {
-    "tileX": 9,
+    "tileX": 8,
     "tileY": 25
   },
   "rewardPedestalTilePos": {
-    "tileX": 28,
-    "tileY": 25
+    "tileX": 29,
+    "tileY": 23
   },
   "loreAnchor": null,
   "lightAnchors": [
     {
-      "tileX": 10,
-      "tileY": 23,
-      "preset": "VOLTAIC_CYAN",
-      "radiusPx": 175,
-      "flickerAmplitude": 0.06
+      "tileX": 29,
+      "tileY": 21,
+      "preset": "TORCH_AMBER",
+      "radiusPx": 210,
+      "flickerAmplitude": 0.08
     },
     {
-      "tileX": 28,
-      "tileY": 22,
+      "tileX": 10,
+      "tileY": 23,
       "preset": "VITRIOL_VAT_GREEN",
-      "radiusPx": 220,
-      "flickerAmplitude": 0.08
+      "radiusPx": 165,
+      "flickerAmplitude": 0.06
     }
   ]
 }

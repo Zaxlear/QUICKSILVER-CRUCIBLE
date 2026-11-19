@@ -72,6 +72,7 @@ export interface SanctumStageObjects {
   readonly flaskSprites: ReadonlyArray<{ readonly weaponId: WeaponId; readonly sprite: Phaser.GameObjects.Sprite }>;
   readonly promptLabel: Phaser.GameObjects.Text;
   readonly stations: readonly SanctumInteractiveProp[];
+  refreshFlaskLitStates(): void;
   destroy(): void;
 }
 
@@ -128,6 +129,15 @@ export function buildSanctumPropsAndNpcs(
 
   return {
     corvusSprite, isoldeSprite, hearthSprite, flaskSprites, promptLabel, stations,
+    refreshFlaskLitStates: () => {
+      const nowUnlocked = new Set(NarrativeStore.unlockedWeapons);
+      for (const f of flaskSprites) {
+        if (nowUnlocked.has(f.weaponId) && f.sprite.frame.name !== 'sanctum_hanging_flask_lit') {
+          f.sprite.setFrame('sanctum_hanging_flask_lit');
+          registrar.spawnLightFlash(f.sprite.x, f.sprite.y - 12, 0x38bdf8, 175, 2.5, 340);
+        }
+      }
+    },
     destroy: () => {
       for (const s of allSprites) { registrar.unregister(s); s.destroy(); }
       registrar.unregister(promptLabel); promptLabel.destroy();
@@ -200,6 +210,7 @@ export function stepSanctumInteractionTick(params: {
   readonly prevPrompt: string | null;
   readonly onPromptChanged: (next: string | null) => void;
   readonly onDepart: () => void;
+  readonly onOpenCorvusArchive?: (newlyArchivedCount: number) => void;
 }): void {
   const bit = (Math.floor(params.animMs / 380) & 1) as 0 | 1;
   params.props.corvusSprite.setFrame(`npc_corvus_idle_${bit}`);
@@ -216,7 +227,11 @@ export function stepSanctumInteractionTick(params: {
   if (!near || !params.interactPressed) return;
 
   const guard = buildPlayerNpcGuardContext(params.player, 'sanctum', NarrativeStore.unlockedRunes);
-  if (near.id === 'corvus') params.bannerCtrl.showNpcLine(NarrativeStore.selectNextNpcDialogue('corvus', guard), near.x);
+  if (near.id === 'corvus') {
+    const newlyArchived = NarrativeStore.archiveCarriedBlueprints();
+    params.bannerCtrl.showNpcLine(NarrativeStore.selectNextNpcDialogue('corvus', guard), near.x);
+    params.onOpenCorvusArchive?.(newlyArchived);
+  }
   else if (near.id === 'isolde') {
     NarrativeStore.recordForgeInvestment(50);
     params.particles.damageNumbers.spawnLabel(near.x, near.y - 44, '✦炉温淬火完成!', 'PARRY');

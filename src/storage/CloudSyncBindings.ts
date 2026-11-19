@@ -196,6 +196,7 @@ export function bindCloudSyncListeners(win: Window | undefined, cb: SyncBindingC
     EventBus.on('world:rune_unlocked', () => cb.onMutateMeta()),
     EventBus.on('narrative:seal_collected', () => cb.onMutateMeta()),
     EventBus.on('ui:command:invest_forge_ichor', ({ amount }) => cb.onMutateMeta({ forgeSpendIchor: amount ?? 25 })),
+    EventBus.on('ui:command:invest_blueprint_ichor', () => cb.onMutateMeta()),
     EventBus.on('ui:command:toggle_auth_drawer', ({ open }) => cb.onToggleDrawer(open)),
     EventBus.on('ui:command:toggle_offline_mode', ({ offline }) => {
       const nextOffline = offline !== undefined ? offline : cb.getQaStatus()?.isNetworkOnline !== false;

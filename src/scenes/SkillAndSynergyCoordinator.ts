@@ -223,7 +223,10 @@ export class SkillAndSynergyCoordinator {
       this.onEnemyKilledHook?.(ag);
       const affixes = this.player.inventory.collectAllEquippedAffixIds();
       this.mutations.onEnemyKilled(this.player.inventory.loadout.activeMutationIds, ag.id, ag.x, ag.y - 18, false, controlledBefore, this.getTargets());
-      EventBus.emit('combat:enemy_killed', { enemyId: ag.id, archetypeId: ag.archetype, worldX: ag.x, worldY: ag.y - 18, killerAffixIds: affixes, killedByMelee: false });
+      EventBus.emit('combat:enemy_killed', {
+        enemyId: ag.id, archetypeId: ag.archetype, worldX: ag.x, worldY: ag.y - 18,
+        killerAffixIds: affixes, killedByMelee: false, isElite: ag.isElite, isBoss: ag.isBoss, speciesId: ag.speciesId,
+      });
       this.statusMachine.clearTarget(ag.id);
     }
   }

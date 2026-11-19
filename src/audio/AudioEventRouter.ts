@@ -85,7 +85,7 @@ export interface AudioEventRouteHooks {
   setActiveSceneKey(sceneKey: string): void;
   setListenerX(x: number): void;
   setPortraitLocked(locked: boolean): void;
-  setSubModalOpen(slotBit: 0 | 1 | 2 | 3, open: boolean): void;
+  setSubModalOpen(slotBit: number, open: boolean): void;
   setPauseMenuOpen(open: boolean): void;
   togglePauseMenu(explicitOpen?: boolean): void;
 }
@@ -93,6 +93,7 @@ export interface AudioEventRouteHooks {
 export function bindAudioEventRoutes(hooks: AudioEventRouteHooks): Array<() => void> {
   const { bus, stemMixer, filterRack } = hooks;
   let lastSceneKey = '';
+  let deathMuffle = false;
 
   return [
     bus.on('system:showcase_state_changed', ({ activeSceneKey }) => {
@@ -129,8 +130,12 @@ export function bindAudioEventRoutes(hooks: AudioEventRouteHooks): Array<() => v
     bus.on('player:telemetry_updated', (t) => {
       hooks.setListenerX(t.x);
     }),
+    bus.on('audio:death_muffle_changed', ({ active }) => {
+      deathMuffle = active;
+      filterRack.setMuffleState({ lowHp: active });
+    }),
     bus.on('player:combat_hud_updated', ({ hp, maxHp }) => {
-      const lowHp = hp > 0 && hp < maxHp * AUDIO_CONSTANTS.LOW_HP_RATIO_THRESHOLD;
+      const lowHp = deathMuffle || (hp > 0 && hp < maxHp * AUDIO_CONSTANTS.LOW_HP_RATIO_THRESHOLD);
       filterRack.setMuffleState({ lowHp });
       stemMixer.setLowHpPulse(lowHp);
     }),
@@ -140,6 +145,10 @@ export function bindAudioEventRoutes(hooks: AudioEventRouteHooks): Array<() => v
     bus.on('combat:weapon_compare_opened', (p) => hooks.setSubModalOpen(0, Boolean(p?.open))),
     bus.on('combat:scroll_pick_opened', (p) => hooks.setSubModalOpen(1, Boolean(p?.open))),
     bus.on('combat:mutation_forge_opened', (p) => hooks.setSubModalOpen(2, Boolean(p?.open))),
+    bus.on('combat:skill_compare_opened', (p) => hooks.setSubModalOpen(4, Boolean(p?.open))),
+    bus.on('world:shop_modal_opened', (p) => hooks.setSubModalOpen(5, Boolean(p?.open))),
+    bus.on('narrative:collector_modal_opened', (p) => hooks.setSubModalOpen(6, Boolean(p?.open))),
+    bus.on('world:cursed_chest_modal_opened', (p) => hooks.setSubModalOpen(7, Boolean(p?.open))),
     bus.on('audio:sfx_requested', ({ sfxId, worldX }) => hooks.triggerSfx(sfxId, worldX)),
     bus.on('combat:hit_landed', (ev) => {
       hooks.triggerSfx(ev.isMetallicTarget ? 'sfx_hit_clockwork' : 'sfx_hit_flesh', ev.worldX);

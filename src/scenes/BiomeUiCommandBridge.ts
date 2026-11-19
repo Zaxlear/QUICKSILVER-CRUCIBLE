@@ -35,6 +35,7 @@ export interface RunCarryoverSnapshot {
   readonly flaskCharges: number;
   readonly maxFlaskCharges: number;
   readonly unlockedRunes: readonly RuneId[];
+  readonly cursedKillsRemaining?: number;
 }
 
 export function captureRunCarryover(
@@ -42,8 +43,6 @@ export function captureRunCarryover(
   unlockedRunes: readonly RuneId[]
 ): RunCarryoverSnapshot {
   NarrativeStore.syncUnlockedRunes(unlockedRunes);
-  NarrativeStore.unlockWeaponBlueprint(player.inventory.primaryWeapon.weaponId);
-  NarrativeStore.unlockWeaponBlueprint(player.inventory.secondaryWeapon.weaponId);
   return {
     primaryWeapon: player.inventory.primaryWeapon,
     secondaryWeapon: player.inventory.secondaryWeapon,
@@ -55,6 +54,7 @@ export function captureRunCarryover(
     flaskCharges: player.stats.flaskCharges,
     maxFlaskCharges: player.stats.maxFlaskCharges,
     unlockedRunes: NarrativeStore.unlockedRunes,
+    cursedKillsRemaining: player.stats.cursedKillsRemaining,
   };
 }
 
@@ -71,6 +71,7 @@ export function restorePlayerCarryover(player: PlayerEntity, snap: RunCarryoverS
   player.stats.ichor = snap.ichor;
   player.stats.maxFlaskCharges = snap.maxFlaskCharges;
   player.stats.flaskCharges = snap.flaskCharges;
+  player.stats.cursedKillsRemaining = snap.cursedKillsRemaining ?? 0;
 }
 
 export function buildPlayerNpcGuardContext(
@@ -100,7 +101,7 @@ export function buildPlayerNpcGuardContext(
     holdingHeavyWeapon: isHeavy,
     holdingClockworkRepeater: primId === 'wpn_clockwork_repeater' || secId === 'wpn_clockwork_repeater',
     isPlayerLowHp: player.stats.hp < player.stats.maxHp * 0.3,
-    isPlayerCursed: false,
+    isPlayerCursed: player.stats.cursedKillsRemaining > 0,
   };
 }
 

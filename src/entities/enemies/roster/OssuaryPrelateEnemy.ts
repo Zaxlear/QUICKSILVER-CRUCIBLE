@@ -200,10 +200,7 @@ export class PendulumAssassinEnemy extends BaseEnemy {
 
     this.telegraph = 'NONE';
     if (!sense.detected) {
-      const nx = this.x + this.facing * this.spec.patrolSpeedPxS * dtSec;
-      if (nx <= this.patrolMinX + 2) this.facing = 1;
-      else if (nx >= this.patrolMaxX - 2) this.facing = -1;
-      this.x = clampGroundX(nx, this.patrolMinX, this.patrolMaxX);
+      this.stepGroundMove(ctx, this.facing * this.spec.patrolSpeedPxS, dtSec, true);
       return;
     }
 
@@ -218,7 +215,7 @@ export class PendulumAssassinEnemy extends BaseEnemy {
         this.phaseMs = 0;
         this.telegraph = 'YELLOW_PARRIABLE';
       } else {
-        this.x = clampGroundX(this.x + this.facing * this.spec.chaseSpeedPxS * dtSec, this.patrolMinX, this.patrolMaxX);
+        this.stepGroundMove(ctx, this.facing * this.spec.chaseSpeedPxS, dtSec, false);
       }
     }
   }

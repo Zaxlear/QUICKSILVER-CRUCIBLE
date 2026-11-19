@@ -20,6 +20,7 @@ export interface SerializedWeaponInstance {
   readonly forgeGrade: ForgeGrade;
   readonly bonusStatColor: StatColor | null;
   readonly affixIds: readonly string[];
+  readonly isColorlessLegendary?: boolean;
 }
 
 export interface SerializedSkillInstance {
@@ -56,6 +57,8 @@ export interface PlayerRunStateSnapshot {
   readonly skillSlotTwo: SerializedSkillInstance | null;
   readonly activeMutationIds: readonly string[];
   readonly killStreakCount: number;
+  readonly cursedKillsRemaining?: number;
+  readonly carriedBlueprints?: readonly string[];
 }
 
 export interface DroppedFloorLootEntry {
@@ -98,9 +101,13 @@ export interface ActiveRunSnapshot {
 
 export interface ForgeTierProgressMap {
   readonly plus_tier_ichor: number;
+  readonly pp_tier_ichor?: number;
   readonly s_tier_ichor: number;
   readonly flask_charges: number;
   readonly gold_reserve_lvl: number;
+  readonly recycle_lvl?: number;
+  readonly starter_tubes_lvl?: number;
+  readonly shop_restock_lvl?: number;
 }
 
 export interface MetaProgressionRecord {
@@ -191,17 +198,23 @@ export const INTEGRITY_DOMAIN_SALT = 'QUICKSILVER_CRUCIBLE_V1_INTEGRITY' as cons
 
 export const DEFAULT_STARTER_WEAPONS: readonly string[] = [
   'wpn_alembic_bow',
+  'wpn_athanor_cleaver',
   'wpn_rust_scalpel',
   'wpn_slag_buckler',
 ] as const;
 
 export const DEFAULT_STARTER_SKILLS: readonly string[] = [
+  'skl_clockwork_saw_trap',
+  'skl_cryo_mercury_nova',
   'skl_vitriol_flask',
 ] as const;
 
 export const DEFAULT_STARTER_MUTATIONS: readonly string[] = [
   'mut_crimson_frenzy',
-  'mut_mercury_ward',
+  'mut_emergency_carapace',
+  'mut_gastronomy_distill',
+  'mut_point_blank',
+  'mut_predator_veil',
   'mut_tactical_reload',
 ] as const;
 

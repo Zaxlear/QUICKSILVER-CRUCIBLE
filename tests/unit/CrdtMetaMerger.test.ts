@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { DeterministicRng } from '../../src/core/DeterministicRng';
-import type { MetaProgressionRecord } from '../../src/data/storage.data';
+import {
+  DEFAULT_STARTER_MUTATIONS,
+  DEFAULT_STARTER_SKILLS,
+  DEFAULT_STARTER_WEAPONS,
+  type MetaProgressionRecord,
+} from '../../src/data/storage.data';
 import {
   maxNumericMapMerge,
   mergeMetaProgressions,
@@ -44,9 +49,9 @@ async function buildRandomMeta(rng: DeterministicRng, rev: number): Promise<Meta
   return signMetaProgression({
     schemaVersion: 1,
     unlockedRunes: setUnionSorted(runes),
-    unlockedWeapons: setUnionSorted(['wpn_alembic_bow', 'wpn_rust_scalpel', 'wpn_slag_buckler'], weapons),
-    unlockedSkills: setUnionSorted(['skl_vitriol_flask'], rng.nextBool(0.5) ? ['skl_tesla_coil_turret'] : []),
-    unlockedMutations: setUnionSorted(['mut_crimson_frenzy', 'mut_mercury_ward', 'mut_tactical_reload']),
+    unlockedWeapons: setUnionSorted(DEFAULT_STARTER_WEAPONS, weapons),
+    unlockedSkills: setUnionSorted(DEFAULT_STARTER_SKILLS, rng.nextBool(0.5) ? ['skl_tesla_coil_turret'] : []),
+    unlockedMutations: setUnionSorted(DEFAULT_STARTER_MUTATIONS, ['mut_mercury_ward']),
     discoveredLoreIds: setUnionSorted(rng.nextBool(0.5) ? ['lore_01_quarantine_notice'] : [], rng.nextBool(0.5) ? ['lore_06_clockwork_vow'] : []),
     seenNpcDialogueIds: setUnionSorted(rng.nextBool(0.5) ? ['corvus_01', 'isolde_01'] : ['vesper_01']),
     trueEndingFlags: setUnionSorted(seals),
@@ -139,6 +144,7 @@ describe('Milestone 10 — CrdtMetaMerger & Canonical SHA-256 Integrity', () => 
     ]);
     expect(merged.unlockedWeapons).toEqual([
       'wpn_alembic_bow',
+      'wpn_athanor_cleaver',
       'wpn_cinnabar_twinblades',
       'wpn_crucible_maul',
       'wpn_mirror_aegis',
@@ -146,7 +152,12 @@ describe('Milestone 10 — CrdtMetaMerger & Canonical SHA-256 Integrity', () => 
       'wpn_rust_scalpel',
       'wpn_slag_buckler',
     ]);
-    expect(merged.unlockedSkills).toEqual(['skl_naphtha_jar', 'skl_vitriol_flask']);
+    expect(merged.unlockedSkills).toEqual([
+      'skl_clockwork_saw_trap',
+      'skl_cryo_mercury_nova',
+      'skl_naphtha_jar',
+      'skl_vitriol_flask',
+    ]);
     expect(merged.unlockedMutations).toContain('mut_open_wounds');
     expect(merged.trueEndingFlags).toEqual([
       'flag_seal_claws',

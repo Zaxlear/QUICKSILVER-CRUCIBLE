@@ -297,6 +297,113 @@ def build_room_role_props(out_dir: Path) -> None:
     save_outlined(arch, out_dir / "corridor_seal_arch.png")
 
 
+def build_economy_and_curse_props(out_dir: Path) -> None:
+    # 1. Gold Mercury Coins (14x14, 3 spin frames)
+    widths = (8, 6, 3)
+    for idx, half_w in enumerate(widths):
+        coin = np.zeros((14, 14, 4), dtype=np.uint8)
+        cx, cy = 7, 7
+        for y in range(2, 12):
+            dy = abs(y - cy + 0.5)
+            span = max(1, int(round((half_w * 0.5) * math.sqrt(max(0.0, 1.0 - (dy / 5.2) ** 2)))))
+            for x in range(cx - span, cx + span):
+                edge = abs(x - (cx - 0.5)) >= span - 1.1 or dy >= 3.8
+                coin[y, x] = C["BRASS_5"] if edge else C["GOLD"]
+        if half_w >= 6:
+            fill_rect_px(coin, 6, 5, 2, 4, C["PORC_5"] if idx == 0 else C["CYAN"])
+        else:
+            fill_rect_px(coin, 6, 4, 1, 6, C["PORC_5"])
+        save_outlined(coin, out_dir / f"gold_mercury_coin_{idx}.png")
+
+    # 2. Gold Amalgam Nuggets (18x16, 2 gleaming frames for Elite/Boss bursts)
+    for idx in range(2):
+        nug = np.zeros((16, 18, 4), dtype=np.uint8)
+        fill_rect_px(nug, 4, 7, 10, 6, C["BRASS_5"])
+        fill_rect_px(nug, 5, 4, 8, 8, C["GOLD"])
+        fill_rect_px(nug, 3, 9, 5, 4, C["BRASS_6"])
+        fill_rect_px(nug, 10, 6, 5, 6, C["BRASS_4"])
+        fill_rect_px(nug, 6 + idx, 5, 3, 3, C["PORC_5"])
+        put_px(nug, 11, 8 - idx, C["CYAN"])
+        put_px(nug, 5, 10, C["PORC_3"])
+        save_outlined(nug, out_dir / f"gold_amalgam_nugget_{idx}.png")
+
+    # 3. Cursed Skull Chest (36x32 closed & open with #A855F7 purple curse aura)
+    for opened in (False, True):
+        chest = np.zeros((32, 36, 4), dtype=np.uint8)
+        # Base dark obsidian & corrupted brass box
+        fill_rect_px(chest, 4, 17, 28, 12, C["SLATE_1"])
+        fill_rect_px(chest, 6, 19, 24, 8, AETHER_0)
+        fill_rect_px(chest, 4, 17, 28, 2, C["BRASS_4"])
+        fill_rect_px(chest, 4, 27, 28, 2, C["BRASS_3"])
+        fill_rect_px(chest, 8, 17, 3, 12, C["BRASS_5"])
+        fill_rect_px(chest, 25, 17, 3, 12, C["BRASS_5"])
+        if not opened:
+            # Domed lid + porcelain cursed skull clasp
+            fill_rect_px(chest, 5, 11, 26, 6, C["SLATE_2"])
+            fill_rect_px(chest, 7, 9, 22, 3, C["BRASS_4"])
+            fill_rect_px(chest, 14, 12, 8, 7, C["PORC_3"])
+            fill_rect_px(chest, 15, 18, 6, 3, C["PORC_1"])
+            # Glowing #A855F7 eye sockets
+            fill_rect_px(chest, 15, 14, 2, 2, AETHER_2)
+            fill_rect_px(chest, 19, 14, 2, 2, AETHER_2)
+            put_px(chest, 17, 7, AETHER_1)
+            put_px(chest, 19, 6, AETHER_2)
+        else:
+            # Tilted back lid + erupting violet curse miasma & golden glint
+            fill_rect_px(chest, 5, 5, 26, 5, C["SLATE_3"])
+            fill_rect_px(chest, 6, 4, 24, 2, C["BRASS_5"])
+            fill_rect_px(chest, 8, 13, 20, 4, AETHER_1)
+            fill_rect_px(chest, 11, 10, 14, 5, AETHER_2)
+            fill_rect_px(chest, 15, 14, 6, 3, C["GOLD"])
+            put_px(chest, 13, 8, C["PORC_5"])
+            put_px(chest, 22, 7, AETHER_2)
+        save_outlined(chest, out_dir / ("cursed_skull_chest_open.png" if opened else "cursed_skull_chest_closed.png"))
+
+    # 4. Mithril Blueprint Scroll (20x22, 2 pulsing seal frames)
+    for idx in range(2):
+        scr = np.zeros((22, 20, 4), dtype=np.uint8)
+        fill_rect_px(scr, 3, 3, 14, 3, C["BRASS_5"])
+        fill_rect_px(scr, 3, 16, 14, 3, C["BRASS_4"])
+        fill_rect_px(scr, 5, 5, 10, 12, C["SLATE_5"] if idx == 0 else C["SLATE_6"])
+        fill_rect_px(scr, 6, 6, 8, 10, C["CYAN"])
+        fill_rect_px(scr, 8, 8, 4, 6, C["PORC_5"] if idx == 0 else C["GOLD"])
+        put_px(scr, 2, 4, C["GOLD"])
+        put_px(scr, 17, 4, C["GOLD"])
+        put_px(scr, 2, 17, C["GOLD"])
+        put_px(scr, 17, 17, C["GOLD"])
+        save_outlined(scr, out_dir / f"blueprint_scroll_{idx}.png")
+
+    # 5. High-Pressure Steam Lock Gate for Elite Altar Encounter (16x64, 2 frames)
+    for idx in range(2):
+        gate = np.zeros((64, 16, 4), dtype=np.uint8)
+        fill_rect_px(gate, 2, 2, 12, 5, C["BRASS_4"])
+        fill_rect_px(gate, 2, 57, 12, 5, C["BRASS_4"])
+        for y in range(7, 57):
+            sway = ((y // 5 + idx) % 3) - 1
+            fill_rect_px(gate, 4, y, 8, 1, C["SLATE_3"] if y % 4 != 0 else C["BRASS_3"])
+            fill_rect_px(gate, 6 + sway, y, 4, 1, C["CRIM_5"] if (y + idx * 3) % 3 == 0 else C["PORC_3"])
+            if (y + idx * 2) % 6 == 0:
+                put_px(gate, 7 + sway, y, C["PORC_5"])
+        save_outlined(gate, out_dir / f"elite_steam_gate_{idx}.png")
+
+    # 6. Shop Slot C Supplies: High-Purity Ichor Flask & Calcified Marrow Salve (18x22)
+    flask = np.zeros((22, 18, 4), dtype=np.uint8)
+    fill_rect_px(flask, 7, 3, 4, 4, C["BRASS_5"])
+    fill_rect_px(flask, 6, 2, 6, 2, C["GOLD"])
+    for y in range(7, 19):
+        half = min(6, 2 + (y - 6) // 2)
+        fill_rect_px(flask, 9 - half, y, half * 2, 1, C["CRIM_6"] if y > 10 else C["PORC_3"])
+        put_px(flask, 9 - half + 1, y, C["PORC_5"] if y <= 12 else C["CRIM_7"])
+    save_outlined(flask, out_dir / "shop_tonic_flask.png")
+
+    salve = np.zeros((22, 18, 4), dtype=np.uint8)
+    fill_rect_px(salve, 4, 5, 10, 3, C["GOLD"])
+    fill_rect_px(salve, 3, 8, 12, 11, C["PORC_3"])
+    fill_rect_px(salve, 5, 10, 8, 7, C["ACID_5"])
+    fill_rect_px(salve, 7, 11, 4, 3, C["PORC_5"])
+    save_outlined(salve, out_dir / "shop_marrow_salve.png")
+
+
 def build_minimap_ui_sheet(raw_png: Path) -> None:
     # 192x16 strip: 12 slots of 16x16 crisp pixel icons
     # Slots 0..7: ENTRANCE, COMBAT, TELEPORTER_HUB, ELITE, SHOP, LORE, RUNE_SECRET, EXIT
@@ -365,6 +472,7 @@ def run_pipeline() -> None:
     build_rune_gizmo_frames(raw_props)
     build_trap_frames(raw_props)
     build_room_role_props(raw_props)
+    build_economy_and_curse_props(raw_props)
 
     subprocess.run(
         [
